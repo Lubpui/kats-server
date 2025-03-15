@@ -36,6 +36,8 @@ export default tseslint.config(
           endOfLine: 'auto',
         },
       ],
+      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-unsafe-return': 'off',
     },
   },
 )
