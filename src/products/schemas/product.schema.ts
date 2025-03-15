@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document, Schema as MongooseSchema, Types } from 'mongoose'
-import { ProductDetail } from './product-detail.schema'
 import { ProductType } from 'src/shared/enums/product.enum'
 import { ProductCatagory } from './product-catagory.schema'
+import { ProductDetailResponse } from '../responses/product.response'
 
 export type ProductDocument = Product & Document
 
@@ -19,14 +19,13 @@ export class Product {
     type: MongooseSchema.Types.ObjectId,
     ref: ProductCatagory.name,
   })
-  catagories: Types.ObjectId
+  catagory: Types.ObjectId
 
   @Prop({
     required: true,
-    type: [MongooseSchema.Types.ObjectId],
-    ref: ProductDetail.name,
+    type: [MongooseSchema.Types.Mixed],
   })
-  productDetails: Types.ObjectId[]
+  productDetails: ProductDetailResponse[]
 
   @Prop({ enum: ProductType, default: ProductType.KATS })
   productType: number

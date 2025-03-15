@@ -7,15 +7,10 @@ import {
   ProductCatagory,
   ProductCatagorySchema,
 } from './schemas/product-catagory.schema'
-import {
-  ProductDetail,
-  ProductDetailSchema,
-} from './schemas/product-detail.schema'
 
 export const ProductsMongoose = MongooseModule.forFeature([
   { name: Product.name, schema: ProductSchema },
   { name: ProductCatagory.name, schema: ProductCatagorySchema },
-  { name: ProductDetail.name, schema: ProductDetailSchema },
 ])
 
 @Module({
