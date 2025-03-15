@@ -6,19 +6,7 @@ export class ProductsService {
     return createProductResquest
   }
 
-  findAll() {
+  getAllCatagories() {
     return `This action returns all products`
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} product`
-  }
-
-  update(id: number, updateProductDto: any) {
-    return updateProductDto
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} product`
   }
 }
