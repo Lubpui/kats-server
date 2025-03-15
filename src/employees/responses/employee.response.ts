@@ -1,12 +1,12 @@
-import { IsNotEmpty } from 'class-validator'
+import { Expose } from 'class-transformer'
 
 export class ProductResponse {
-  @IsNotEmpty()
+  @Expose()
   position: string
 
-  @IsNotEmpty()
+  @Expose()
   name: string
 
-  @IsNotEmpty()
+  @Expose()
   code: string
 }
