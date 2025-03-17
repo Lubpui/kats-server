@@ -1,5 +1,5 @@
 import { Expose, Type } from 'class-transformer'
-import { IsEnum, IsNotEmpty } from 'class-validator'
+import { IsEnum } from 'class-validator'
 import { ProductType } from 'src/shared/enums/product.enum'
 import { ProductCatagoryResponse } from './product-catagory.response'
 
@@ -34,7 +34,6 @@ export class ProductResponse {
   productDetails: ProductDetailResponse[]
 
   @Expose()
-  @IsNotEmpty()
   @IsEnum(ProductType)
   productType: ProductType
 }

@@ -1,6 +1,6 @@
 import { Expose } from 'class-transformer'
 
-export class ProductResponse {
+export class EmployeeResponse {
   @Expose()
   position: string
 
