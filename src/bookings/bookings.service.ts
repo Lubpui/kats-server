@@ -4,6 +4,11 @@ import { Booking, BookingDocument } from './schemas/booking.schema'
 import { Model } from 'mongoose'
 import { BookingRequest } from './requests/booking.request'
 import { Product, ProductDocument } from 'src/products/schemas/product.schema'
+import {
+  BookingListResponse,
+  BookingResponse,
+} from './responses/booking.reponse'
+import { modelMapper } from 'src/utils/mapper.util'
 
 @Injectable()
 export class BookingsService {
@@ -34,5 +39,10 @@ export class BookingsService {
       console.log(error)
       throw error
     }
+  }
+
+  async getAllBookings(): Promise<BookingResponse[]> {
+    const Bookings = await this.productModel.find()
+    return modelMapper(BookingListResponse, { data: Bookings }).data
   }
 }

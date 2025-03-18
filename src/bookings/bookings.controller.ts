@@ -1,6 +1,7 @@
-import { Controller, Post, Body } from '@nestjs/common'
+import { Controller, Post, Body, Get } from '@nestjs/common'
 import { BookingsService } from './bookings.service'
 import { BookingRequest } from './requests/booking.request'
+import { BookingResponse } from './responses/booking.reponse'
 
 @Controller('bookings')
 export class BookingsController {
@@ -11,8 +12,8 @@ export class BookingsController {
     return this.bookingsService.createBooking(createBookingRequest)
   }
 
-  // @Get()
-  // getAllBookings() {
-  //   return this.bookingsService.getAllBookings()
-  // }
+  @Get()
+  getAllBookings(): Promise<BookingResponse[]> {
+    return this.bookingsService.getAllBookings()
+  }
 }

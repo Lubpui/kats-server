@@ -10,9 +10,4 @@ export class EmployeesController {
   createEmployee(@Body() createEmployeeRequest: EmployeeRequest) {
     return this.employeesService.createEmployee(createEmployeeRequest)
   }
-
-  @Get()
-  findAll() {
-    return this.employeesService.findAll()
-  }
 }

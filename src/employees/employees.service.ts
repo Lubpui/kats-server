@@ -25,8 +25,4 @@ export class EmployeesService {
       throw error
     }
   }
-
-  findAll() {
-    return `This action returns all employees`
-  }
 }
