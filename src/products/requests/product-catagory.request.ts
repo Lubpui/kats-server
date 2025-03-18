@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsOptional } from 'class-validator'
 
-export class ProductCatagoryResquest {
+export class ProductCatagoryRequest {
   @IsOptional()
   _id: string
 

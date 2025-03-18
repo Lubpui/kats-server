@@ -10,13 +10,13 @@ import {
   ProductCatagoryListResponse,
   ProductCatagoryResponse,
 } from './responses/product-catagory.response'
-import { ProductCatagoryResquest } from './requests/product-catagory.request'
+import { ProductCatagoryRequest } from './requests/product-catagory.request'
 import { Product, ProductDocument } from './schemas/product.schema'
 import {
   ProductListResponse,
   ProductResponse,
 } from './responses/product.response'
-import { ProductResquest } from './requests/product.request'
+import { ProductRequest } from './requests/product.request'
 
 @Injectable()
 export class ProductsService {
@@ -28,7 +28,7 @@ export class ProductsService {
   ) {}
 
   async createProduct(
-    createProductResquest: ProductResquest,
+    createProductResquest: ProductRequest,
   ): Promise<ProductResponse> {
     try {
       const { catagory } = createProductResquest
@@ -61,7 +61,7 @@ export class ProductsService {
   }
 
   async createCatagory(
-    createCatagoryResquest: ProductCatagoryResquest,
+    createCatagoryResquest: ProductCatagoryRequest,
   ): Promise<ProductCatagoryResponse> {
     try {
       const createdCatagory = await new this.productCatagoryModel(

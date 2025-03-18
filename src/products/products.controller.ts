@@ -1,8 +1,8 @@
 import { Controller, Get, Post, Body } from '@nestjs/common'
 import { ProductsService } from './products.service'
 import { ProductCatagoryResponse } from './responses/product-catagory.response'
-import { ProductCatagoryResquest } from './requests/product-catagory.request'
-import { ProductResquest } from './requests/product.request'
+import { ProductCatagoryRequest } from './requests/product-catagory.request'
+import { ProductRequest } from './requests/product.request'
 import { ProductResponse } from './responses/product.response'
 
 @Controller('products')
@@ -11,9 +11,9 @@ export class ProductsController {
 
   @Post()
   createProduct(
-    @Body() createProductResquest: ProductResquest,
+    @Body() createProductRequest: ProductRequest,
   ): Promise<ProductResponse> {
-    return this.productsService.createProduct(createProductResquest)
+    return this.productsService.createProduct(createProductRequest)
   }
 
   @Get()
@@ -28,7 +28,7 @@ export class ProductsController {
 
   @Post('catagory')
   createCatagory(
-    @Body() createCatagoryResquest: ProductCatagoryResquest,
+    @Body() createCatagoryResquest: ProductCatagoryRequest,
   ): Promise<ProductCatagoryResponse> {
     return this.productsService.createCatagory(createCatagoryResquest)
   }

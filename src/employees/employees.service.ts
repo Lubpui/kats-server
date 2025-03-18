@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Employee, EmployeeDocument } from './schemas/employee.schema'
 import { Model } from 'mongoose'
-import { EmployeeResquest } from './requests/employee.request'
+import { EmployeeRequest } from './requests/employee.request'
 import { EmployeeResponse } from './responses/employee.response'
 import { modelMapper } from 'src/utils/mapper.util'
 
@@ -14,10 +14,12 @@ export class EmployeesService {
   ) {}
 
   async createEmployee(
-    createEmployeeResquest: EmployeeResquest,
+    createEmployeeResquest: EmployeeRequest,
   ): Promise<EmployeeResponse> {
     try {
-      const createdEmployee = await new this.EmployeeModel().save()
+      const createdEmployee = await new this.EmployeeModel(
+        createEmployeeResquest,
+      ).save()
       return modelMapper(EmployeeResponse, createdEmployee)
     } catch (error) {
       throw error
