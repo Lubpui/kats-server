@@ -3,7 +3,10 @@ import { InjectModel } from '@nestjs/mongoose'
 import { Employee, EmployeeDocument } from './schemas/employee.schema'
 import { Model } from 'mongoose'
 import { EmployeeRequest } from './requests/employee.request'
-import { EmployeeResponse } from './responses/employee.response'
+import {
+  EmployeeListResponse,
+  EmployeeResponse,
+} from './responses/employee.response'
 import { modelMapper } from 'src/utils/mapper.util'
 
 @Injectable()
@@ -24,5 +27,10 @@ export class EmployeesService {
     } catch (error) {
       throw error
     }
+  }
+
+  async getAllEmployees(): Promise<EmployeeResponse[]> {
+    const employees = await this.EmployeeModel.find()
+    return modelMapper(EmployeeListResponse, { data: employees }).data
   }
 }

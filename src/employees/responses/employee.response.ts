@@ -1,4 +1,4 @@
-import { Expose } from 'class-transformer'
+import { Expose, Type } from 'class-transformer'
 
 export class EmployeeResponse {
   @Expose()
@@ -9,4 +9,10 @@ export class EmployeeResponse {
 
   @Expose()
   tel: string
+}
+
+export class EmployeeListResponse {
+  @Expose()
+  @Type(() => EmployeeResponse)
+  data: EmployeeResponse[]
 }
