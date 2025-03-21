@@ -42,7 +42,13 @@ export class BookingsService {
   }
 
   async getAllBookings(): Promise<BookingResponse[]> {
-    const Bookings = await this.productModel.find().populate('catagory')
-    return modelMapper(BookingListResponse, { data: Bookings }).data
+    const bookings = await this.bookingModel.find().populate({
+      path: 'product',
+      populate: {
+        path: 'catagory',
+      },
+    })
+
+    return modelMapper(BookingListResponse, { data: bookings }).data
   }
 }

@@ -11,7 +11,7 @@ export class ProductDetailResponse {
   type: number
 
   @Expose()
-  price: number
+  amount: number
 }
 
 export class ProductDetailListResponse {
@@ -28,6 +28,7 @@ export class ProductResponse {
   name: string
 
   @Expose()
+  @Type(() => ProductCatagoryResponse)
   catagory: ProductCatagoryResponse
 
   @Expose()

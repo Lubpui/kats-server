@@ -36,6 +36,7 @@ export class BookingResponse {
   status: BookingStatus
 
   @Expose()
+  @Type(() => ProductResponse)
   product: ProductResponse
 
   @Expose()

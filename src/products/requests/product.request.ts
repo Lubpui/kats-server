@@ -7,7 +7,7 @@ export class ProductDetailRequest {
   type: number
 
   @IsNotEmpty()
-  price: number
+  amount: number
 }
 
 export class ProductRequest {

@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document, Schema as MongooseSchema, Types } from 'mongoose'
 import { ProductDetailResponse } from 'src/products/responses/product.response'
+import { Product } from 'src/products/schemas/product.schema'
 import { BookingStatus } from 'src/shared/enums/booking-status.enum'
 
 export type BookingDocument = Booking & Document
@@ -34,7 +35,11 @@ export class Booking {
   @Prop({ required: true })
   licensePlate: string //ทะเบียนรถ
 
-  @Prop({ required: true, type: MongooseSchema.Types.ObjectId })
+  @Prop({
+    required: true,
+    type: MongooseSchema.Types.ObjectId,
+    ref: Product.name,
+  })
   product: Types.ObjectId
 
   @Prop({ enum: BookingStatus, default: BookingStatus.PENDING })
