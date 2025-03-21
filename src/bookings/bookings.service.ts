@@ -51,4 +51,20 @@ export class BookingsService {
 
     return modelMapper(BookingListResponse, { data: bookings }).data
   }
+
+  async updateeBookingById(
+    bookingId: string,
+    updateBookingRequest: BookingRequest,
+  ) {
+    // const bookings = await this.bookingModel.findByIdAndUpdate(
+    //   bookingId,
+    //   updateBookingRequest,
+    // )
+    return updateBookingRequest
+  }
+
+  async deleteBookingById(bookingId: string) {
+    const bookings = await this.bookingModel.findByIdAndDelete(bookingId)
+    return bookings
+  }
 }

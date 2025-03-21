@@ -8,6 +8,9 @@ import { BookingStatus } from 'src/shared/enums/booking-status.enum'
 
 export class BookingResponse {
   @Expose()
+  _id: string
+
+  @Expose()
   number: string
 
   @Expose()
