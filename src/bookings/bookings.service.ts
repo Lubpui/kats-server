@@ -74,7 +74,7 @@ export class BookingsService {
   }
 
   async deleteBookingById(bookingId: string) {
-    const bookings = await this.bookingModel.findByIdAndDelete(bookingId)
-    return bookings
+    const booking = await this.bookingModel.findByIdAndDelete(bookingId)
+    return booking
   }
 }

@@ -2,6 +2,9 @@ import { Expose, Type } from 'class-transformer'
 
 export class EmployeeResponse {
   @Expose()
+  _id: string
+
+  @Expose()
   staffRole: string
 
   @Expose()

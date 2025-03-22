@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common'
+import { Controller, Get, Post, Body, Delete, Param } from '@nestjs/common'
 import { EmployeesService } from './employees.service'
 import { EmployeeRequest } from './requests/employee.request'
 import { EmployeeResponse } from './responses/employee.response'
@@ -15,5 +15,10 @@ export class EmployeesController {
   @Get()
   getAllEmployees(): Promise<EmployeeResponse[]> {
     return this.employeesService.getAllEmployees()
+  }
+
+  @Delete(':employeeId')
+  deleteEmployeeById(@Param('employeeId') employeeId: string) {
+    return this.employeesService.deleteEmployeeById(employeeId)
   }
 }

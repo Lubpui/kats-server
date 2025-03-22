@@ -33,4 +33,9 @@ export class EmployeesService {
     const employees = await this.EmployeeModel.find()
     return modelMapper(EmployeeListResponse, { data: employees }).data
   }
+
+  async deleteEmployeeById(employeeId: string) {
+    const employee = await this.EmployeeModel.findByIdAndDelete(employeeId)
+    return employee
+  }
 }
