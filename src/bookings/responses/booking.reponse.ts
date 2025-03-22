@@ -35,6 +35,9 @@ export class BookingResponse {
   licensePlate: string
 
   @Expose()
+  province: string
+
+  @Expose()
   @IsEnum(BookingStatus)
   status: BookingStatus
 

@@ -35,6 +35,9 @@ export class Booking {
   @Prop({ required: true })
   licensePlate: string //ทะเบียนรถ
 
+  @Prop({ required: true })
+  province: string //ทะเบียนจังหวัด
+
   @Prop({
     required: true,
     type: MongooseSchema.Types.ObjectId,

@@ -28,6 +28,17 @@ export class BookingsController {
     )
   }
 
+  @Post(':bookingId')
+  approveBookingById(
+    @Param('bookingId') bookingId: string,
+    @Body() updateBookingRequest: BookingRequest,
+  ) {
+    return this.bookingsService.approveBookingById(
+      bookingId,
+      updateBookingRequest,
+    )
+  }
+
   @Delete(':bookingId')
   deleteBookingById(@Param('bookingId') bookingId: string) {
     return this.bookingsService.deleteBookingById(bookingId)

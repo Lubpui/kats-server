@@ -63,6 +63,16 @@ export class BookingsService {
     return updateBookingRequest
   }
 
+  async approveBookingById(
+    bookingId: string,
+    updateBookingRequest: BookingRequest,
+  ) {
+    const approve = await this.bookingModel.findByIdAndUpdate(bookingId, {
+      $set: { ...updateBookingRequest },
+    })
+    return approve
+  }
+
   async deleteBookingById(bookingId: string) {
     const bookings = await this.bookingModel.findByIdAndDelete(bookingId)
     return bookings

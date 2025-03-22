@@ -28,6 +28,9 @@ export class BookingRequest {
   licensePlate: string
 
   @IsNotEmpty()
+  province: string
+
+  @IsNotEmpty()
   status: BookingStatus
 
   @IsNotEmpty()
