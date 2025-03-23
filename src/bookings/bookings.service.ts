@@ -9,6 +9,7 @@ import {
   BookingResponse,
 } from './responses/booking.reponse'
 import { modelMapper } from 'src/utils/mapper.util'
+import { BookingStatus } from 'src/shared/enums/booking-status.enum'
 
 @Injectable()
 export class BookingsService {
@@ -42,34 +43,67 @@ export class BookingsService {
   }
 
   async getAllBookings(): Promise<BookingResponse[]> {
-    const bookings = await this.bookingModel.find().populate({
+    const bookingRes = await this.bookingModel.find().populate({
       path: 'product',
       populate: {
         path: 'catagory',
       },
     })
 
-    return modelMapper(BookingListResponse, { data: bookings }).data
+    const bookings = modelMapper(BookingListResponse, { data: bookingRes }).data
+
+    bookings.sort((a, b) => {
+      if (
+        a.status === BookingStatus.COMPLETED &&
+        b.status !== BookingStatus.COMPLETED
+      ) {
+        return 1
+      }
+
+      if (
+        a.status !== BookingStatus.COMPLETED &&
+        b.status === BookingStatus.COMPLETED
+      ) {
+        return -1
+      }
+
+      return 0
+    })
+
+    return bookings
+  }
+
+  async getBookingById(bookingId: string): Promise<BookingResponse> {
+    try {
+      const bookingRes = await this.bookingModel
+        .findById(bookingId)
+        .populate({ path: 'product', populate: 'catagory' })
+
+      return modelMapper(BookingResponse, bookingRes)
+    } catch (error) {
+      throw error
+    }
   }
 
   async updateeBookingById(
     bookingId: string,
     updateBookingRequest: BookingRequest,
   ) {
-    // const bookings = await this.bookingModel.findByIdAndUpdate(
-    //   bookingId,
-    //   updateBookingRequest,
-    // )
-    return updateBookingRequest
+    const bookings = await this.bookingModel.findByIdAndUpdate(bookingId, {
+      $set: { ...updateBookingRequest },
+    })
+    return bookings
   }
 
   async approveBookingById(
     bookingId: string,
     updateBookingRequest: BookingRequest,
   ) {
-    const approve = await this.bookingModel.findByIdAndUpdate(bookingId, {
-      $set: { ...updateBookingRequest },
-    })
+    const approve = await this.updateeBookingById(
+      bookingId,
+      updateBookingRequest,
+    )
+
     return approve
   }
 

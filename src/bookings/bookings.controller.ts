@@ -12,9 +12,27 @@ export class BookingsController {
     return this.bookingsService.createBooking(createBookingRequest)
   }
 
+  @Post('approve/:bookingId')
+  approveBookingById(
+    @Param('bookingId') bookingId: string,
+    @Body() updateBookingRequest: BookingRequest,
+  ) {
+    return this.bookingsService.approveBookingById(
+      bookingId,
+      updateBookingRequest,
+    )
+  }
+
   @Get()
   getAllBookings(): Promise<BookingResponse[]> {
     return this.bookingsService.getAllBookings()
+  }
+
+  @Get(':bookingId')
+  getBookingById(
+    @Param('bookingId') bookingId: string,
+  ): Promise<BookingResponse> {
+    return this.bookingsService.getBookingById(bookingId)
   }
 
   @Put(':bookingId')
@@ -23,17 +41,6 @@ export class BookingsController {
     @Body() updateBookingRequest: BookingRequest,
   ) {
     return this.bookingsService.updateeBookingById(
-      bookingId,
-      updateBookingRequest,
-    )
-  }
-
-  @Post(':bookingId')
-  approveBookingById(
-    @Param('bookingId') bookingId: string,
-    @Body() updateBookingRequest: BookingRequest,
-  ) {
-    return this.bookingsService.approveBookingById(
       bookingId,
       updateBookingRequest,
     )
