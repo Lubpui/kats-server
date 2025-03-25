@@ -85,21 +85,21 @@ export class BookingsService {
     }
   }
 
-  async updateeBookingById(
+  async updateBookingById(
     bookingId: string,
     updateBookingRequest: BookingRequest,
   ) {
-    const bookings = await this.bookingModel.findByIdAndUpdate(bookingId, {
+    const booking = await this.bookingModel.findByIdAndUpdate(bookingId, {
       $set: { ...updateBookingRequest },
     })
-    return bookings
+    return booking
   }
 
   async approveBookingById(
     bookingId: string,
     updateBookingRequest: BookingRequest,
   ) {
-    const approve = await this.updateeBookingById(
+    const approve = await this.updateBookingById(
       bookingId,
       updateBookingRequest,
     )

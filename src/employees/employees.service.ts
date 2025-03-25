@@ -34,6 +34,26 @@ export class EmployeesService {
     return modelMapper(EmployeeListResponse, { data: employees }).data
   }
 
+  async getEmployeeById(employeeId: string): Promise<EmployeeResponse> {
+    try {
+      const bookingRes = await this.EmployeeModel.findById(employeeId)
+
+      return modelMapper(EmployeeResponse, bookingRes)
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async updateEmployeeById(
+    employeeId: string,
+    updateEmployeeRequest: EmployeeResponse,
+  ) {
+    const employee = await this.EmployeeModel.findByIdAndUpdate(employeeId, {
+      $set: { ...updateEmployeeRequest },
+    })
+    return employee
+  }
+
   async deleteEmployeeById(employeeId: string) {
     const employee = await this.EmployeeModel.findByIdAndDelete(employeeId)
     return employee

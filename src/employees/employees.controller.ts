@@ -17,6 +17,13 @@ export class EmployeesController {
     return this.employeesService.getAllEmployees()
   }
 
+  @Get(':employeeId')
+  getEmployeeById(
+    @Param('employeeId') employeeId: string,
+  ): Promise<EmployeeResponse> {
+    return this.employeesService.getEmployeeById(employeeId)
+  }
+
   @Delete(':employeeId')
   deleteEmployeeById(@Param('employeeId') employeeId: string) {
     return this.employeesService.deleteEmployeeById(employeeId)

@@ -40,7 +40,7 @@ export class BookingsController {
     @Param('bookingId') bookingId: string,
     @Body() updateBookingRequest: BookingRequest,
   ) {
-    return this.bookingsService.updateeBookingById(
+    return this.bookingsService.updateBookingById(
       bookingId,
       updateBookingRequest,
     )
