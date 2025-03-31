@@ -1,7 +1,17 @@
-import { Controller, Post, Body, Get, Put, Param, Delete } from '@nestjs/common'
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Put,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common'
 import { BookingsService } from './bookings.service'
 import { BookingRequest } from './requests/booking.request'
 import { BookingResponse } from './responses/booking.reponse'
+import { QueryPagination } from 'src/shared/types/queryPagination'
 
 @Controller('bookings')
 export class BookingsController {
@@ -26,6 +36,13 @@ export class BookingsController {
   @Get()
   getAllBookings(): Promise<BookingResponse[]> {
     return this.bookingsService.getAllBookings()
+  }
+
+  @Get('pagination')
+  getAllBookingPaginations(
+    @Query() query: QueryPagination,
+  ): Promise<BookingResponse[]> {
+    return this.bookingsService.getAllBookingPaginations(query)
   }
 
   @Get(':bookingId')
