@@ -9,7 +9,7 @@ export type ProductDocument = Product & Document
 /**
  * สินค้า
  */
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, toJSON: { virtuals: true } })
 export class Product {
   @Prop({ required: true })
   name: string
@@ -19,7 +19,7 @@ export class Product {
     type: MongooseSchema.Types.ObjectId,
     ref: ProductCatagory.name,
   })
-  catagory: Types.ObjectId
+  catagoryId: Types.ObjectId
 
   @Prop({
     required: true,
@@ -32,5 +32,12 @@ export class Product {
 }
 
 const ProductSchema = SchemaFactory.createForClass(Product)
+
+ProductSchema.virtual('catagory', {
+  ref: 'ProductCatagory',
+  localField: 'catagoryId',
+  foreignField: '_id',
+  justOne: true,
+})
 
 export { ProductSchema }

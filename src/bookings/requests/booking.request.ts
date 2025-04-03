@@ -34,7 +34,7 @@ export class BookingRequest {
   status: BookingStatus
 
   @IsNotEmpty()
-  product: string
+  productId: string
 
   @IsNotEmpty()
   price: ProductDetailResponse

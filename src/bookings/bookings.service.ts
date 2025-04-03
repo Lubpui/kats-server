@@ -28,14 +28,13 @@ export class BookingsService {
   async createBooking(createBookingRequest: BookingRequest) {
     try {
       const findedProduct = await this.productModel.findById(
-        createBookingRequest.product,
+        createBookingRequest.productId,
       )
 
       if (!findedProduct) throw new NotFoundException('ไม่พบสินค้า')
 
       const newCreateBookingRequest = {
         ...createBookingRequest,
-        product: findedProduct._id,
         productId: findedProduct._id,
       }
 
@@ -123,14 +122,14 @@ export class BookingsService {
         {
           $lookup: {
             from: this.productModel.collection.name,
-            localField: 'product',
+            localField: 'productId',
             foreignField: '_id',
             as: 'product',
             pipeline: [
               {
                 $lookup: {
                   from: this.catagoryModel.collection.name,
-                  localField: 'catagory',
+                  localField: 'catagoryId',
                   foreignField: '_id',
                   as: 'catagory',
                 },

@@ -32,6 +32,9 @@ export class ProductResponse {
   catagory: ProductCatagoryResponse
 
   @Expose()
+  catagoryId: string
+
+  @Expose()
   productDetails: ProductDetailResponse[]
 
   @Expose()

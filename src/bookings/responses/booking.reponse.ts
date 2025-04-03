@@ -46,6 +46,9 @@ export class BookingResponse {
   product: ProductResponse
 
   @Expose()
+  productId: string
+
+  @Expose()
   price: ProductDetailResponse
 
   @Expose()

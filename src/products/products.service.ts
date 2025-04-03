@@ -31,11 +31,11 @@ export class ProductsService {
     createProductResquest: ProductRequest,
   ): Promise<ProductResponse> {
     try {
-      const { catagory } = createProductResquest
+      const { catagoryId } = createProductResquest
 
       const newProduct = {
         ...createProductResquest,
-        catagory: new Types.ObjectId(catagory._id),
+        catagoryId: new Types.ObjectId(catagoryId),
       }
 
       const createdProduct = await new this.productModel(newProduct).save()

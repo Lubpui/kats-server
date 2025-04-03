@@ -9,7 +9,7 @@ export type BookingDocument = Booking & Document
 /**
  * จองคิว
  */
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, toJSON: { virtuals: true } })
 export class Booking {
   @Prop({ required: true })
   name: string
@@ -43,7 +43,7 @@ export class Booking {
     type: MongooseSchema.Types.ObjectId,
     ref: Product.name,
   })
-  product: Types.ObjectId
+  productId: Types.ObjectId
 
   @Prop({ enum: BookingStatus, default: BookingStatus.PENDING })
   status: number
@@ -62,5 +62,12 @@ export class Booking {
 }
 
 const BookingSchema = SchemaFactory.createForClass(Booking)
+
+BookingSchema.virtual('product', {
+  ref: 'Product',
+  localField: 'productId',
+  foreignField: '_id',
+  justOne: true,
+})
 
 export { BookingSchema }

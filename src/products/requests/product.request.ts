@@ -1,6 +1,5 @@
 import { IsEnum, IsNotEmpty } from 'class-validator'
 import { ProductType } from 'src/shared/enums/product.enum'
-import { ProductCatagoryRequest } from './product-catagory.request'
 
 export class ProductDetailRequest {
   @IsNotEmpty()
@@ -15,7 +14,7 @@ export class ProductRequest {
   name: string
 
   @IsNotEmpty()
-  catagory: ProductCatagoryRequest
+  catagoryId: string
 
   @IsNotEmpty()
   productDetails: ProductDetailRequest[]
