@@ -36,6 +36,7 @@ export class BookingsService {
       const newCreateBookingRequest = {
         ...createBookingRequest,
         product: findedProduct._id,
+        productId: findedProduct._id,
       }
 
       const createdBooking = await new this.bookingModel(
@@ -84,7 +85,7 @@ export class BookingsService {
     query: QueryPagination,
   ): Promise<BookingResponse[]> {
     try {
-      const { term, receiptBookNo } = query
+      const { term, receiptBookNo, productName } = query
 
       const receiptBookNoPipline =
         receiptBookNo !== 'all'
@@ -92,6 +93,17 @@ export class BookingsService {
               {
                 $match: {
                   receiptBookNo: receiptBookNo,
+                },
+              },
+            ]
+          : []
+
+      const productNamePipline =
+        productName && productName !== 'all'
+          ? [
+              {
+                $match: {
+                  'product.name': productName,
                 },
               },
             ]
@@ -132,6 +144,7 @@ export class BookingsService {
             preserveNullAndEmptyArrays: true,
           },
         },
+        ...productNamePipline,
       ])
 
       const bookings = modelMapper(BookingListResponse, {

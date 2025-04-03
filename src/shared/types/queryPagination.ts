@@ -6,4 +6,7 @@ export class QueryPagination {
 
   @IsOptional()
   receiptBookNo?: string
+
+  @IsOptional()
+  productName?: string
 }
