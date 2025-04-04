@@ -50,16 +50,6 @@ export class ProductsService {
     }
   }
 
-  async getAllProducts(): Promise<ProductResponse[]> {
-    const products = await this.productModel.find().populate('catagory')
-    return modelMapper(ProductListResponse, { data: products }).data
-  }
-
-  async getAllCatagories(): Promise<ProductCatagoryResponse[]> {
-    const catagories = await this.productCatagoryModel.find()
-    return modelMapper(ProductCatagoryListResponse, { data: catagories }).data
-  }
-
   async createCatagory(
     createCatagoryResquest: ProductCatagoryRequest,
   ): Promise<ProductCatagoryResponse> {
@@ -72,5 +62,15 @@ export class ProductsService {
     } catch (error) {
       throw error
     }
+  }
+
+  async getAllProducts(): Promise<ProductResponse[]> {
+    const products = await this.productModel.find().populate('catagory')
+    return modelMapper(ProductListResponse, { data: products }).data
+  }
+
+  async getAllCatagories(): Promise<ProductCatagoryResponse[]> {
+    const catagories = await this.productCatagoryModel.find()
+    return modelMapper(ProductCatagoryListResponse, { data: catagories }).data
   }
 }

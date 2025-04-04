@@ -16,6 +16,13 @@ export class ProductsController {
     return this.productsService.createProduct(createProductRequest)
   }
 
+  @Post('catagory')
+  createCatagory(
+    @Body() createCatagoryResquest: ProductCatagoryRequest,
+  ): Promise<ProductCatagoryResponse> {
+    return this.productsService.createCatagory(createCatagoryResquest)
+  }
+
   @Get()
   getAllProducts(): Promise<ProductResponse[]> {
     return this.productsService.getAllProducts()
@@ -24,12 +31,5 @@ export class ProductsController {
   @Get('catagories')
   getAllCatagories(): Promise<ProductCatagoryResponse[]> {
     return this.productsService.getAllCatagories()
-  }
-
-  @Post('catagory')
-  createCatagory(
-    @Body() createCatagoryResquest: ProductCatagoryRequest,
-  ): Promise<ProductCatagoryResponse> {
-    return this.productsService.createCatagory(createCatagoryResquest)
   }
 }

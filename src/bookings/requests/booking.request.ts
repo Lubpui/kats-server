@@ -1,6 +1,7 @@
 import { IsNotEmpty, IsOptional } from 'class-validator'
 import { ProductDetailResponse } from 'src/products/responses/product.response'
 import { BookingStatus } from 'src/shared/enums/booking-status.enum'
+import { GuaranteeResponse } from '../responses/booking.reponse'
 
 export class BookingRequest {
   @IsNotEmpty()
@@ -38,6 +39,9 @@ export class BookingRequest {
 
   @IsNotEmpty()
   price: ProductDetailResponse
+
+  @IsOptional()
+  guarantees?: GuaranteeResponse[]
 
   @IsNotEmpty()
   tel: string

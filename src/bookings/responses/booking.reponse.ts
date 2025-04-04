@@ -6,6 +6,29 @@ import {
 } from 'src/products/responses/product.response'
 import { BookingStatus } from 'src/shared/enums/booking-status.enum'
 
+export class GuaranteeResponse {
+  @Expose()
+  serviceNo: number // ครั้งที่
+
+  @Expose()
+  serviceDate: string // วันที่เข้ารับบริการ
+
+  @Expose()
+  isBeam: boolean // คาน
+
+  @Expose()
+  isWheelArch: boolean // ซุ้มล้อ
+
+  @Expose()
+  isControlArm: boolean // ปีกนก
+
+  @Expose()
+  isChassis: boolean // แชสซี่ส์
+
+  @Expose()
+  isUnderbody: boolean // ใต้ท้อง
+}
+
 export class BookingResponse {
   @Expose()
   _id: string
@@ -44,6 +67,10 @@ export class BookingResponse {
   @Expose()
   @Type(() => ProductResponse)
   product: ProductResponse
+
+  @Expose()
+  @Type(() => GuaranteeResponse)
+  guarantees: GuaranteeResponse[]
 
   @Expose()
   productId: string
