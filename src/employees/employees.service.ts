@@ -46,7 +46,7 @@ export class EmployeesService {
 
   async updateEmployeeById(
     employeeId: string,
-    updateEmployeeRequest: EmployeeResponse,
+    updateEmployeeRequest: EmployeeRequest,
   ) {
     const employee = await this.EmployeeModel.findByIdAndUpdate(employeeId, {
       $set: { ...updateEmployeeRequest },

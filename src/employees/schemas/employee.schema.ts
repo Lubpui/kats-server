@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Document } from 'mongoose'
+import { Document, Schema as MongooseSchema } from 'mongoose'
 import { EmployeeRole } from 'src/shared/enums/employee.enum'
+import { SalaryDetailResponse } from '../responses/employee.response'
 
 export type EmployeeDocument = Employee & Document
 
@@ -17,6 +18,12 @@ export class Employee {
 
   @Prop({ required: true })
   tel: string
+
+  @Prop()
+  image: string
+
+  @Prop({ type: MongooseSchema.Types.Mixed })
+  salary: SalaryDetailResponse
 }
 
 const EmployeeSchema = SchemaFactory.createForClass(Employee)

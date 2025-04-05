@@ -1,4 +1,5 @@
-import { IsNotEmpty } from 'class-validator'
+import { IsNotEmpty, IsOptional } from 'class-validator'
+import { SalaryDetailResponse } from '../responses/employee.response'
 
 export class EmployeeRequest {
   @IsNotEmpty()
@@ -9,4 +10,10 @@ export class EmployeeRequest {
 
   @IsNotEmpty()
   tel: string
+
+  @IsOptional()
+  image?: string
+
+  @IsOptional()
+  salary?: SalaryDetailResponse
 }
