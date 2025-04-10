@@ -41,8 +41,6 @@ export class EmployeesService {
     try {
       const { term } = query
 
-      console.log(0)
-
       const employeeRes = await this.EmployeeModel.aggregate([
         {
           $match: {
@@ -54,12 +52,9 @@ export class EmployeesService {
         },
       ])
 
-      console.log(1)
-
       const employees = modelMapper(EmployeeListResponse, {
         data: employeeRes,
       }).data
-      console.log(2)
 
       return employees
     } catch (error) {
