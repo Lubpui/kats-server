@@ -1,7 +1,17 @@
-import { Controller, Get, Post, Body, Delete, Param, Put } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Delete,
+  Param,
+  Put,
+  Query,
+} from '@nestjs/common'
 import { EmployeesService } from './employees.service'
 import { EmployeeRequest } from './requests/employee.request'
 import { EmployeeResponse } from './responses/employee.response'
+import { QueryPagination } from 'src/shared/types/queryPagination'
 
 @Controller('employees')
 export class EmployeesController {
@@ -15,6 +25,13 @@ export class EmployeesController {
   @Get()
   getAllEmployees(): Promise<EmployeeResponse[]> {
     return this.employeesService.getAllEmployees()
+  }
+
+  @Get('pagination')
+  getAllEmployeePaginations(
+    @Query() query: QueryPagination,
+  ): Promise<EmployeeResponse[]> {
+    return this.employeesService.getAllEmployeePaginations(query)
   }
 
   @Get(':employeeId')

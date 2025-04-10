@@ -8,6 +8,7 @@ import {
   EmployeeResponse,
 } from './responses/employee.response'
 import { modelMapper } from 'src/utils/mapper.util'
+import { QueryPagination } from 'src/shared/types/queryPagination'
 
 @Injectable()
 export class EmployeesService {
@@ -34,11 +35,44 @@ export class EmployeesService {
     return modelMapper(EmployeeListResponse, { data: employees }).data
   }
 
+  async getAllEmployeePaginations(
+    query: QueryPagination,
+  ): Promise<EmployeeResponse[]> {
+    try {
+      const { term } = query
+
+      console.log(0)
+
+      const employeeRes = await this.EmployeeModel.aggregate([
+        {
+          $match: {
+            $or: [
+              { name: { $regex: term, $options: 'i' } },
+              { tel: { $regex: term, $options: 'i' } },
+            ],
+          },
+        },
+      ])
+
+      console.log(1)
+
+      const employees = modelMapper(EmployeeListResponse, {
+        data: employeeRes,
+      }).data
+      console.log(2)
+
+      return employees
+    } catch (error) {
+      console.log(error)
+      throw error
+    }
+  }
+
   async getEmployeeById(employeeId: string): Promise<EmployeeResponse> {
     try {
-      const bookingRes = await this.EmployeeModel.findById(employeeId)
+      const employeeRes = await this.EmployeeModel.findById(employeeId)
 
-      return modelMapper(EmployeeResponse, bookingRes)
+      return modelMapper(EmployeeResponse, employeeRes)
     } catch (error) {
       throw error
     }
