@@ -1,18 +1,18 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document, Schema as MongooseSchema, Types } from 'mongoose'
 import { Employee } from 'src/employees/schemas/employee.schema'
+import { ExpenseCatagoryResponse } from 'src/expenses/responses/expense.response'
 import { PaymentCategory } from 'src/shared/enums/expense.enum'
-import { ExpenseCatagoryResponse } from '../responses/expense.response'
 
-export type ExpenseDocument = Expense & Document
+export type SalaryAdvanceDocument = SalaryAdvance & Document
 
 /**
- * ค่าใช้จ่าย & เบิกเงินเดือน (ข้อมูลเหมือนกัน)
+ * เบิกเงินเดือน
  */
 @Schema({ timestamps: true, toJSON: { virtuals: true } })
-export class Expense {
+export class SalaryAdvance {
   @Prop({ required: true })
-  number: string
+  number: number
 
   @Prop({
     required: true,
@@ -43,13 +43,13 @@ export class Expense {
   detel: string
 }
 
-const ExpenseSchema = SchemaFactory.createForClass(Expense)
+const SalaryAdvanceSchema = SchemaFactory.createForClass(SalaryAdvance)
 
-ExpenseSchema.virtual('employee', {
+SalaryAdvanceSchema.virtual('employee', {
   ref: 'Employee',
   localField: 'employeeId',
   foreignField: '_id',
   justOne: true,
 })
 
-export { ExpenseSchema }
+export { SalaryAdvanceSchema }

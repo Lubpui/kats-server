@@ -1,8 +1,8 @@
 import { IsNotEmpty } from 'class-validator'
-import { ExpenseCatagoryResponse } from '../responses/expense.response'
+import { ExpenseCatagoryResponse } from 'src/expenses/responses/expense.response'
 import { PaymentCategory } from 'src/shared/enums/expense.enum'
 
-export class ExpenseRequest {
+export class SalaryAdvanceRequest {
   @IsNotEmpty()
   number: number
 
