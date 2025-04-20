@@ -41,6 +41,9 @@ export class Expense {
 
   @Prop({ required: true })
   detel: string
+
+  @Prop()
+  slip: string
 }
 
 const ExpenseSchema = SchemaFactory.createForClass(Expense)

@@ -3,7 +3,7 @@ export enum PaymentCategory {
   SALARY = 1,
 }
 
-export enum Category_Type {
+export enum CategoryType {
   FUEL = 0, // น้ำมัน
   TRAVEL = 1, // เดินทาง
   ACCOMMODATION = 2, // ที่พัก
@@ -12,4 +12,5 @@ export enum Category_Type {
   TOOL = 5, // อุปกรณ์
   MEDICAL = 6, // รักษา
   OTHER = 7, // อื่นๆ
+  SALARY_ADVANCE = 8, // เบิกเงินเดือน
 }

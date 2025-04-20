@@ -7,7 +7,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { EmployeesModule } from './employees/employees.module'
 import { BookingsModule } from './bookings/bookings.module'
 import { ExpensesModule } from './expenses/expenses.module'
-import { SalaryadvanceModule } from './salaryadvance/salaryadvance.module';
 
 @Module({
   imports: [
@@ -25,7 +24,6 @@ import { SalaryadvanceModule } from './salaryadvance/salaryadvance.module';
     EmployeesModule,
     BookingsModule,
     ExpensesModule,
-    SalaryadvanceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,8 +1,12 @@
 import { Expose, Type } from 'class-transformer'
 import { IsEnum } from 'class-validator'
-import { PaymentCategory } from 'src/shared/enums/expense.enum'
+import { CategoryType, PaymentCategory } from 'src/shared/enums/expense.enum'
 
 export class ExpenseCatagoryResponse {
+  @Expose()
+  @IsEnum(CategoryType)
+  type: CategoryType
+
   @Expose()
   amount: number
 }
@@ -25,7 +29,7 @@ export class ExpenseResponse {
   section: PaymentCategory
 
   @Expose()
-  categorys: [ExpenseCatagoryResponse]
+  categorys: ExpenseCatagoryResponse[]
 
   @Expose()
   price: number

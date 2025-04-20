@@ -1,6 +1,14 @@
-import { IsNotEmpty, IsOptional } from 'class-validator'
-import { ExpenseCatagoryResponse } from '../responses/expense.response'
+import { Type } from 'class-transformer'
+import { IsNotEmpty, IsOptional, ValidateNested } from 'class-validator'
 import { PaymentCategory } from 'src/shared/enums/expense.enum'
+
+export class ExpenseCatagoryRequest {
+  @IsNotEmpty()
+  type: number
+
+  @IsNotEmpty()
+  amount: number
+}
 
 export class ExpenseRequest {
   @IsNotEmpty()
@@ -16,7 +24,9 @@ export class ExpenseRequest {
   section: PaymentCategory
 
   @IsNotEmpty()
-  categorys: [ExpenseCatagoryResponse]
+  @Type(() => ExpenseCatagoryRequest)
+  @ValidateNested()
+  categorys: ExpenseCatagoryRequest[]
 
   @IsNotEmpty()
   price: number
