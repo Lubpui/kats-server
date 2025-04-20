@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common'
 import { BookingsService } from './bookings.service'
 import { BookingRequest } from './requests/booking.request'
-import { BookingResponse } from './responses/booking.reponse'
+import { BookingResponse } from './responses/booking.response'
 import { QueryPagination } from 'src/shared/types/queryPagination'
 
 @Controller('bookings')

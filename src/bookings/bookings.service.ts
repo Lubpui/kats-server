@@ -7,7 +7,7 @@ import { Product, ProductDocument } from 'src/products/schemas/product.schema'
 import {
   BookingListResponse,
   BookingResponse,
-} from './responses/booking.reponse'
+} from './responses/booking.response'
 import { modelMapper } from 'src/utils/mapper.util'
 import { BookingStatus } from 'src/shared/enums/booking-status.enum'
 import { QueryPagination } from 'src/shared/types/queryPagination'

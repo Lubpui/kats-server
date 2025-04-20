@@ -3,7 +3,7 @@ import { Document, Schema as MongooseSchema, Types } from 'mongoose'
 import { ProductDetailResponse } from 'src/products/responses/product.response'
 import { Product } from 'src/products/schemas/product.schema'
 import { BookingStatus } from 'src/shared/enums/booking-status.enum'
-import { GuaranteeResponse } from '../responses/booking.reponse'
+import { GuaranteeResponse } from '../responses/booking.response'
 
 export type BookingDocument = Booking & Document
 
