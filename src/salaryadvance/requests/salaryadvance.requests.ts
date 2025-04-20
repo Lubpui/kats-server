@@ -7,7 +7,7 @@ export class SalaryAdvanceRequest {
   number: number
 
   @IsNotEmpty()
-  productId: string
+  employeeId: string
 
   @IsNotEmpty()
   ownerName: string

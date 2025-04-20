@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator'
+import { IsNotEmpty, IsOptional } from 'class-validator'
 import { ExpenseCatagoryResponse } from '../responses/expense.response'
 import { PaymentCategory } from 'src/shared/enums/expense.enum'
 
@@ -7,7 +7,7 @@ export class ExpenseRequest {
   number: number
 
   @IsNotEmpty()
-  productId: string
+  employeeId: string
 
   @IsNotEmpty()
   ownerName: string
@@ -29,4 +29,7 @@ export class ExpenseRequest {
 
   @IsNotEmpty()
   detel: string
+
+  @IsOptional()
+  slip?: string
 }

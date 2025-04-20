@@ -19,7 +19,7 @@ export class Expense {
     type: MongooseSchema.Types.ObjectId,
     ref: Employee.name,
   })
-  productId: Types.ObjectId
+  employeeId: Types.ObjectId
 
   @Prop({ required: true })
   ownerName: string

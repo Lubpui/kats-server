@@ -19,7 +19,7 @@ export class SalaryAdvance {
     type: MongooseSchema.Types.ObjectId,
     ref: Employee.name,
   })
-  productId: Types.ObjectId
+  employeeId: Types.ObjectId
 
   @Prop({ required: true })
   ownerName: string
@@ -41,6 +41,9 @@ export class SalaryAdvance {
 
   @Prop({ required: true })
   detel: string
+
+  @Prop()
+  slip: string
 }
 
 const SalaryAdvanceSchema = SchemaFactory.createForClass(SalaryAdvance)
