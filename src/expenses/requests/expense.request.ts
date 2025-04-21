@@ -34,8 +34,8 @@ export class ExpenseRequest {
   @IsNotEmpty()
   date: string
 
-  @IsNotEmpty()
-  datePrice: string
+  @IsOptional()
+  datePrice?: string
 
   @IsNotEmpty()
   detel: string

@@ -36,7 +36,7 @@ export class Expense {
   @Prop({ required: true })
   date: string
 
-  @Prop({ required: true })
+  @Prop()
   datePrice: string
 
   @Prop({ required: true })
