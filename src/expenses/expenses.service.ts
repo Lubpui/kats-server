@@ -8,7 +8,6 @@ import {
   ExpenseResponse,
 } from './responses/expense.response'
 import { modelMapper } from 'src/utils/mapper.util'
-import { CategoryType } from 'src/shared/enums/expense.enum'
 
 @Injectable()
 export class ExpensesService {
