@@ -1,5 +1,6 @@
 import { Expose, Type } from 'class-transformer'
 import { IsEnum } from 'class-validator'
+import { EmployeeResponse } from 'src/employees/responses/employee.response'
 import { CategoryType, PaymentCategory } from 'src/shared/enums/expense.enum'
 
 export class ExpenseCatagoryResponse {
@@ -17,6 +18,10 @@ export class ExpenseResponse {
 
   @Expose()
   number: number
+
+  @Expose()
+  @Type(() => EmployeeResponse)
+  employee: EmployeeResponse
 
   @Expose()
   employeeId: string
