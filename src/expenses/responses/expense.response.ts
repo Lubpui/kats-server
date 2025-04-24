@@ -1,6 +1,7 @@
 import { Expose, Type } from 'class-transformer'
 import { IsEnum } from 'class-validator'
 import { EmployeeResponse } from 'src/employees/responses/employee.response'
+import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
 import { CategoryType, PaymentCategory } from 'src/shared/enums/expense.enum'
 
 export class ExpenseCatagoryResponse {
@@ -50,6 +51,9 @@ export class ExpenseResponse {
 
   @Expose()
   slip: string
+
+  @Expose()
+  delete: DeleteStatus
 }
 
 export class ExpenseListResponse {

@@ -3,6 +3,7 @@ import { Document, Schema as MongooseSchema, Types } from 'mongoose'
 import { Employee } from 'src/employees/schemas/employee.schema'
 import { PaymentCategory } from 'src/shared/enums/expense.enum'
 import { ExpenseCatagoryResponse } from '../responses/expense.response'
+import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
 
 export type ExpenseDocument = Expense & Document
 
@@ -44,6 +45,9 @@ export class Expense {
 
   @Prop()
   slip: string
+
+  @Prop({ enum: DeleteStatus, default: DeleteStatus.ISNOTDELETE })
+  delete: number
 }
 
 const ExpenseSchema = SchemaFactory.createForClass(Expense)

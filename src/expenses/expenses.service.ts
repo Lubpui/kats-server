@@ -43,4 +43,26 @@ export class ExpensesService {
     const Expenses = await this.ExpenseModel.find().populate('employee')
     return modelMapper(ExpenseListResponse, { data: Expenses }).data
   }
+
+  async updateExpenseById(
+    expenseId: string,
+    updateExpenseRequest: ExpenseRequest,
+  ) {
+    const Expenses = await this.ExpenseModel.findByIdAndUpdate(expenseId, {
+      $set: { ...updateExpenseRequest },
+    })
+    return Expenses
+  }
+
+  async isDeleteExpenseById(
+    expenseId: string,
+    updateStatusDeleteRequest: ExpenseRequest,
+  ) {
+    const updateStatus = await this.updateExpenseById(
+      expenseId,
+      updateStatusDeleteRequest,
+    )
+
+    return updateStatus
+  }
 }
