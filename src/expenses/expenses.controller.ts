@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
 import { ExpensesService } from './expenses.service'
 import { ExpenseResponse } from './responses/expense.response'
 import { ExpenseRequest } from './requests/expense.request'
@@ -37,5 +37,10 @@ export class ExpensesController {
       expenseId,
       updateStatusDeleteRequest,
     )
+  }
+
+  @Delete(':expenseId')
+  deleteExpenseById(@Param('expenseId') expenseId: string) {
+    return this.expensesService.deleteExpenseById(expenseId)
   }
 }

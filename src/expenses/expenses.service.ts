@@ -65,4 +65,9 @@ export class ExpensesService {
 
     return updateStatus
   }
+
+  async deleteExpenseById(expenseId: string) {
+    const expense = await this.ExpenseModel.findByIdAndDelete(expenseId)
+    return expense
+  }
 }
