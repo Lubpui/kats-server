@@ -44,6 +44,12 @@ export class ExpensesService {
     return modelMapper(ExpenseListResponse, { data: Expenses }).data
   }
 
+  async getExpenseById(expenseId: string): Promise<ExpenseResponse> {
+    const Expense =
+      await this.ExpenseModel.findById(expenseId).populate('employee')
+    return modelMapper(ExpenseResponse, Expense)
+  }
+
   async updateExpenseById(
     expenseId: string,
     updateExpenseRequest: ExpenseRequest,
@@ -52,6 +58,18 @@ export class ExpensesService {
       $set: { ...updateExpenseRequest },
     })
     return Expenses
+  }
+
+  async approveExpenseById(
+    expenseId: string,
+    approveExpenseRequest: ExpenseRequest,
+  ) {
+    const approve = await this.updateExpenseById(
+      expenseId,
+      approveExpenseRequest,
+    )
+
+    return approve
   }
 
   async isDeleteExpenseById(

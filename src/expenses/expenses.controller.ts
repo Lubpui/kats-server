@@ -17,6 +17,13 @@ export class ExpensesController {
     return this.expensesService.getAllExpenses()
   }
 
+  @Get(':expenseId')
+  getExpenseById(
+    @Param('expenseId') expenseId: string,
+  ): Promise<ExpenseResponse> {
+    return this.expensesService.getExpenseById(expenseId)
+  }
+
   @Put(':expenseId')
   updateExpenseById(
     @Param('expenseId') expenseId: string,
@@ -25,6 +32,17 @@ export class ExpensesController {
     return this.expensesService.updateExpenseById(
       expenseId,
       updateBookingRequest,
+    )
+  }
+
+  @Post('approve/:expenseId')
+  approveExpenseById(
+    @Param('expenseId') expenseId: string,
+    @Body() approveExpenseRequest: ExpenseRequest,
+  ) {
+    return this.expensesService.isDeleteExpenseById(
+      expenseId,
+      approveExpenseRequest,
     )
   }
 

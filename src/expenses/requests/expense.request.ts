@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer'
 import { IsNotEmpty, IsOptional, ValidateNested } from 'class-validator'
 import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
-import { PaymentCategory } from 'src/shared/enums/expense.enum'
+import { ExpenseStatus, PaymentCategory } from 'src/shared/enums/expense.enum'
 
 export class ExpenseCatagoryRequest {
   @IsNotEmpty()
@@ -46,4 +46,7 @@ export class ExpenseRequest {
 
   @IsNotEmpty()
   delete: DeleteStatus
+
+  @IsNotEmpty()
+  status: ExpenseStatus
 }

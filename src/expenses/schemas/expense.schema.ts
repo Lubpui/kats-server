@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document, Schema as MongooseSchema, Types } from 'mongoose'
 import { Employee } from 'src/employees/schemas/employee.schema'
-import { PaymentCategory } from 'src/shared/enums/expense.enum'
+import { ExpenseStatus, PaymentCategory } from 'src/shared/enums/expense.enum'
 import { ExpenseCatagoryResponse } from '../responses/expense.response'
 import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
 
@@ -48,6 +48,9 @@ export class Expense {
 
   @Prop({ enum: DeleteStatus, default: DeleteStatus.ISNOTDELETE })
   delete: number
+
+  @Prop({ enum: ExpenseStatus, default: ExpenseStatus.PENDING })
+  status: number
 }
 
 const ExpenseSchema = SchemaFactory.createForClass(Expense)

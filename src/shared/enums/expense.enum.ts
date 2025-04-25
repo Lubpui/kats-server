@@ -3,6 +3,11 @@ export enum PaymentCategory {
   SALARY = 1,
 }
 
+export enum ExpenseStatus {
+  PENDING = 0,
+  APPROVE = 1,
+}
+
 export enum CategoryType {
   FUEL = 0, // น้ำมัน
   TRAVEL = 1, // เดินทาง
