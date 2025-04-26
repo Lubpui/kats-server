@@ -6,6 +6,7 @@ export enum PaymentCategory {
 export enum ExpenseStatus {
   PENDING = 0,
   APPROVE = 1,
+  CANCEL = 2,
 }
 
 export enum CategoryType {
