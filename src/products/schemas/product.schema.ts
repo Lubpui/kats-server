@@ -3,6 +3,7 @@ import { Document, Schema as MongooseSchema, Types } from 'mongoose'
 import { ProductType } from 'src/shared/enums/product.enum'
 import { ProductCatagory } from './product-catagory.schema'
 import { ProductDetailResponse } from '../responses/product.response'
+import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
 
 export type ProductDocument = Product & Document
 
@@ -29,6 +30,9 @@ export class Product {
 
   @Prop({ enum: ProductType, default: ProductType.KATS })
   productType: number
+
+  @Prop({ enum: DeleteStatus, default: DeleteStatus.ISNOTDELETE })
+  delete: number
 }
 
 const ProductSchema = SchemaFactory.createForClass(Product)

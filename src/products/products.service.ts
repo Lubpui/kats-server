@@ -73,4 +73,74 @@ export class ProductsService {
     const catagories = await this.productCatagoryModel.find()
     return modelMapper(ProductCatagoryListResponse, { data: catagories }).data
   }
+
+  async getProductById(productId: string): Promise<ProductResponse> {
+    const Product = await this.productModel
+      .findById(productId)
+      .populate('catagory')
+    return modelMapper(ProductResponse, Product)
+  }
+
+  async getCatagoryById(catagoryId: string): Promise<ProductCatagoryResponse> {
+    const catagorie = await this.productCatagoryModel.findById(catagoryId)
+    return modelMapper(ProductCatagoryResponse, catagorie)
+  }
+
+  async updateProductById(
+    productId: string,
+    updateProductRequest: ProductRequest,
+  ) {
+    const Expenses = await this.productModel.findByIdAndUpdate(productId, {
+      $set: { ...updateProductRequest },
+    })
+    return Expenses
+  }
+
+  async updateCatagoryById(
+    catagoryId: string,
+    updateCatagoryRequest: ProductCatagoryRequest,
+  ) {
+    const catagorie = await this.productCatagoryModel.findByIdAndUpdate(
+      catagoryId,
+      {
+        $set: { ...updateCatagoryRequest },
+      },
+    )
+    return catagorie
+  }
+
+  async isDeleteProductById(
+    productId: string,
+    updateStatusDeleteRequest: ProductRequest,
+  ) {
+    const updateStatus = await this.updateProductById(
+      productId,
+      updateStatusDeleteRequest,
+    )
+
+    return updateStatus
+  }
+
+  async isDeleteCatagoryById(
+    catagoryId: string,
+    updateStatusDeleteRequest: ProductCatagoryRequest,
+  ) {
+    const updateStatus = await this.updateCatagoryById(
+      catagoryId,
+      updateStatusDeleteRequest,
+    )
+
+    return updateStatus
+  }
+
+  async deleteProductById(productId: string) {
+    const product = await this.productModel.findByIdAndDelete(productId)
+    return product
+  }
+
+  async deleteCatagoryById(catagoryId: string) {
+    const catagory =
+      await this.productCatagoryModel.findByIdAndDelete(catagoryId)
+    return catagory
+  }
 }

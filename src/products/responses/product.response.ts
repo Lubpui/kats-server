@@ -2,6 +2,7 @@ import { Expose, Type } from 'class-transformer'
 import { IsEnum } from 'class-validator'
 import { ProductType } from 'src/shared/enums/product.enum'
 import { ProductCatagoryResponse } from './product-catagory.response'
+import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
 
 export class ProductDetailResponse {
   @Expose()
@@ -40,6 +41,10 @@ export class ProductResponse {
   @Expose()
   @IsEnum(ProductType)
   productType: ProductType
+
+  @Expose()
+  @IsEnum(DeleteStatus)
+  delete: DeleteStatus
 }
 
 export class ProductListResponse {

@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document } from 'mongoose'
+import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
 
 export type ProductCatagoryDocument = ProductCatagory & Document
 
@@ -13,6 +14,9 @@ export class ProductCatagory {
 
   @Prop({ required: true })
   code: string
+
+  @Prop({ enum: DeleteStatus, default: DeleteStatus.ISNOTDELETE })
+  delete: number
 }
 
 const ProductCatagorySchema = SchemaFactory.createForClass(ProductCatagory)
