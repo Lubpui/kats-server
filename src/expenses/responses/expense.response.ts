@@ -42,9 +42,6 @@ export class ExpenseResponse {
   categorys: ExpenseCatagoryResponse[]
 
   @Expose()
-  price: number
-
-  @Expose()
   date: string
 
   @Expose()

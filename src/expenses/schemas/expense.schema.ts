@@ -32,9 +32,6 @@ export class Expense {
   categorys: [ExpenseCatagoryResponse]
 
   @Prop({ required: true })
-  price: number
-
-  @Prop({ required: true })
   date: string
 
   @Prop()

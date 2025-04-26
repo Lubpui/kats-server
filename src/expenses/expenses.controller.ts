@@ -40,7 +40,18 @@ export class ExpensesController {
     @Param('expenseId') expenseId: string,
     @Body() approveExpenseRequest: ExpenseRequest,
   ) {
-    return this.expensesService.isDeleteExpenseById(
+    return this.expensesService.approveExpenseById(
+      expenseId,
+      approveExpenseRequest,
+    )
+  }
+
+  @Post('cencel/:expenseId')
+  cencelExpenseById(
+    @Param('expenseId') expenseId: string,
+    @Body() approveExpenseRequest: ExpenseRequest,
+  ) {
+    return this.expensesService.cencelExpenseById(
       expenseId,
       approveExpenseRequest,
     )

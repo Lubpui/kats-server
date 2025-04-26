@@ -30,9 +30,6 @@ export class ExpenseRequest {
   categorys: ExpenseCatagoryRequest[]
 
   @IsNotEmpty()
-  price: number
-
-  @IsNotEmpty()
   date: string
 
   @IsOptional()

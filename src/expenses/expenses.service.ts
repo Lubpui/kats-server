@@ -72,6 +72,18 @@ export class ExpensesService {
     return approve
   }
 
+  async cencelExpenseById(
+    expenseId: string,
+    approveExpenseRequest: ExpenseRequest,
+  ) {
+    const approve = await this.updateExpenseById(
+      expenseId,
+      approveExpenseRequest,
+    )
+
+    return approve
+  }
+
   async isDeleteExpenseById(
     expenseId: string,
     updateStatusDeleteRequest: ExpenseRequest,
