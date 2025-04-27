@@ -5,6 +5,7 @@ import {
   ProductResponse,
 } from 'src/products/responses/product.response'
 import { BookingStatus } from 'src/shared/enums/booking-status.enum'
+import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
 
 export class GuaranteeResponse {
   @Expose()
@@ -86,6 +87,10 @@ export class BookingResponse {
 
   @Expose()
   slip: string
+
+  @Expose()
+  @IsEnum(DeleteStatus)
+  delete: DeleteStatus
 }
 
 export class BookingListResponse {

@@ -4,6 +4,7 @@ import { ProductDetailResponse } from 'src/products/responses/product.response'
 import { Product } from 'src/products/schemas/product.schema'
 import { BookingStatus } from 'src/shared/enums/booking-status.enum'
 import { GuaranteeResponse } from '../responses/booking.response'
+import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
 
 export type BookingDocument = Booking & Document
 
@@ -63,6 +64,9 @@ export class Booking {
 
   @Prop()
   slip: string
+
+  @Prop({ enum: DeleteStatus, default: DeleteStatus.ISNOTDELETE })
+  delete: number
 }
 
 const BookingSchema = SchemaFactory.createForClass(Booking)

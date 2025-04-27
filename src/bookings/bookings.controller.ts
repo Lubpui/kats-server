@@ -63,6 +63,17 @@ export class BookingsController {
     )
   }
 
+  @Post('selectDelete/:bookingId')
+  isDeleteBookingById(
+    @Param('bookingId') bookingId: string,
+    @Body() updateStatusDeleteRequest: BookingRequest,
+  ) {
+    return this.bookingsService.isDeleteBookingById(
+      bookingId,
+      updateStatusDeleteRequest,
+    )
+  }
+
   @Delete(':bookingId')
   deleteBookingById(@Param('bookingId') bookingId: string) {
     return this.bookingsService.deleteBookingById(bookingId)

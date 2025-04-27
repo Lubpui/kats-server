@@ -208,6 +208,18 @@ export class BookingsService {
     return approve
   }
 
+  async isDeleteBookingById(
+    bookingId: string,
+    updateStatusDeleteRequest: BookingRequest,
+  ) {
+    const updateStatus = await this.updateBookingById(
+      bookingId,
+      updateStatusDeleteRequest,
+    )
+
+    return updateStatus
+  }
+
   async deleteBookingById(bookingId: string) {
     const booking = await this.bookingModel.findByIdAndDelete(bookingId)
     return booking
