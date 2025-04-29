@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Expense, ExpenseDocument } from './schemas/expense.schema'
 import { Model, Types } from 'mongoose'
@@ -8,45 +8,65 @@ import {
   ExpenseResponse,
 } from './responses/expense.response'
 import { modelMapper } from 'src/utils/mapper.util'
+import { DocumentCountService } from 'src/document-count/document-count.service'
+import {
+  DocumentCount,
+  DocumentCountDocument,
+} from 'src/document-count/schemas/document-count.schema'
 
 @Injectable()
 export class ExpensesService {
   constructor(
     @InjectModel(Expense.name)
-    private readonly ExpenseModel: Model<ExpenseDocument>,
+    private readonly expenseModel: Model<ExpenseDocument>,
+    @InjectModel(DocumentCount.name)
+    private readonly documentCountModel: Model<DocumentCountDocument>,
+    private readonly documentCountService: DocumentCountService,
   ) {}
 
   async createExpense(
     createExpenseRequest: ExpenseRequest,
   ): Promise<ExpenseResponse> {
+    const session = await this.documentCountModel.startSession()
+    session.startTransaction()
+
     try {
       const { employeeId } = createExpenseRequest
 
-      const newEmployee = {
+      const code = await this.documentCountService.getExpenseCode(session)
+
+      const newExpense = {
         ...createExpenseRequest,
         employeeId: new Types.ObjectId(employeeId),
+        codeId: code,
       }
 
-      const createdEmployee = await new this.ExpenseModel(newEmployee).save()
+      const createdEmployee = await new this.expenseModel(newExpense).save()
 
-      const expensesResponse = await this.ExpenseModel.findById(
-        createdEmployee._id,
-      ).populate('employee')
+      const expensesResponse = await this.expenseModel
+        .findById(createdEmployee._id)
+        .populate('employee')
 
+      await session.commitTransaction()
       return modelMapper(ExpenseResponse, expensesResponse)
     } catch (error) {
+      console.log(error)
+      await session.abortTransaction() // rollbackASDF
       throw error
+    } finally {
+      session.endSession()
     }
   }
 
   async getAllExpenses(): Promise<ExpenseResponse[]> {
-    const Expenses = await this.ExpenseModel.find().populate('employee')
+    const Expenses = await this.expenseModel.find().populate('employee')
     return modelMapper(ExpenseListResponse, { data: Expenses }).data
   }
 
   async getExpenseById(expenseId: string): Promise<ExpenseResponse> {
-    const Expense =
-      await this.ExpenseModel.findById(expenseId).populate('employee')
+    const Expense = await this.expenseModel
+      .findById(expenseId)
+      .populate('employee')
     return modelMapper(ExpenseResponse, Expense)
   }
 
@@ -54,7 +74,7 @@ export class ExpensesService {
     expenseId: string,
     updateExpenseRequest: ExpenseRequest,
   ) {
-    const Expenses = await this.ExpenseModel.findByIdAndUpdate(expenseId, {
+    const Expenses = await this.expenseModel.findByIdAndUpdate(expenseId, {
       $set: { ...updateExpenseRequest },
     })
     return Expenses
@@ -97,7 +117,7 @@ export class ExpensesService {
   }
 
   async deleteExpenseById(expenseId: string) {
-    const expense = await this.ExpenseModel.findByIdAndDelete(expenseId)
+    const expense = await this.expenseModel.findByIdAndDelete(expenseId)
     return expense
   }
 }

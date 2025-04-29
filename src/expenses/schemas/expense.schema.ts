@@ -13,7 +13,7 @@ export type ExpenseDocument = Expense & Document
 @Schema({ timestamps: true, toJSON: { virtuals: true } })
 export class Expense {
   @Prop({ required: true })
-  number: number
+  codeId: string
 
   @Prop({
     required: true,

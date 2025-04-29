@@ -6,6 +6,9 @@ import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
 
 export class BookingRequest {
   @IsNotEmpty()
+  codeId: number
+
+  @IsNotEmpty()
   number: string
 
   @IsNotEmpty()

@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { EmployeesModule } from './employees/employees.module'
 import { BookingsModule } from './bookings/bookings.module'
 import { ExpensesModule } from './expenses/expenses.module'
+import { DocumentCountModule } from './document-count/document-count.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ExpensesModule } from './expenses/expenses.module'
     EmployeesModule,
     BookingsModule,
     ExpensesModule,
+    DocumentCountModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -15,18 +15,33 @@ import {
   ProductCatagory,
   ProductCatagoryDocument,
 } from 'src/products/schemas/product-catagory.schema'
+import { DocumentCountService } from 'src/document-count/document-count.service'
+import {
+  DocumentCount,
+  DocumentCountDocument,
+} from 'src/document-count/schemas/document-count.schema'
 
 @Injectable()
 export class BookingsService {
   constructor(
     @InjectModel(Booking.name) private bookingModel: Model<BookingDocument>,
     @InjectModel(Product.name) private productModel: Model<ProductDocument>,
+
     @InjectModel(ProductCatagory.name)
     private catagoryModel: Model<ProductCatagoryDocument>,
+
+    @InjectModel(DocumentCount.name)
+    private readonly documentCountModel: Model<DocumentCountDocument>,
+    private readonly documentCountService: DocumentCountService,
   ) {}
 
   async createBooking(createBookingRequest: BookingRequest) {
+    const session = await this.documentCountModel.startSession()
+    session.startTransaction()
+
     try {
+      const code = await this.documentCountService.getExpenseCode(session)
+
       const findedProduct = await this.productModel.findById(
         createBookingRequest.productId,
       )
@@ -36,16 +51,21 @@ export class BookingsService {
       const newCreateBookingRequest = {
         ...createBookingRequest,
         productId: findedProduct._id,
+        codeId: code,
       }
 
       const createdBooking = await new this.bookingModel(
         newCreateBookingRequest,
       ).save()
 
+      await session.commitTransaction()
       return createdBooking
     } catch (error) {
       console.log(error)
+      await session.abortTransaction() // rollbackASDF
       throw error
+    } finally {
+      session.endSession()
     }
   }
 

@@ -14,6 +14,9 @@ export type BookingDocument = Booking & Document
 @Schema({ timestamps: true, toJSON: { virtuals: true } })
 export class Booking {
   @Prop({ required: true })
+  codeId: string
+
+  @Prop({ required: true })
   name: string
 
   @Prop({ required: true })

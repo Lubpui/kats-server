@@ -35,6 +35,9 @@ export class BookingResponse {
   _id: string
 
   @Expose()
+  codeId: number
+
+  @Expose()
   number: string
 
   @Expose()
