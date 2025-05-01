@@ -13,7 +13,7 @@ export class ExpenseCatagoryRequest {
 
 export class ExpenseRequest {
   @IsNotEmpty()
-  number: number
+  codeId: number
 
   @IsNotEmpty()
   employeeId: string

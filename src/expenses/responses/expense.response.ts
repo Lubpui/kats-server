@@ -22,7 +22,7 @@ export class ExpenseResponse {
   _id: string
 
   @Expose()
-  number: number
+  codeId: number
 
   @Expose()
   @Type(() => EmployeeResponse)
