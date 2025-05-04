@@ -4,6 +4,8 @@ import { ProductCatagoryResponse } from './responses/product-catagory.response'
 import { ProductCatagoryRequest } from './requests/product-catagory.request'
 import { ProductRequest } from './requests/product.request'
 import { ProductResponse } from './responses/product.response'
+import { TypeProductResponse } from './responses/product-typeproduct.response'
+import { TypeProductRequest } from './requests/product-typeproduct.request'
 
 @Controller('products')
 export class ProductsController {
@@ -23,6 +25,13 @@ export class ProductsController {
     return this.productsService.createCatagory(createCatagoryResquest)
   }
 
+  @Post('typeProduct')
+  createTypeProduct(
+    @Body() createTypeProductResquest: TypeProductRequest,
+  ): Promise<TypeProductResponse> {
+    return this.productsService.createTypeProduct(createTypeProductResquest)
+  }
+
   @Get()
   getAllProducts(): Promise<ProductResponse[]> {
     return this.productsService.getAllProducts()
@@ -31,6 +40,11 @@ export class ProductsController {
   @Get('catagories')
   getAllCatagories(): Promise<ProductCatagoryResponse[]> {
     return this.productsService.getAllCatagories()
+  }
+
+  @Get('typeProduct')
+  getAllTypeProduct(): Promise<TypeProductResponse[]> {
+    return this.productsService.getAllTypeProduct()
   }
 
   @Get(':productId')
@@ -69,6 +83,17 @@ export class ProductsController {
     )
   }
 
+  @Put('typeProduct/update/:typeProductId')
+  updateTypeProductById(
+    @Param('typeProductId') typeProductId: string,
+    @Body() updateTypeProductRequest: TypeProductRequest,
+  ) {
+    return this.productsService.updateTypeProductById(
+      typeProductId,
+      updateTypeProductRequest,
+    )
+  }
+
   @Post('selectDelete/:productId')
   isDeleteProductById(
     @Param('productId') productId: string,
@@ -91,6 +116,17 @@ export class ProductsController {
     )
   }
 
+  @Post('typeProduct/selectDelete/:typeProductId')
+  isDeleteTypeProductById(
+    @Param('typeProductId') typeProductId: string,
+    @Body() updateStatusDeleteRequest: TypeProductRequest,
+  ) {
+    return this.productsService.isDeleteTypeProductById(
+      typeProductId,
+      updateStatusDeleteRequest,
+    )
+  }
+
   @Delete(':productId')
   deleteProductById(@Param('productId') productId: string) {
     return this.productsService.deleteProductById(productId)
@@ -99,5 +135,10 @@ export class ProductsController {
   @Delete(':catagoryId')
   deleteCatagoryById(@Param('catagoryId') catagoryId: string) {
     return this.productsService.deleteCatagoryById(catagoryId)
+  }
+
+  @Delete(':typeProductId')
+  deleteTypeProductById(@Param('typeProductId') typeProductId: string) {
+    return this.productsService.deleteTypeProductById(typeProductId)
   }
 }

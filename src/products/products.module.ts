@@ -7,10 +7,15 @@ import {
   ProductCatagory,
   ProductCatagorySchema,
 } from './schemas/product-catagory.schema'
+import {
+  TypeProduct,
+  TypeProductSchema,
+} from './schemas/product-typeproduct.schema'
 
 export const ProductsMongoose = MongooseModule.forFeature([
   { name: Product.name, schema: ProductSchema },
   { name: ProductCatagory.name, schema: ProductCatagorySchema },
+  { name: TypeProduct.name, schema: TypeProductSchema },
 ])
 
 @Module({

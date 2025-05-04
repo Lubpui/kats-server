@@ -17,10 +17,18 @@ import {
   ProductResponse,
 } from './responses/product.response'
 import { ProductRequest } from './requests/product.request'
+import { TypeProductRequest } from './requests/product-typeproduct.request'
+import { TypeProductResponse } from './responses/product-typeproduct.response'
+import {
+  TypeProduct,
+  TypeProductDocument,
+} from './schemas/product-typeproduct.schema'
 
 @Injectable()
 export class ProductsService {
   constructor(
+    @InjectModel(TypeProduct.name)
+    private readonly productTypeModel: Model<TypeProductDocument>,
     @InjectModel(ProductCatagory.name)
     private readonly productCatagoryModel: Model<ProductCatagoryDocument>,
     @InjectModel(Product.name)
@@ -64,6 +72,20 @@ export class ProductsService {
     }
   }
 
+  async createTypeProduct(
+    createTypeProductResquest: TypeProductRequest,
+  ): Promise<TypeProductResponse> {
+    try {
+      const createdTypeProduct = await new this.productTypeModel(
+        createTypeProductResquest,
+      ).save()
+
+      return modelMapper(TypeProductResponse, createdTypeProduct)
+    } catch (error) {
+      throw error
+    }
+  }
+
   async getAllProducts(): Promise<ProductResponse[]> {
     const products = await this.productModel.find().populate('catagory')
     return modelMapper(ProductListResponse, { data: products }).data
@@ -72,6 +94,11 @@ export class ProductsService {
   async getAllCatagories(): Promise<ProductCatagoryResponse[]> {
     const catagories = await this.productCatagoryModel.find()
     return modelMapper(ProductCatagoryListResponse, { data: catagories }).data
+  }
+
+  async getAllTypeProduct(): Promise<TypeProductResponse[]> {
+    const productTypes = await this.productTypeModel.find()
+    return modelMapper(ProductCatagoryListResponse, { data: productTypes }).data
   }
 
   async getProductById(productId: string): Promise<ProductResponse> {
@@ -109,6 +136,19 @@ export class ProductsService {
     return catagorie
   }
 
+  async updateTypeProductById(
+    typeProductId: string,
+    updateTypeProductRequest: TypeProductRequest,
+  ) {
+    const typeProduct = await this.productTypeModel.findByIdAndUpdate(
+      typeProductId,
+      {
+        $set: { ...updateTypeProductRequest },
+      },
+    )
+    return typeProduct
+  }
+
   async isDeleteProductById(
     productId: string,
     updateStatusDeleteRequest: ProductRequest,
@@ -133,6 +173,18 @@ export class ProductsService {
     return updateStatus
   }
 
+  async isDeleteTypeProductById(
+    typeProductId: string,
+    updateStatusDeleteRequest: TypeProductRequest,
+  ) {
+    const updateStatus = await this.updateTypeProductById(
+      typeProductId,
+      updateStatusDeleteRequest,
+    )
+
+    return updateStatus
+  }
+
   async deleteProductById(productId: string) {
     const product = await this.productModel.findByIdAndDelete(productId)
     return product
@@ -142,5 +194,11 @@ export class ProductsService {
     const catagory =
       await this.productCatagoryModel.findByIdAndDelete(catagoryId)
     return catagory
+  }
+
+  async deleteTypeProductById(typeProductId: string) {
+    const typeProduct =
+      await this.productTypeModel.findByIdAndDelete(typeProductId)
+    return typeProduct
   }
 }
