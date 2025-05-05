@@ -1,6 +1,5 @@
 import { IsEnum, IsNotEmpty } from 'class-validator'
 import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
-import { ProductType } from 'src/shared/enums/product.enum'
 
 export class ProductDetailRequest {
   @IsNotEmpty()
@@ -21,8 +20,7 @@ export class ProductRequest {
   productDetails: ProductDetailRequest[]
 
   @IsNotEmpty()
-  @IsEnum(ProductType)
-  productType: ProductType
+  typeProductId: string
 
   @IsNotEmpty()
   @IsEnum(DeleteStatus)
