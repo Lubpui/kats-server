@@ -20,6 +20,10 @@ import {
   DocumentCount,
   DocumentCountDocument,
 } from 'src/document-count/schemas/document-count.schema'
+import {
+  TypeProduct,
+  TypeProductDocument,
+} from 'src/products/schemas/product-typeproduct.schema'
 
 @Injectable()
 export class BookingsService {
@@ -29,6 +33,9 @@ export class BookingsService {
 
     @InjectModel(ProductCatagory.name)
     private catagoryModel: Model<ProductCatagoryDocument>,
+
+    @InjectModel(TypeProduct.name)
+    private typeProductModel: Model<TypeProductDocument>,
 
     @InjectModel(DocumentCount.name)
     private readonly documentCountModel: Model<DocumentCountDocument>,
@@ -72,9 +79,14 @@ export class BookingsService {
   async getAllBookings(): Promise<BookingResponse[]> {
     const bookingRes = await this.bookingModel.find().populate({
       path: 'product',
-      populate: {
-        path: 'catagory',
-      },
+      populate: [
+        {
+          path: 'catagory',
+        },
+        {
+          path: 'typeProduct',
+        },
+      ],
     })
 
     const bookings = modelMapper(BookingListResponse, { data: bookingRes }).data
@@ -152,6 +164,26 @@ export class BookingsService {
                   localField: 'catagoryId',
                   foreignField: '_id',
                   as: 'catagory',
+                },
+              },
+              {
+                $unwind: {
+                  path: '$catagory',
+                  preserveNullAndEmptyArrays: true,
+                },
+              },
+              {
+                $lookup: {
+                  from: this.typeProductModel.collection.name,
+                  localField: 'typeProductId',
+                  foreignField: '_id',
+                  as: 'typeProduct',
+                },
+              },
+              {
+                $unwind: {
+                  path: '$typeProduct',
+                  preserveNullAndEmptyArrays: true,
                 },
               },
             ],

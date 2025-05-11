@@ -87,7 +87,10 @@ export class ProductsService {
   }
 
   async getAllProducts(): Promise<ProductResponse[]> {
-    const products = await this.productModel.find().populate('catagory')
+    const products = await this.productModel
+      .find()
+      .populate('catagory')
+      .populate('typeProduct')
     return modelMapper(ProductListResponse, { data: products }).data
   }
 

@@ -13,10 +13,15 @@ import {
   DocumentCountSchema,
 } from 'src/document-count/schemas/document-count.schema'
 import { DocumentCountModule } from 'src/document-count/document-count.module'
+import {
+  TypeProduct,
+  TypeProductSchema,
+} from 'src/products/schemas/product-typeproduct.schema'
 
 export const ProductsMongoose = MongooseModule.forFeature([
   { name: Product.name, schema: ProductSchema },
   { name: ProductCatagory.name, schema: ProductCatagorySchema },
+  { name: TypeProduct.name, schema: TypeProductSchema },
   { name: Booking.name, schema: BookingSchema },
   { name: DocumentCount.name, schema: DocumentCountSchema },
 ])
