@@ -290,6 +290,7 @@ export class BookingsService {
           isControlArm: true,
           isChassis: true,
           isUnderbody: true,
+          serviceTime: updateBookingRequest.bookTime,
         }
 
         updateBookingRequest.guarantees = [initialGuarantee]
