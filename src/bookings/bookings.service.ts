@@ -7,6 +7,7 @@ import { Product, ProductDocument } from 'src/products/schemas/product.schema'
 import {
   BookingListResponse,
   BookingResponse,
+  GuaranteeResponse,
 } from './responses/booking.response'
 import { modelMapper } from 'src/utils/mapper.util'
 import { BookingStatus } from 'src/shared/enums/booking-status.enum'
@@ -24,6 +25,7 @@ import {
   TypeProduct,
   TypeProductDocument,
 } from 'src/products/schemas/product-typeproduct.schema'
+import dayjs from 'dayjs'
 
 @Injectable()
 export class BookingsService {
@@ -248,14 +250,78 @@ export class BookingsService {
     return booking
   }
 
+  async updateGuaranteeByBookingId(
+    bookingId: string,
+    updateBookingRequest: BookingRequest,
+  ) {
+    try {
+      const isAllGuaranteesConpleted = updateBookingRequest.guarantees?.every(
+        (item) => item.status === BookingStatus.COMPLETED,
+      )
+
+      const bookingStatus = isAllGuaranteesConpleted
+        ? BookingStatus.COMPLETED
+        : BookingStatus.CHECKING
+
+      const updatedBooking = await this.updateBookingById(bookingId, {
+        ...updateBookingRequest,
+        status: bookingStatus,
+      })
+      return updatedBooking
+    } catch (error) {
+      throw error
+    }
+  }
+
   async approveBookingById(
     bookingId: string,
     updateBookingRequest: BookingRequest,
   ) {
-    const approve = await this.updateBookingById(
-      bookingId,
-      updateBookingRequest,
+    if (updateBookingRequest.status === BookingStatus.COMPLETED) {
+      const isGuaranteePass = !updateBookingRequest?.guarantees?.length
+
+      if (isGuaranteePass) {
+        const initialGuarantee: GuaranteeResponse = {
+          serviceNo: 1,
+          serviceDate: dayjs(updateBookingRequest.bookDate).toISOString(),
+          status: BookingStatus.COMPLETED,
+          isBeam: true,
+          isWheelArch: true,
+          isControlArm: true,
+          isChassis: true,
+          isUnderbody: true,
+        }
+
+        updateBookingRequest.guarantees = [initialGuarantee]
+      }
+    } else if (updateBookingRequest.status === BookingStatus.CHECKING) {
+      const completedGuarantees = updateBookingRequest.guarantees?.filter(
+        (item) => item.status === BookingStatus.COMPLETED,
+      )
+
+      const currentGuaranteeIndex = completedGuarantees?.length ?? 0
+
+      if (
+        updateBookingRequest.guarantees &&
+        updateBookingRequest.guarantees[currentGuaranteeIndex]
+      ) {
+        updateBookingRequest.guarantees[currentGuaranteeIndex].status =
+          BookingStatus.COMPLETED
+      }
+    }
+
+    const isAllGuaranteesConpleted = updateBookingRequest.guarantees?.every(
+      (item) => item.status === BookingStatus.COMPLETED,
     )
+
+    const bookingStatus = isAllGuaranteesConpleted
+      ? BookingStatus.COMPLETED
+      : BookingStatus.CHECKING
+
+    const approve = await this.updateBookingById(bookingId, {
+      ...updateBookingRequest,
+      status: bookingStatus,
+    })
 
     return approve
   }

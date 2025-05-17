@@ -15,6 +15,9 @@ export class GuaranteeResponse {
   serviceDate: string // วันที่เข้ารับบริการ
 
   @Expose()
+  status: BookingStatus // วันที่เข้ารับบริการ
+
+  @Expose()
   isBeam: boolean // คาน
 
   @Expose()

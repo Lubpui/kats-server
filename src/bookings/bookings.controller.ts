@@ -63,6 +63,17 @@ export class BookingsController {
     )
   }
 
+  @Put('updateGuarantee/:bookingId')
+  updateGuaranteeByBookingId(
+    @Param('bookingId') bookingId: string,
+    @Body() updateBookingRequest: BookingRequest,
+  ) {
+    return this.bookingsService.updateGuaranteeByBookingId(
+      bookingId,
+      updateBookingRequest,
+    )
+  }
+
   @Post('selectDelete/:bookingId')
   isDeleteBookingById(
     @Param('bookingId') bookingId: string,
