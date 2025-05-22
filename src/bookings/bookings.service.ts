@@ -49,7 +49,7 @@ export class BookingsService {
     session.startTransaction()
 
     try {
-      const code = await this.documentCountService.getExpenseCode(session)
+      const code = await this.documentCountService.getBookingCode(session)
 
       const findedProduct = await this.productModel.findById(
         createBookingRequest.productId,
@@ -322,6 +322,18 @@ export class BookingsService {
     const approve = await this.updateBookingById(bookingId, {
       ...updateBookingRequest,
       status: bookingStatus,
+    })
+
+    return approve
+  }
+
+  async cancelBookingById(
+    bookingId: string,
+    updateBookingRequest: BookingRequest,
+  ) {
+    const approve = await this.updateBookingById(bookingId, {
+      ...updateBookingRequest,
+      status: BookingStatus.CANCELED,
     })
 
     return approve

@@ -33,6 +33,17 @@ export class BookingsController {
     )
   }
 
+  @Post('cancel/:bookingId')
+  cancelBookingById(
+    @Param('bookingId') bookingId: string,
+    @Body() updateBookingRequest: BookingRequest,
+  ) {
+    return this.bookingsService.cancelBookingById(
+      bookingId,
+      updateBookingRequest,
+    )
+  }
+
   @Get()
   getAllBookings(): Promise<BookingResponse[]> {
     return this.bookingsService.getAllBookings()

@@ -43,11 +43,11 @@ export class DocumentCountService {
     return expenseCode
   }
 
-  async getBookingCode() {
+  async getBookingCode(session: ClientSession) {
     const documentCount = await this.documentCountModel.findOneAndUpdate(
       {},
       { $inc: { bookingCount: 1 } },
-      { new: true },
+      { new: true, session },
     )
     if (!documentCount) throw new NotFoundException('ไม่พบ documentCount')
 
