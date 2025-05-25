@@ -127,17 +127,17 @@ export class ProductsController {
     )
   }
 
-  @Delete(':productId')
+  @Delete('DeleteProduct/:productId')
   deleteProductById(@Param('productId') productId: string) {
     return this.productsService.deleteProductById(productId)
   }
 
-  @Delete(':catagoryId')
+  @Delete('DeleteCatagory/:catagoryId')
   deleteCatagoryById(@Param('catagoryId') catagoryId: string) {
     return this.productsService.deleteCatagoryById(catagoryId)
   }
 
-  @Delete(':typeProductId')
+  @Delete('DeleteTypeProduct/:typeProductId')
   deleteTypeProductById(@Param('typeProductId') typeProductId: string) {
     return this.productsService.deleteTypeProductById(typeProductId)
   }
