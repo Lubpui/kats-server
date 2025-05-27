@@ -26,5 +26,3 @@ export class ProductRequest {
   @IsEnum(DeleteStatus)
   delete: DeleteStatus
 }
-
-export class CreateProductRequest extends ProductRequest {}

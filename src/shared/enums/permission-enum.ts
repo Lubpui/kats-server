@@ -11,4 +11,5 @@ export enum PermissionKey {
   SETTING = 9,
   COMPANY = 10,
   ROLE = 11,
+  TYPEPRODUCT = 12,
 }

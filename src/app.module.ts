@@ -8,6 +8,7 @@ import { EmployeesModule } from './employees/employees.module'
 import { BookingsModule } from './bookings/bookings.module'
 import { ExpensesModule } from './expenses/expenses.module'
 import { DocumentCountModule } from './document-count/document-count.module';
+import { PermissionsModule } from './permissions/permissions.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { DocumentCountModule } from './document-count/document-count.module';
     BookingsModule,
     ExpensesModule,
     DocumentCountModule,
+    PermissionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
