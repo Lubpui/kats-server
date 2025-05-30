@@ -2,7 +2,7 @@ export enum PermissionKey {
   EMPLOYEE = 0,
   BOOKING = 1,
   CALENDAR = 2,
-  GURANTEE = 3,
+  GUARANTEE = 3,
   PRODUCT = 4,
   EXPENSE = 5,
   SALARY = 6,

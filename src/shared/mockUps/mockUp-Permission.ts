@@ -28,8 +28,8 @@ export const mockUpRoleList = [
         hasDelete: true,
       },
       {
-        name: 'GURANTEE',
-        key: PermissionKey.GURANTEE,
+        name: 'GUARANTEE',
+        key: PermissionKey.GUARANTEE,
         hasView: true,
         hasEdit: true,
         hasDelete: true,
@@ -126,7 +126,7 @@ export const mockUpRoleList = [
       },
       {
         name: 'GURANTEE',
-        key: PermissionKey.GURANTEE,
+        key: PermissionKey.GUARANTEE,
         hasView: true,
         hasEdit: true,
         hasDelete: true,
@@ -223,7 +223,7 @@ export const mockUpRoleList = [
       },
       {
         name: 'GURANTEE',
-        key: PermissionKey.GURANTEE,
+        key: PermissionKey.GUARANTEE,
         hasView: true,
         hasEdit: false,
         hasDelete: false,
@@ -320,7 +320,7 @@ export const mockUpRoleList = [
       },
       {
         name: 'GURANTEE',
-        key: PermissionKey.GURANTEE,
+        key: PermissionKey.GUARANTEE,
         hasView: true,
         hasEdit: false,
         hasDelete: false,
