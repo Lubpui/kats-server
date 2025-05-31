@@ -8,6 +8,7 @@ import { RoleResponse } from './responses/role.response'
 import { modelMapper } from 'src/utils/mapper.util'
 import { PermissionRequest } from './requests/permission.request'
 import { PermissionResponse } from './responses/permission.reponse'
+import { mockUpRoleList } from 'src/shared/mockUps/mockUp-Permission'
 
 @Injectable()
 export class PermissionsService {
@@ -36,17 +37,13 @@ export class PermissionsService {
     }
   }
 
-  async createRole(createRoleRequest: RoleRequest): Promise<RoleResponse> {
-    try {
-      const newRole = {
-        ...createRoleRequest,
-      }
+  // async createRole(): Promise<RoleResponse> {
+  //   try {
+  //     const createdRole = await new this.insertMany(mockUpRoleList)
 
-      const createdRole = await new this.roleModel(newRole).save()
-
-      return modelMapper(RoleResponse, createdRole)
-    } catch (error) {
-      throw error
-    }
-  }
+  //     return modelMapper(RoleResponse, createdRole)
+  //   } catch (error) {
+  //     throw error
+  //   }
+  // }
 }

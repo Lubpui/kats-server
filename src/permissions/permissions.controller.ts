@@ -16,8 +16,8 @@ export class PermissionsController {
     return this.permissionsService.createPermission(createPermissionRequest)
   }
 
-  @Post('role')
-  createRole(@Body() createRoleRequest: RoleRequest): Promise<RoleResponse> {
-    return this.permissionsService.createRole(createRoleRequest)
-  }
+  // @Post('role')
+  // createRole(): Promise<RoleResponse> {
+  //   return this.permissionsService.createRole()
+  // }
 }
