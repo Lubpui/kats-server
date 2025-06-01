@@ -56,6 +56,13 @@ export class PermissionsService {
     return role
   }
 
+  async updatePermissionById(roleId: string, updateRoleRequest: RoleRequest) {
+    const role = await this.roleModel.findByIdAndUpdate(roleId, {
+      $set: { ...updateRoleRequest },
+    })
+    return role
+  }
+
   async isDeleteRoleById(
     roleId: string,
     updateStatusDeleteRequest: RoleRequest,

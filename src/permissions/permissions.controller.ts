@@ -30,6 +30,17 @@ export class PermissionsController {
     return this.permissionsService.updateRoleById(roleId, updateRoletRequest)
   }
 
+  @Put('update/:roleId')
+  updatePermissionById(
+    @Param('roleId') roleId: string,
+    @Body() updateRoletRequest: RoleRequest,
+  ) {
+    return this.permissionsService.updatePermissionById(
+      roleId,
+      updateRoletRequest,
+    )
+  }
+
   @Post('role/selectDelete/:roleId')
   isDeleteRoleById(
     @Param('roleId') roleId: string,
