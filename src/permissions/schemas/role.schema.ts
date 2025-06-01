@@ -1,8 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document } from 'mongoose'
-import { PermissionKey } from 'src/shared/enums/permission-enum'
 import { Permission, PermissionSchema } from './permission.schema'
-
+import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
 export type RoleDocument = Role & Document
 
 /**
@@ -15,12 +14,15 @@ export class Role {
 
   @Prop({
     required: true,
-    type: PermissionSchema,
+    type: [PermissionSchema],
   })
   permissions: Permission[]
 
-  @Prop({ required: true, enum: PermissionKey })
-  type: number
+  @Prop({ required: true })
+  type: string
+
+  @Prop({ enum: DeleteStatus, default: DeleteStatus.ISNOTDELETE })
+  delete: number
 }
 
 const RoleSchema = SchemaFactory.createForClass(Role)

@@ -2,48 +2,69 @@ import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { Role, RoleDocument } from './schemas/role.schema'
-import { Permission, PermissionDocument } from './schemas/permission.schema'
-import { RoleRequest } from './requests/role.request'
-import { RoleResponse } from './responses/role.response'
+import { RoleListResponse, RoleResponse } from './responses/role.response'
 import { modelMapper } from 'src/utils/mapper.util'
-import { PermissionRequest } from './requests/permission.request'
-import { PermissionResponse } from './responses/permission.reponse'
-import { mockUpRoleList } from 'src/shared/mockUps/mockUp-Permission'
+import {
+  mockUpPermissions,
+  mockUpRoleList,
+} from 'src/shared/mockUps/mockUp-Permission'
+import { RoleRequest } from './requests/role.request'
 
 @Injectable()
 export class PermissionsService {
   constructor(
     @InjectModel(Role.name)
     private readonly roleModel: Model<RoleDocument>,
-    @InjectModel(Permission.name)
-    private readonly permissionModel: Model<PermissionDocument>,
   ) {}
 
-  async createPermission(
-    createPermissionRequest: PermissionRequest,
-  ): Promise<PermissionResponse> {
+  async createInitialRole(): Promise<RoleResponse> {
     try {
-      const newPermission = {
-        ...createPermissionRequest,
-      }
+      const createdRole = await this.roleModel.insertMany(mockUpRoleList)
 
-      const createdPermission = await new this.permissionModel(
-        newPermission,
-      ).save()
-
-      return modelMapper(PermissionResponse, createdPermission)
+      return modelMapper(RoleResponse, createdRole)
     } catch (error) {
       throw error
     }
   }
 
-  // async createRole(): Promise<RoleResponse> {
-  //   try {
-  //     const createdRole = await new this.insertMany(mockUpRoleList)
+  async createRole(createRoleRequest: RoleRequest): Promise<RoleResponse> {
+    try {
+      const createRole = {
+        ...createRoleRequest,
+        permissions: mockUpPermissions,
+      }
+      const role = await new this.roleModel(createRole).save()
+      return modelMapper(RoleResponse, role)
+    } catch (error) {
+      throw error
+    }
+  }
 
-  //     return modelMapper(RoleResponse, createdRole)
-  //   } catch (error) {
-  //     throw error
-  //   }
-  // }
+  async getAllRoles(): Promise<RoleResponse[]> {
+    try {
+      const Roles = await this.roleModel.find()
+      return modelMapper(RoleListResponse, { data: Roles }).data
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async updateRoleById(roleId: string, updateRoleRequest: RoleRequest) {
+    const role = await this.roleModel.findByIdAndUpdate(roleId, {
+      $set: { ...updateRoleRequest },
+    })
+    return role
+  }
+
+  async isDeleteRoleById(
+    roleId: string,
+    updateStatusDeleteRequest: RoleRequest,
+  ) {
+    const updateStatus = await this.updateRoleById(
+      roleId,
+      updateStatusDeleteRequest,
+    )
+
+    return updateStatus
+  }
 }

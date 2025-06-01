@@ -7,7 +7,7 @@ export type PermissionDocument = Permission & Document
 /**
  * กำหนดสิทธิ์การใช้งาน
  */
-@Schema({ timestamps: true, toJSON: { virtuals: true } })
+@Schema({ timestamps: true, toJSON: { virtuals: true }, _id: false })
 export class Permission {
   @Prop({ required: true })
   name: string

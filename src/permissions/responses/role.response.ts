@@ -1,5 +1,6 @@
 import { Expose, Type } from 'class-transformer'
 import { PermissionResponse } from './permission.reponse'
+import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
 
 export class RoleResponse {
   @Expose()
@@ -13,13 +14,10 @@ export class RoleResponse {
   permissions: PermissionResponse
 
   @Expose()
-  hasView: boolean
+  type: string
 
   @Expose()
-  hasEdit: boolean
-
-  @Expose()
-  hasDelete: boolean
+  delete: DeleteStatus
 }
 
 export class RoleListResponse {

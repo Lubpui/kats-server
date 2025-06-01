@@ -1,10 +1,104 @@
-import { EmployeeRole } from '../enums/employee.enum'
+import { DeleteStatus } from '../enums/delete-status.enum'
 import { PermissionKey } from '../enums/permission-enum'
+
+export const mockUpPermissions = [
+  {
+    name: 'EMPLOYEE',
+    key: PermissionKey.EMPLOYEE,
+    hasView: true,
+    hasEdit: false,
+    hasDelete: false,
+  },
+  {
+    name: 'BOOKING',
+    key: PermissionKey.BOOKING,
+    hasView: true,
+    hasEdit: false,
+    hasDelete: false,
+  },
+  {
+    name: 'CALENDAR',
+    key: PermissionKey.CALENDAR,
+    hasView: true,
+    hasEdit: false,
+    hasDelete: false,
+  },
+  {
+    name: 'GURANTEE',
+    key: PermissionKey.GUARANTEE,
+    hasView: true,
+    hasEdit: false,
+    hasDelete: false,
+  },
+  {
+    name: 'PRODUCT',
+    key: PermissionKey.PRODUCT,
+    hasView: true,
+    hasEdit: false,
+    hasDelete: false,
+  },
+  {
+    name: 'EXPENSE',
+    key: PermissionKey.EXPENSE,
+    hasView: true,
+    hasEdit: false,
+    hasDelete: false,
+  },
+  {
+    name: 'SALARY',
+    key: PermissionKey.SALARY,
+    hasView: true,
+    hasEdit: false,
+    hasDelete: false,
+  },
+  {
+    name: 'FINANCE',
+    key: PermissionKey.FINANCE,
+    hasView: true,
+    hasEdit: false,
+    hasDelete: false,
+  },
+  {
+    name: 'BIN',
+    key: PermissionKey.BIN,
+    hasView: false,
+    hasEdit: false,
+    hasDelete: false,
+  },
+  {
+    name: 'SETTING',
+    key: PermissionKey.SETTING,
+    hasView: true,
+    hasEdit: false,
+    hasDelete: false,
+  },
+  {
+    name: 'COMPANY',
+    key: PermissionKey.COMPANY,
+    hasView: true,
+    hasEdit: false,
+    hasDelete: false,
+  },
+  {
+    name: 'ROLE',
+    key: PermissionKey.ROLE,
+    hasView: false,
+    hasEdit: false,
+    hasDelete: false,
+  },
+  {
+    name: 'TYPEPRODUCT',
+    key: PermissionKey.TYPEPRODUCT,
+    hasView: false,
+    hasEdit: false,
+    hasDelete: false,
+  },
+]
 
 export const mockUpRoleList = [
   {
     name: 'หัวหน้า',
-    type: EmployeeRole.CEO,
+    type: 'CEO',
     permissions: [
       {
         name: 'EMPLOYEE',
@@ -98,10 +192,11 @@ export const mockUpRoleList = [
         hasDelete: true,
       },
     ],
+    delete: DeleteStatus.ISNOTDELETE,
   },
   {
     name: 'ผู้ดูแลระบบ',
-    type: EmployeeRole.AMIN,
+    type: 'ADMIN',
     permissions: [
       {
         name: 'EMPLOYEE',
@@ -195,10 +290,11 @@ export const mockUpRoleList = [
         hasDelete: false,
       },
     ],
+    delete: DeleteStatus.ISNOTDELETE,
   },
   {
-    name: 'ช่างล้างรถ',
-    type: EmployeeRole.WASHTECNICIAN,
+    name: 'พนักงาน',
+    type: 'EMPLOYEE',
     permissions: [
       {
         name: 'EMPLOYEE',
@@ -292,102 +388,6 @@ export const mockUpRoleList = [
         hasDelete: false,
       },
     ],
-  },
-  {
-    name: 'ช่างพ่นสี',
-    type: EmployeeRole.SPRAYER,
-    permissions: [
-      {
-        name: 'EMPLOYEE',
-        key: PermissionKey.EMPLOYEE,
-        hasView: true,
-        hasEdit: false,
-        hasDelete: false,
-      },
-      {
-        name: 'BOOKING',
-        key: PermissionKey.BOOKING,
-        hasView: true,
-        hasEdit: false,
-        hasDelete: false,
-      },
-      {
-        name: 'CALENDAR',
-        key: PermissionKey.CALENDAR,
-        hasView: true,
-        hasEdit: false,
-        hasDelete: false,
-      },
-      {
-        name: 'GURANTEE',
-        key: PermissionKey.GUARANTEE,
-        hasView: true,
-        hasEdit: false,
-        hasDelete: false,
-      },
-      {
-        name: 'PRODUCT',
-        key: PermissionKey.PRODUCT,
-        hasView: true,
-        hasEdit: false,
-        hasDelete: false,
-      },
-      {
-        name: 'EXPENSE',
-        key: PermissionKey.EXPENSE,
-        hasView: true,
-        hasEdit: false,
-        hasDelete: false,
-      },
-      {
-        name: 'SALARY',
-        key: PermissionKey.SALARY,
-        hasView: true,
-        hasEdit: false,
-        hasDelete: false,
-      },
-      {
-        name: 'FINANCE',
-        key: PermissionKey.FINANCE,
-        hasView: true,
-        hasEdit: false,
-        hasDelete: false,
-      },
-      {
-        name: 'BIN',
-        key: PermissionKey.BIN,
-        hasView: false,
-        hasEdit: false,
-        hasDelete: false,
-      },
-      {
-        name: 'SETTING',
-        key: PermissionKey.SETTING,
-        hasView: true,
-        hasEdit: false,
-        hasDelete: false,
-      },
-      {
-        name: 'COMPANY',
-        key: PermissionKey.COMPANY,
-        hasView: true,
-        hasEdit: false,
-        hasDelete: false,
-      },
-      {
-        name: 'ROLE',
-        key: PermissionKey.ROLE,
-        hasView: false,
-        hasEdit: false,
-        hasDelete: false,
-      },
-      {
-        name: 'TYPEPRODUCT',
-        key: PermissionKey.TYPEPRODUCT,
-        hasView: false,
-        hasEdit: false,
-        hasDelete: false,
-      },
-    ],
+    delete: DeleteStatus.ISNOTDELETE,
   },
 ]

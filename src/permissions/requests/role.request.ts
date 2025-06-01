@@ -1,6 +1,6 @@
-import { IsEnum, IsNotEmpty } from 'class-validator'
-import { PermissionKey } from 'src/shared/enums/permission-enum'
+import { IsNotEmpty } from 'class-validator'
 import { Permission } from '../schemas/permission.schema'
+import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
 
 export class RoleRequest {
   @IsNotEmpty()
@@ -10,6 +10,8 @@ export class RoleRequest {
   permissions: Permission[]
 
   @IsNotEmpty()
-  @IsEnum(PermissionKey)
-  type: PermissionKey
+  type: string
+
+  @IsNotEmpty()
+  delete: DeleteStatus
 }
