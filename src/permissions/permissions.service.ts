@@ -49,6 +49,11 @@ export class PermissionsService {
     }
   }
 
+  async getRoleById(roleId: string): Promise<RoleResponse> {
+    const catagorie = await this.roleModel.findById(roleId)
+    return modelMapper(RoleResponse, catagorie)
+  }
+
   async updateRoleById(roleId: string, updateRoleRequest: RoleRequest) {
     const role = await this.roleModel.findByIdAndUpdate(roleId, {
       $set: { ...updateRoleRequest },

@@ -22,6 +22,11 @@ export class PermissionsController {
     return this.permissionsService.getAllRoles()
   }
 
+  @Get('role/:roleId')
+  getRoleById(@Param('roleId') roleId: string): Promise<RoleResponse> {
+    return this.permissionsService.getRoleById(roleId)
+  }
+
   @Put('role/update/:roleId')
   updateRoleById(
     @Param('roleId') roleId: string,
