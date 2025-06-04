@@ -61,6 +61,13 @@ export class ProductsController {
     return this.productsService.getCatagoryById(catagoryId)
   }
 
+  @Get('typeProduct/:typeProductId')
+  getTypeProductById(
+    @Param('typeProductId') typeProductId: string,
+  ): Promise<TypeProductResponse> {
+    return this.productsService.getTypeProductById(typeProductId)
+  }
+
   @Put('update/:productId')
   updateProductById(
     @Param('productId') productId: string,

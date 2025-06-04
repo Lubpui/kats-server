@@ -116,6 +116,13 @@ export class ProductsService {
     return modelMapper(ProductCatagoryResponse, catagorie)
   }
 
+  async getTypeProductById(
+    typeProductId: string,
+  ): Promise<TypeProductResponse> {
+    const typeProduct = await this.productTypeModel.findById(typeProductId)
+    return modelMapper(TypeProductResponse, typeProduct)
+  }
+
   async updateProductById(
     productId: string,
     updateProductRequest: ProductRequest,
