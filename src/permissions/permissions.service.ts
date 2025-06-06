@@ -72,4 +72,9 @@ export class PermissionsService {
 
     return updateStatus
   }
+
+  async DeleteRoleById(roleId: string) {
+    const role = await this.roleModel.findByIdAndDelete(roleId)
+    return role
+  }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
 import { PermissionsService } from './permissions.service'
 import { RoleResponse } from './responses/role.response'
 import { RoleRequest } from './requests/role.request'
@@ -44,5 +44,10 @@ export class PermissionsController {
       roleId,
       updateStatusDeleteRequest,
     )
+  }
+
+  @Delete('role/delete/:roleId')
+  DeleteRoleById(@Param('roleId') roleId: string) {
+    return this.permissionsService.DeleteRoleById(roleId)
   }
 }
