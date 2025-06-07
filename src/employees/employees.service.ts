@@ -36,7 +36,7 @@ export class EmployeesService {
   }
 
   async getAllEmployees(): Promise<EmployeeResponse[]> {
-    const employees = await this.EmployeeModel.find()
+    const employees = await this.EmployeeModel.find().populate('role')
     return modelMapper(EmployeeListResponse, { data: employees }).data
   }
 
