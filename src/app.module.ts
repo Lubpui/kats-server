@@ -10,6 +10,7 @@ import { DocumentCountModule } from './document-count/document-count.module'
 import { PermissionsModule } from './permissions/permissions.module'
 import { BookingsModule } from './bookings/bookings.module'
 import { UsersModule } from './users/users.module'
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { UsersModule } from './users/users.module'
     DocumentCountModule,
     PermissionsModule,
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

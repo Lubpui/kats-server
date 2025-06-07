@@ -18,4 +18,19 @@ export class UserResponse {
 
   @Expose()
   userName: string
+
+  @Expose()
+  dbname: string
+
+  @Expose()
+  phoneNumber: string
+
+  @Expose()
+  isOwner: boolean
+
+  @Expose()
+  companyName: string
+
+  @Expose()
+  roleId: string
 }

@@ -26,5 +26,8 @@ export class Permission {
 }
 
 const PermissionSchema = SchemaFactory.createForClass(Permission)
+const PermissionSchemaExcludeIndex = SchemaFactory.createForClass(Permission)
 
-export { PermissionSchema }
+PermissionSchema.index({ key: 1 }, { unique: true })
+
+export { PermissionSchema, PermissionSchemaExcludeIndex }

@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { Schema as MongooseSchema, Types } from 'mongoose'
 import { Document } from 'mongoose'
 import * as bcrypt from 'bcrypt'
 
@@ -7,7 +8,7 @@ export type UserDocument = User & Document
 /**
  * ผู้ใช้งาน
  */
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, toJSON: { virtuals: true } })
 export class User {
   @Prop({ required: true })
   userName: string
@@ -26,15 +27,31 @@ export class User {
 
   @Prop()
   nickName: string
+
+  @Prop()
+  dbname: string
+
+  @Prop()
+  phoneNumber: string
+
+  @Prop({ required: true, default: false })
+  isOwner: boolean
+
+  @Prop({ required: true })
+  companyName: string
+
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Role' })
+  roleId: Types.ObjectId
 }
 
 const UserSchema = SchemaFactory.createForClass(User)
 
-UserSchema.pre('save', async function (next) {
-  if (this.isModified('password')) {
-    this.password = await bcrypt.hash(this.password, 10)
-  }
-  next()
+UserSchema.index({ email: 1 }, { unique: true })
+
+UserSchema.virtual('roles', {
+  ref: 'Role',
+  localField: 'roleIds',
+  foreignField: '_id',
 })
 
 export { UserSchema }

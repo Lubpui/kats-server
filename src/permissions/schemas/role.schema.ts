@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document } from 'mongoose'
-import { Permission, PermissionSchema } from './permission.schema'
+import { Permission, PermissionSchemaExcludeIndex } from './permission.schema'
 import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
 export type RoleDocument = Role & Document
 
@@ -9,12 +9,12 @@ export type RoleDocument = Role & Document
  */
 @Schema({ timestamps: true, toJSON: { virtuals: true } })
 export class Role {
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   name: string
 
   @Prop({
     required: true,
-    type: [PermissionSchema],
+    type: [PermissionSchemaExcludeIndex],
   })
   permissions: Permission[]
 
