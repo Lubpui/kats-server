@@ -1,9 +1,3 @@
-export enum EmployeeRole {
-  CEO = 0, // หัวหน้า
-  AMIN = 1, // ผู้ดูแลระบบ
-  EMPLOYEE = 2, // พนักงาน
-}
-
 export enum PaymentStatus {
   BANK = 0, // เงินสด
   CASH = 1, // ธนาคาร

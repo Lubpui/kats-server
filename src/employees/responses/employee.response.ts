@@ -1,5 +1,7 @@
 import { Expose, Type } from 'class-transformer'
 import { IsEnum } from 'class-validator'
+import { RoleLiteResponse } from 'src/permissions/responses/role.response'
+import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
 import {
   BankType,
   PaymentStatus,
@@ -30,7 +32,10 @@ export class EmployeeResponse {
   _id: string
 
   @Expose()
-  staffRole: string
+  roleId: string
+
+  @Expose()
+  role: RoleLiteResponse
 
   @Expose()
   name: string
@@ -43,6 +48,9 @@ export class EmployeeResponse {
 
   @Expose()
   salary: SalaryDetailResponse
+
+  @Expose()
+  delete: DeleteStatus
 }
 
 export class EmployeeListResponse {

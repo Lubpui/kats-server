@@ -20,8 +20,28 @@ export class RoleResponse {
   delete: DeleteStatus
 }
 
+export class RoleLiteResponse {
+  @Expose()
+  _id: string
+
+  @Expose()
+  name: string
+
+  @Expose()
+  type: string
+
+  @Expose()
+  delete: DeleteStatus
+}
+
 export class RoleListResponse {
   @Expose()
   @Type(() => RoleResponse)
   data: RoleResponse[]
+}
+
+export class RoleLiteListResponse {
+  @Expose()
+  @Type(() => RoleLiteResponse)
+  data: RoleLiteResponse[]
 }

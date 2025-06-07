@@ -2,13 +2,19 @@ import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { Role, RoleDocument } from './schemas/role.schema'
-import { RoleListResponse, RoleResponse } from './responses/role.response'
+import {
+  RoleListResponse,
+  RoleLiteListResponse,
+  RoleLiteResponse,
+  RoleResponse,
+} from './responses/role.response'
 import { modelMapper } from 'src/utils/mapper.util'
 import {
   mockUpPermissions,
   mockUpRoleList,
 } from 'src/shared/mockUps/mockUp-Permission'
 import { RoleRequest } from './requests/role.request'
+import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
 
 @Injectable()
 export class PermissionsService {
@@ -40,7 +46,22 @@ export class PermissionsService {
     }
   }
 
-  async getAllRoles(): Promise<RoleResponse[]> {
+  async getAllRoles(del: number): Promise<RoleLiteResponse[]> {
+    try {
+      const roleRes = await this.roleModel.find({}, { permissions: 0 })
+      const roles = modelMapper(RoleLiteListResponse, { data: roleRes }).data
+
+      const filterdRoles = roles.filter(
+        (role) => role.delete === (del as DeleteStatus),
+      )
+
+      return filterdRoles
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async getAllRolesForPermission(): Promise<RoleResponse[]> {
     try {
       const Roles = await this.roleModel.find()
       return modelMapper(RoleListResponse, { data: Roles }).data

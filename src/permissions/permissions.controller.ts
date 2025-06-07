@@ -1,6 +1,15 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common'
 import { PermissionsService } from './permissions.service'
-import { RoleResponse } from './responses/role.response'
+import { RoleLiteResponse, RoleResponse } from './responses/role.response'
 import { RoleRequest } from './requests/role.request'
 
 @Controller('permissions')
@@ -18,8 +27,13 @@ export class PermissionsController {
   }
 
   @Get('role')
-  getAllRoles(): Promise<RoleResponse[]> {
-    return this.permissionsService.getAllRoles()
+  getAllRoles(@Query('delete') del: string): Promise<RoleLiteResponse[]> {
+    return this.permissionsService.getAllRoles(Number(del))
+  }
+
+  @Get('role/authz')
+  getAllRolesForPermission(): Promise<RoleResponse[]> {
+    return this.permissionsService.getAllRolesForPermission()
   }
 
   @Get('role/:roleId')

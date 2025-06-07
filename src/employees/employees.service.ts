@@ -9,21 +9,26 @@ import {
 } from './responses/employee.response'
 import { modelMapper } from 'src/utils/mapper.util'
 import { QueryPagination } from 'src/shared/types/queryPagination'
+import { Role, RoleDocument } from 'src/permissions/schemas/role.schema'
+import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
 
 @Injectable()
 export class EmployeesService {
   constructor(
     @InjectModel(Employee.name)
     private readonly EmployeeModel: Model<EmployeeDocument>,
+    @InjectModel(Role.name)
+    private readonly roleModel: Model<RoleDocument>,
   ) {}
 
   async createEmployee(
     createEmployeeResquest: EmployeeRequest,
   ): Promise<EmployeeResponse> {
     try {
-      const createdEmployee = await new this.EmployeeModel(
-        createEmployeeResquest,
-      ).save()
+      const createdEmployee = await new this.EmployeeModel({
+        ...createEmployeeResquest,
+        delete: DeleteStatus.ISNOTDELETE,
+      }).save()
       return modelMapper(EmployeeResponse, createdEmployee)
     } catch (error) {
       throw error
@@ -48,6 +53,27 @@ export class EmployeesService {
               { name: { $regex: term, $options: 'i' } },
               { tel: { $regex: term, $options: 'i' } },
             ],
+          },
+        },
+        {
+          $lookup: {
+            from: this.roleModel.collection.name,
+            localField: 'roleId',
+            foreignField: '_id',
+            as: 'role',
+            pipeline: [
+              {
+                $project: {
+                  permissions: 0,
+                },
+              },
+            ],
+          },
+        },
+        {
+          $unwind: {
+            path: '$role',
+            preserveNullAndEmptyArrays: true,
           },
         },
       ])
