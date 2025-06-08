@@ -327,7 +327,7 @@ export const mockUpRoleList = [
       {
         name: 'PRODUCT',
         key: PermissionKey.PRODUCT,
-        hasView: true,
+        hasView: false,
         hasEdit: false,
         hasDelete: false,
       },
@@ -341,7 +341,7 @@ export const mockUpRoleList = [
       {
         name: 'SALARY',
         key: PermissionKey.SALARY,
-        hasView: true,
+        hasView: false,
         hasEdit: false,
         hasDelete: false,
       },
@@ -355,7 +355,7 @@ export const mockUpRoleList = [
       {
         name: 'BIN',
         key: PermissionKey.BIN,
-        hasView: false,
+        hasView: true,
         hasEdit: false,
         hasDelete: false,
       },
