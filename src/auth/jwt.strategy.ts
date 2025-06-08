@@ -32,7 +32,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (!user) throw new NotFoundException('ไม่พบข้อมูลผู้ใช้งาน')
     return modelMapper(UserResponse, {
       ...user,
-      dbname: user.dbname[0],
+      dbname: user.dbname,
     })
   }
 }

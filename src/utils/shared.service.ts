@@ -45,7 +45,7 @@ export class SharedService {
 
     const user = await this.userModel.findOne(pipeLine, { password: 0 })
     if (!user) throw new NotFoundException('user not found')
-    const dbname = user.dbname[0]
+    const dbname = user.dbname
     const connection = await createConnection(
       `${this.configService.get<string>('MONGO_URI')}/${dbname}?authSource=admin`,
     ).asPromise()

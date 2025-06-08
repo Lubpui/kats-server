@@ -10,7 +10,7 @@ import { DocumentCountModule } from './document-count/document-count.module'
 import { PermissionsModule } from './permissions/permissions.module'
 import { BookingsModule } from './bookings/bookings.module'
 import { UsersModule } from './users/users.module'
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './auth/auth.module'
 
 @Module({
   imports: [
@@ -20,7 +20,7 @@ import { AuthModule } from './auth/auth.module';
     }),
     MongooseModule.forRootAsync({
       useFactory: async (configService: ConfigService) => ({
-        uri: configService.get('MONGO_URI'),
+        uri: configService.get('MONGO_URI_DEMO'),
       }),
       inject: [ConfigService],
     }),

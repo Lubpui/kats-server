@@ -23,11 +23,15 @@ export class PermissionsService {
     private readonly roleModel: Model<RoleDocument>,
   ) {}
 
-  async createInitialRole(): Promise<RoleResponse> {
+  async createInitialRole(
+    _roleModel?: Model<RoleDocument>,
+  ): Promise<RoleResponse> {
     try {
-      const createdRole = await this.roleModel.insertMany(mockUpRoleList)
+      const roleModel = _roleModel || this.roleModel
+      await roleModel.insertMany(mockUpRoleList)
 
-      return modelMapper(RoleResponse, createdRole)
+      const ownerRole = await roleModel.findOne({ type: 'CEO' })
+      return modelMapper(RoleResponse, ownerRole)
     } catch (error) {
       throw error
     }

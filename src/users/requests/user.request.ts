@@ -16,6 +16,12 @@ export class UserRequest {
   @IsNotEmpty()
   password: string
 
+  @IsNotEmpty()
+  companyName: string
+
+  @IsOptional()
+  phoneNumber?: string
+
   @IsOptional()
   nickName?: string
 }
