@@ -28,13 +28,14 @@ export class UsersService {
   ) {}
 
   async createNewAccount(createUserRequest: CreateUserRequest) {
-    const { email, phoneNumber, firstName, lastName } = createUserRequest
+    const { email, phoneNumber, firstName, lastName, companyName } =
+      createUserRequest
 
     const isEmailExist = await this.userModel.exists({ email })
     if (isEmailExist)
       throw new HttpException({ message: 'This email is already in use.' }, 409)
 
-    const dbname = String(new Date().getTime())
+    const dbname = String(companyName)
     const connection = await createConnection(
       `${this.configService.get<string>('MONGO_URI')}/${dbname}?authSource=admin`,
     ).asPromise()
