@@ -7,7 +7,10 @@ export class EmployeeRequest {
   roleId: string
 
   @IsNotEmpty()
-  name: string
+  firstName: string
+
+  @IsNotEmpty()
+  lastName: string
 
   @IsNotEmpty()
   tel: string

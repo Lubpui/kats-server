@@ -38,7 +38,10 @@ export class EmployeeResponse {
   role: RoleLiteResponse
 
   @Expose()
-  name: string
+  firstName: string
+
+  @Expose()
+  lastName: string
 
   @Expose()
   tel: string
