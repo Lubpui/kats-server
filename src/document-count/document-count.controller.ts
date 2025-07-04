@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common'
+import { Body, Controller, Get, Post } from '@nestjs/common'
 import { DocumentCountService } from './document-count.service'
 import { DocumentCountRequest } from './requsets/document-count.requset'
 import { DocumentCountResponse } from './responses/document-count.response'
@@ -12,5 +12,10 @@ export class DocumentCountController {
     @Body() createDocumentCount: DocumentCountRequest,
   ): Promise<DocumentCountResponse> {
     return this.documentCountService.createDocumentCount(createDocumentCount)
+  }
+
+  @Get()
+  getAllDocumentCount(): Promise<DocumentCountResponse[]> {
+    return this.documentCountService.getAllDocumentCount()
   }
 }

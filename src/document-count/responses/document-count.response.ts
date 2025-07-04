@@ -1,4 +1,4 @@
-import { Expose } from 'class-transformer'
+import { Expose, Type } from 'class-transformer'
 
 export class DocumentCountResponse {
   @Expose()
@@ -6,4 +6,10 @@ export class DocumentCountResponse {
 
   @Expose()
   bookingCount: number
+}
+
+export class DocumentCountListResponse {
+  @Expose()
+  @Type(() => DocumentCountResponse)
+  data: DocumentCountResponse[]
 }

@@ -6,7 +6,10 @@ import {
 } from './schemas/document-count.schema'
 import { ClientSession, Model } from 'mongoose'
 import { DocumentCountRequest } from './requsets/document-count.requset'
-import { DocumentCountResponse } from './responses/document-count.response'
+import {
+  DocumentCountListResponse,
+  DocumentCountResponse,
+} from './responses/document-count.response'
 import { modelMapper } from 'src/utils/mapper.util'
 
 @Injectable()
@@ -23,6 +26,11 @@ export class DocumentCountService {
       createDocumentCount,
     ).save()
     return modelMapper(DocumentCountResponse, createdCount)
+  }
+
+  async getAllDocumentCount(): Promise<DocumentCountResponse[]> {
+    const DocumentCount = await this.documentCountModel.find()
+    return modelMapper(DocumentCountListResponse, { data: DocumentCount }).data
   }
 
   async getExpenseCode(session: ClientSession) {
