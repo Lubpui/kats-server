@@ -4,9 +4,13 @@ import { UsersController } from './users.controller'
 import { User, UserSchema } from './schemas/user.schema'
 import { MongooseModule } from '@nestjs/mongoose'
 import { PermissionsModule } from 'src/permissions/permissions.module'
+import { Employee, EmployeeSchema } from 'src/employees/schemas/employee.schema'
 
 const UserMongooseModuleList = [
-  MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+  MongooseModule.forFeature([
+    { name: User.name, schema: UserSchema },
+    { name: Employee.name, schema: EmployeeSchema },
+  ]),
 ]
 
 @Module({

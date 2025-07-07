@@ -23,6 +23,7 @@ import {
 export class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(Employee.name) private employeeModel: Model<EmployeeDocument>,
     private readonly configService: ConfigService,
     private readonly permissionService: PermissionsService,
   ) {}
@@ -96,5 +97,14 @@ export class UsersService {
     const user = modelMapper(UserResponse, newUser)
 
     return { ...user, dbname }
+  }
+
+  async getUserProfile(userInfo: UserResponse): Promise<any> {
+    const findedUser = await this.userModel.findById(userInfo._id,{password:0})
+    const findedEmployee = await this.employeeModel.findOne({
+      email: userInfo.email,
+    })
+
+    return { userInfo: findedUser, employee: findedEmployee }
   }
 }
