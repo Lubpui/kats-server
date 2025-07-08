@@ -23,15 +23,16 @@ import {
   TypeProduct,
   TypeProductDocument,
 } from './schemas/product-typeproduct.schema'
+import { CUSTOM_CONNECTION_NAME } from 'src/utils/constanrs'
 
 @Injectable()
 export class ProductsService {
   constructor(
-    @InjectModel(TypeProduct.name)
+    @InjectModel(TypeProduct.name, CUSTOM_CONNECTION_NAME)
     private readonly productTypeModel: Model<TypeProductDocument>,
-    @InjectModel(ProductCatagory.name)
+    @InjectModel(ProductCatagory.name, CUSTOM_CONNECTION_NAME)
     private readonly productCatagoryModel: Model<ProductCatagoryDocument>,
-    @InjectModel(Product.name)
+    @InjectModel(Product.name, CUSTOM_CONNECTION_NAME)
     private readonly productModel: Model<ProductDocument>,
   ) {}
 

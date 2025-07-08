@@ -8,11 +8,13 @@ import { User, UserDocument } from './../users/schemas/user.schema'
 
 import { Model } from 'mongoose'
 import { JwtPayload } from './interfaces/jwt-payload.interface'
+import { MAIN_CONNECTION_NAME } from 'src/utils/constanrs'
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
-    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    @InjectModel(User.name, MAIN_CONNECTION_NAME)
+    private readonly userModel: Model<UserDocument>,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),

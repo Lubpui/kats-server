@@ -16,17 +16,21 @@ import {
   RoleSchema,
 } from 'src/permissions/schemas/role.schema'
 import { LogInRequest } from 'src/auth/requests/login.request'
+import { MAIN_CONNECTION_NAME } from './constanrs'
 
 @Injectable()
 export class SharedService {
   constructor(
-    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    @InjectModel(User.name, MAIN_CONNECTION_NAME)
+    private readonly userModel: Model<UserDocument>,
     private readonly configService: ConfigService,
   ) {}
 
   async validateUser(signInRequest: LogInRequest): Promise<UserResponse> {
     const { email, password } = signInRequest
-    const user = await this.userModel.findOne({ $or: [{ email }, { userName: email }] })
+    const user = await this.userModel.findOne({
+      $or: [{ email }, { userName: email }],
+    })
     if (!user?._id) throw new NotFoundException('ไม่พบข้อมูลผู้ใช้งาน')
 
     const isValid = await bcrypt.compare(password, user.password)

@@ -5,16 +5,23 @@ import { User, UserSchema } from './schemas/user.schema'
 import { MongooseModule } from '@nestjs/mongoose'
 import { PermissionsModule } from 'src/permissions/permissions.module'
 import { Employee, EmployeeSchema } from 'src/employees/schemas/employee.schema'
+import {
+  CUSTOM_CONNECTION_NAME,
+  MAIN_CONNECTION_NAME,
+} from 'src/utils/constanrs'
 
-const UserMongooseModuleList = [
-  MongooseModule.forFeature([
-    { name: User.name, schema: UserSchema },
-    { name: Employee.name, schema: EmployeeSchema },
-  ]),
-]
+export const UserCustomMongoose = MongooseModule.forFeature(
+  [{ name: Employee.name, schema: EmployeeSchema }],
+  CUSTOM_CONNECTION_NAME,
+)
+
+export const UserMainMongoose = MongooseModule.forFeature(
+  [{ name: User.name, schema: UserSchema }],
+  MAIN_CONNECTION_NAME,
+)
 
 @Module({
-  imports: [...UserMongooseModuleList, PermissionsModule],
+  imports: [UserCustomMongoose, UserMainMongoose, PermissionsModule],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService],

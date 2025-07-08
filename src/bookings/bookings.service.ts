@@ -26,20 +26,23 @@ import {
   TypeProductDocument,
 } from 'src/products/schemas/product-typeproduct.schema'
 import dayjs from 'dayjs'
+import { CUSTOM_CONNECTION_NAME } from 'src/utils/constanrs'
 
 @Injectable()
 export class BookingsService {
   constructor(
-    @InjectModel(Booking.name) private bookingModel: Model<BookingDocument>,
-    @InjectModel(Product.name) private productModel: Model<ProductDocument>,
+    @InjectModel(Booking.name, CUSTOM_CONNECTION_NAME)
+    private bookingModel: Model<BookingDocument>,
+    @InjectModel(Product.name, CUSTOM_CONNECTION_NAME)
+    private productModel: Model<ProductDocument>,
 
-    @InjectModel(ProductCatagory.name)
+    @InjectModel(ProductCatagory.name, CUSTOM_CONNECTION_NAME)
     private catagoryModel: Model<ProductCatagoryDocument>,
 
-    @InjectModel(TypeProduct.name)
+    @InjectModel(TypeProduct.name, CUSTOM_CONNECTION_NAME)
     private typeProductModel: Model<TypeProductDocument>,
 
-    @InjectModel(DocumentCount.name)
+    @InjectModel(DocumentCount.name, CUSTOM_CONNECTION_NAME)
     private readonly documentCountModel: Model<DocumentCountDocument>,
     private readonly documentCountService: DocumentCountService,
   ) {}

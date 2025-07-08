@@ -11,13 +11,14 @@ import { modelMapper } from 'src/utils/mapper.util'
 import { QueryPagination } from 'src/shared/types/queryPagination'
 import { Role, RoleDocument } from 'src/permissions/schemas/role.schema'
 import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
+import { CUSTOM_CONNECTION_NAME } from 'src/utils/constanrs'
 
 @Injectable()
 export class EmployeesService {
   constructor(
-    @InjectModel(Employee.name)
+    @InjectModel(Employee.name, CUSTOM_CONNECTION_NAME)
     private readonly EmployeeModel: Model<EmployeeDocument>,
-    @InjectModel(Role.name)
+    @InjectModel(Role.name, CUSTOM_CONNECTION_NAME)
     private readonly roleModel: Model<RoleDocument>,
   ) {}
 

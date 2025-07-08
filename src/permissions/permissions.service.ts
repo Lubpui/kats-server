@@ -15,11 +15,12 @@ import {
 } from 'src/shared/mockUps/mockUp-Permission'
 import { RoleRequest } from './requests/role.request'
 import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
+import { CUSTOM_CONNECTION_NAME } from 'src/utils/constanrs'
 
 @Injectable()
 export class PermissionsService {
   constructor(
-    @InjectModel(Role.name)
+    @InjectModel(Role.name, CUSTOM_CONNECTION_NAME)
     private readonly roleModel: Model<RoleDocument>,
   ) {}
 

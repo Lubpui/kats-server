@@ -13,13 +13,14 @@ import {
   DocumentCount,
   DocumentCountDocument,
 } from 'src/document-count/schemas/document-count.schema'
+import { CUSTOM_CONNECTION_NAME } from 'src/utils/constanrs'
 
 @Injectable()
 export class ExpensesService {
   constructor(
-    @InjectModel(Expense.name)
+    @InjectModel(Expense.name ,CUSTOM_CONNECTION_NAME)
     private readonly expenseModel: Model<ExpenseDocument>,
-    @InjectModel(DocumentCount.name)
+    @InjectModel(DocumentCount.name ,CUSTOM_CONNECTION_NAME)
     private readonly documentCountModel: Model<DocumentCountDocument>,
     private readonly documentCountService: DocumentCountService,
   ) {}

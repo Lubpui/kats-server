@@ -17,14 +17,18 @@ import {
   TypeProduct,
   TypeProductSchema,
 } from 'src/products/schemas/product-typeproduct.schema'
+import { CUSTOM_CONNECTION_NAME } from 'src/utils/constanrs'
 
-export const ProductsMongoose = MongooseModule.forFeature([
-  { name: Product.name, schema: ProductSchema },
-  { name: ProductCatagory.name, schema: ProductCatagorySchema },
-  { name: TypeProduct.name, schema: TypeProductSchema },
-  { name: Booking.name, schema: BookingSchema },
-  { name: DocumentCount.name, schema: DocumentCountSchema },
-])
+export const ProductsMongoose = MongooseModule.forFeature(
+  [
+    { name: Product.name, schema: ProductSchema },
+    { name: ProductCatagory.name, schema: ProductCatagorySchema },
+    { name: TypeProduct.name, schema: TypeProductSchema },
+    { name: Booking.name, schema: BookingSchema },
+    { name: DocumentCount.name, schema: DocumentCountSchema },
+  ],
+  CUSTOM_CONNECTION_NAME,
+)
 
 @Module({
   imports: [ProductsMongoose, DocumentCountModule],

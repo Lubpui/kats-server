@@ -6,13 +6,16 @@ import {
   DocumentCount,
   DocumentCountSchema,
 } from './schemas/document-count.schema'
+import { CUSTOM_CONNECTION_NAME } from 'src/utils/constanrs'
+import { ConfigModule } from '@nestjs/config'
 
-export const DocumentCountsMongoose = MongooseModule.forFeature([
-  { name: DocumentCount.name, schema: DocumentCountSchema },
-])
+export const DocumentCountsMongoose = MongooseModule.forFeature(
+  [{ name: DocumentCount.name, schema: DocumentCountSchema }],
+  CUSTOM_CONNECTION_NAME,
+)
 
 @Module({
-  imports: [DocumentCountsMongoose],
+  imports: [DocumentCountsMongoose, ConfigModule],
   controllers: [DocumentCountController],
   providers: [DocumentCountService],
   exports: [DocumentCountService],

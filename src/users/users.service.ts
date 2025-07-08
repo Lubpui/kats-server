@@ -18,12 +18,13 @@ import {
   EmployeeDocument,
   EmployeeSchema,
 } from 'src/employees/schemas/employee.schema'
+import { CUSTOM_CONNECTION_NAME, MAIN_CONNECTION_NAME } from 'src/utils/constanrs'
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
-    @InjectModel(Employee.name) private employeeModel: Model<EmployeeDocument>,
+    @InjectModel(User.name ,MAIN_CONNECTION_NAME) private userModel: Model<UserDocument>,
+    @InjectModel(Employee.name ,CUSTOM_CONNECTION_NAME) private employeeModel: Model<EmployeeDocument>,
     private readonly configService: ConfigService,
     private readonly permissionService: PermissionsService,
   ) {}
@@ -62,7 +63,8 @@ export class UsersService {
       )
 
       const createEmployeeRequest = {
-        name: `${firstName} ${lastName}`,
+        firstName,
+        lastName,
         roleId: new Types.ObjectId(newUser.roleId),
         tel: phoneNumber,
       }

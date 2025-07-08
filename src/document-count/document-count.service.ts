@@ -11,11 +11,12 @@ import {
   DocumentCountResponse,
 } from './responses/document-count.response'
 import { modelMapper } from 'src/utils/mapper.util'
+import { CUSTOM_CONNECTION_NAME } from 'src/utils/constanrs'
 
 @Injectable()
 export class DocumentCountService {
   constructor(
-    @InjectModel(DocumentCount.name)
+    @InjectModel(DocumentCount.name, CUSTOM_CONNECTION_NAME)
     private readonly documentCountModel: Model<DocumentCountDocument>,
   ) {}
 

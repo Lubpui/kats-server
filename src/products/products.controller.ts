@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Put,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common'
 import { ProductsService } from './products.service'
 import { ProductCatagoryResponse } from './responses/product-catagory.response'
 import { ProductCatagoryRequest } from './requests/product-catagory.request'
@@ -6,7 +15,9 @@ import { ProductRequest } from './requests/product.request'
 import { ProductResponse } from './responses/product.response'
 import { TypeProductResponse } from './responses/product-typeproduct.response'
 import { TypeProductRequest } from './requests/product-typeproduct.request'
+import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard'
 
+@UseGuards(JwtAuthGuard)
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}

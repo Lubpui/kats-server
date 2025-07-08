@@ -7,6 +7,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { JwtStrategy } from './jwt.strategy'
 import { SharedModule } from 'src/utils/shared.modul'
 import { User, UserSchema } from 'src/users/schemas/user.schema'
+import { MAIN_CONNECTION_NAME } from 'src/utils/constanrs'
+import { UsersModule } from 'src/users/users.module'
 
 const AuthJwt = JwtModule.registerAsync({
   imports: [ConfigModule],
@@ -28,12 +30,13 @@ const AuthJwt = JwtModule.registerAsync({
   inject: [ConfigService],
 })
 
-const AuthMongoose = MongooseModule.forFeature([
-  { name: User.name, schema: UserSchema },
-])
+const AuthMongoose = MongooseModule.forFeature(
+  [{ name: User.name, schema: UserSchema }],
+  MAIN_CONNECTION_NAME,
+)
 
 @Module({
-  imports: [AuthJwt, AuthMongoose, SharedModule],
+  imports: [AuthJwt, AuthMongoose, SharedModule, UsersModule],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
   exports: [AuthService],
