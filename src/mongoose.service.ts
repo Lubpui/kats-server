@@ -28,50 +28,22 @@ export class MongooseService implements MongooseOptionsFactory {
     // TODO: rewite this this.request.user.dbname
 
     const authPattern = new RegExp('/auth/*')
-    const userOwnerPattern = new RegExp('/users/owner')
-    const webhookPattern = new RegExp('/web-hooks/*')
-    const notificationPattern = new RegExp(
-      '/notifications/send-push-notification-clock-work',
-    )
-    const scb2c2pWebhookPattern = new RegExp('/topup-transaction/2c2p/*')
-    const topupPackagePattern = new RegExp('/topup-transaction/package')
-    const emailSenderPattern = new RegExp('/email-sender/*')
 
     const isAuthModule = authPattern.test(originalUrl)
-    const isUserOwnerRoute = userOwnerPattern.test(originalUrl)
-    const isWebhookRoute = webhookPattern.test(originalUrl)
-    const isSCB2c2pWebhookRoute = scb2c2pWebhookPattern.test(originalUrl)
-    const isTopupPackagekRoute = topupPackagePattern.test(originalUrl)
-    const isNotificationRoute = notificationPattern.test(originalUrl)
-    const isEmailSenderRoute = emailSenderPattern.test(originalUrl)
     const authorization = headers['authorization'] || ''
 
-    if (
-      !authorization &&
-      !isAuthModule &&
-      !isUserOwnerRoute &&
-      !isWebhookRoute &&
-      !isNotificationRoute &&
-      !isSCB2c2pWebhookRoute &&
-      !isTopupPackagekRoute &&
-      !isEmailSenderRoute
-    ) {
+    if (!authorization && !isAuthModule) {
       throw new UnauthorizedException()
     }
+
     let databaseName = MAIN_DATABASE_NAME
-    if (
-      !isAuthModule &&
-      !isUserOwnerRoute &&
-      !isWebhookRoute &&
-      !isSCB2c2pWebhookRoute &&
-      !isTopupPackagekRoute &&
-      !isNotificationRoute &&
-      !isEmailSenderRoute
-    ) {
+
+    //ถ้าเข้ามาใน path /auth ทั้งหมดจะไม่เข้าเงื่อนไขการสวิช database
+    if (!isAuthModule) {
       const base64Credentials = authorization.split(' ')[1]
       try {
         const user = this.jwtService.verify(base64Credentials)
-        // ถ้า admin ไม่มีมี company
+        // ถ้าไม่มีมี company
         if (user.company) {
           databaseName = user.company
         }

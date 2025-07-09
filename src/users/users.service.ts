@@ -91,7 +91,7 @@ export class UsersService {
       ...signUpRequest,
       roleId,
       isOwner,
-      dbnames: [dbname],
+      dbname,
       password: hashPassword,
     }
 
