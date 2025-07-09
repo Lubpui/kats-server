@@ -93,6 +93,13 @@ export const mockUpPermissions = [
     hasEdit: false,
     hasDelete: false,
   },
+  {
+    name: 'DOCUMENTCOUNT',
+    key: PermissionKey.DOCUMENTCOUNT,
+    hasView: false,
+    hasEdit: false,
+    hasDelete: false,
+  },
 ]
 
 export const mockUpRoleList = [
@@ -187,6 +194,13 @@ export const mockUpRoleList = [
       {
         name: 'TYPEPRODUCT',
         key: PermissionKey.TYPEPRODUCT,
+        hasView: true,
+        hasEdit: true,
+        hasDelete: true,
+      },
+      {
+        name: 'DOCUMENTCOUNT',
+        key: PermissionKey.DOCUMENTCOUNT,
         hasView: true,
         hasEdit: true,
         hasDelete: true,
@@ -289,6 +303,13 @@ export const mockUpRoleList = [
         hasEdit: true,
         hasDelete: false,
       },
+      {
+        name: 'DOCUMENTCOUNT',
+        key: PermissionKey.DOCUMENTCOUNT,
+        hasView: true,
+        hasEdit: true,
+        hasDelete: false,
+      },
     ],
     delete: DeleteStatus.ISNOTDELETE,
   },
@@ -383,6 +404,13 @@ export const mockUpRoleList = [
       {
         name: 'TYPEPRODUCT',
         key: PermissionKey.TYPEPRODUCT,
+        hasView: false,
+        hasEdit: false,
+        hasDelete: false,
+      },
+      {
+        name: 'DOCUMENTCOUNT',
+        key: PermissionKey.DOCUMENTCOUNT,
         hasView: false,
         hasEdit: false,
         hasDelete: false,
@@ -485,6 +513,13 @@ export const mockUpRoleList = [
         hasEdit: false,
         hasDelete: false,
       },
+      {
+        name: 'DOCUMENTCOUNT',
+        key: PermissionKey.DOCUMENTCOUNT,
+        hasView: false,
+        hasEdit: false,
+        hasDelete: false,
+      },
     ],
     delete: DeleteStatus.ISNOTDELETE,
   },
@@ -579,6 +614,13 @@ export const mockUpRoleList = [
       {
         name: 'TYPEPRODUCT',
         key: PermissionKey.TYPEPRODUCT,
+        hasView: false,
+        hasEdit: false,
+        hasDelete: false,
+      },
+      {
+        name: 'DOCUMENTCOUNT',
+        key: PermissionKey.DOCUMENTCOUNT,
         hasView: false,
         hasEdit: false,
         hasDelete: false,
