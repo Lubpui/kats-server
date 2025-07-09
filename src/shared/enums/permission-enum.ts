@@ -12,4 +12,5 @@ export enum PermissionKey {
   COMPANY = 10,
   ROLE = 11,
   TYPEPRODUCT = 12,
+  DOCUMENTCOUNT = 13,
 }
