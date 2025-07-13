@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { Role, RoleDocument } from './schemas/role.schema'
@@ -69,6 +69,9 @@ export class PermissionsService {
   async getAllRolesForPermission(): Promise<RoleResponse[]> {
     try {
       const Roles = await this.roleModel.find()
+      if (!Roles || Roles.length === 0) {
+        throw new NotFoundException('No roles found')
+      }
       return modelMapper(RoleListResponse, { data: Roles }).data
     } catch (error) {
       throw error

@@ -18,13 +18,25 @@ import {
   EmployeeDocument,
   EmployeeSchema,
 } from 'src/employees/schemas/employee.schema'
-import { CUSTOM_CONNECTION_NAME, MAIN_CONNECTION_NAME } from 'src/utils/constanrs'
+import {
+  CUSTOM_CONNECTION_NAME,
+  MAIN_CONNECTION_NAME,
+} from 'src/utils/constanrs'
+import {
+  DocumentCount,
+  DocumentCountDocument,
+  DocumentCountSchema,
+} from 'src/document-count/schemas/document-count.schema'
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectModel(User.name ,MAIN_CONNECTION_NAME) private userModel: Model<UserDocument>,
-    @InjectModel(Employee.name ,CUSTOM_CONNECTION_NAME) private employeeModel: Model<EmployeeDocument>,
+    @InjectModel(User.name, MAIN_CONNECTION_NAME)
+    private userModel: Model<UserDocument>,
+    @InjectModel(Employee.name, CUSTOM_CONNECTION_NAME)
+    private employeeModel: Model<EmployeeDocument>,
+    @InjectModel(DocumentCount.name, CUSTOM_CONNECTION_NAME)
+    private documentCountModel: Model<DocumentCountDocument>,
     private readonly configService: ConfigService,
     private readonly permissionService: PermissionsService,
   ) {}
@@ -53,6 +65,13 @@ export class UsersService {
         EmployeeSchema as any,
       )
 
+      const documentCountModel = connection.model<DocumentCountDocument>(
+        DocumentCount.name,
+        DocumentCountSchema as any,
+      )
+
+      await documentCountModel.insertOne({ expenseCount: 0, bookingCount: 0 })
+
       const CEORole = await this.permissionService.createInitialRole(roleModel)
 
       const newUser = await this.createUser(
@@ -67,6 +86,7 @@ export class UsersService {
         lastName,
         roleId: new Types.ObjectId(newUser.roleId),
         tel: phoneNumber,
+        email: newUser.email,
       }
 
       await new employeeModelCustom(createEmployeeRequest).save()
@@ -102,7 +122,9 @@ export class UsersService {
   }
 
   async getUserProfile(userInfo: UserResponse): Promise<any> {
-    const findedUser = await this.userModel.findById(userInfo._id,{password:0})
+    const findedUser = await this.userModel.findById(userInfo._id, {
+      password: 0,
+    })
     const findedEmployee = await this.employeeModel.findOne({
       email: userInfo.email,
     })

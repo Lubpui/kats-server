@@ -47,6 +47,9 @@ export class EmployeeResponse {
   tel: string
 
   @Expose()
+  email: string
+
+  @Expose()
   image: string
 
   @Expose()

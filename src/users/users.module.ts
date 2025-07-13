@@ -9,9 +9,13 @@ import {
   CUSTOM_CONNECTION_NAME,
   MAIN_CONNECTION_NAME,
 } from 'src/utils/constanrs'
+import { DocumentCount, DocumentCountSchema } from 'src/document-count/schemas/document-count.schema'
 
 export const UserCustomMongoose = MongooseModule.forFeature(
-  [{ name: Employee.name, schema: EmployeeSchema }],
+  [
+    { name: Employee.name, schema: EmployeeSchema },
+    { name: DocumentCount.name, schema: DocumentCountSchema },
+  ],
   CUSTOM_CONNECTION_NAME,
 )
 

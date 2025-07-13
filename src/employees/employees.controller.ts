@@ -7,12 +7,15 @@ import {
   Param,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common'
 import { EmployeesService } from './employees.service'
 import { EmployeeRequest } from './requests/employee.request'
 import { EmployeeResponse } from './responses/employee.response'
 import { QueryPagination } from 'src/shared/types/queryPagination'
+import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard'
 
+@UseGuards(JwtAuthGuard)
 @Controller('employees')
 export class EmployeesController {
   constructor(private readonly employeesService: EmployeesService) {}

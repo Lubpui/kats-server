@@ -27,7 +27,7 @@ export class MongooseService implements MongooseOptionsFactory {
     const { headers, originalUrl } = this.request
     // TODO: rewite this this.request.user.dbname
 
-    const authPattern = new RegExp('/auth/*')
+    const authPattern = new RegExp('^/auth(/.*)?$')
 
     const isAuthModule = authPattern.test(originalUrl)
     const authorization = headers['authorization'] || ''

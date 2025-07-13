@@ -7,11 +7,14 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common'
 import { PermissionsService } from './permissions.service'
 import { RoleLiteResponse, RoleResponse } from './responses/role.response'
 import { RoleRequest } from './requests/role.request'
+import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard'
 
+@UseGuards(JwtAuthGuard)
 @Controller('permissions')
 export class PermissionsController {
   constructor(private readonly permissionsService: PermissionsService) {}

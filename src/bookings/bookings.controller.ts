@@ -7,12 +7,15 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common'
 import { BookingsService } from './bookings.service'
 import { BookingRequest } from './requests/booking.request'
 import { BookingResponse } from './responses/booking.response'
 import { QueryPagination } from 'src/shared/types/queryPagination'
+import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard'
 
+@UseGuards(JwtAuthGuard)
 @Controller('bookings')
 export class BookingsController {
   constructor(private readonly bookingsService: BookingsService) {}

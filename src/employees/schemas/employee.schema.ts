@@ -28,6 +28,9 @@ export class Employee {
   tel: string
 
   @Prop()
+  email: string
+
+  @Prop()
   image: string
 
   @Prop({ type: MongooseSchema.Types.Mixed })

@@ -16,6 +16,9 @@ export class EmployeeRequest {
   tel: string
 
   @IsOptional()
+  email?: string
+
+  @IsOptional()
   image?: string
 
   @IsOptional()
