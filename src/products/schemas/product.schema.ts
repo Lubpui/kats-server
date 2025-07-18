@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document, Schema as MongooseSchema, Types } from 'mongoose'
 import { ProductCatagory } from './product-catagory.schema'
-import { ProductDetailResponse } from '../responses/product.response'
 import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
 import { TypeProduct } from './product-typeproduct.schema'
+import {  ProductDetail, ProductDetailSchemaExcludeIndex } from './product-detail.schema'
 
 export type ProductDocument = Product & Document
 
@@ -15,6 +15,7 @@ export class Product {
   @Prop({ required: true })
   name: string
 
+  //todo: turn to schema type
   @Prop({
     required: true,
     type: MongooseSchema.Types.ObjectId,
@@ -24,10 +25,11 @@ export class Product {
 
   @Prop({
     required: true,
-    type: [MongooseSchema.Types.Mixed],
+    type: [ProductDetailSchemaExcludeIndex],
   })
-  productDetails: ProductDetailResponse[]
+  productDetails: ProductDetail[]
 
+  //todo: turn to schema type
   @Prop({
     required: true,
     type: MongooseSchema.Types.ObjectId,

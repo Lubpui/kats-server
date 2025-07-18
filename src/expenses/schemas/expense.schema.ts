@@ -3,8 +3,7 @@ import { Document, Schema as MongooseSchema, Types } from 'mongoose'
 import { Employee } from 'src/employees/schemas/employee.schema'
 import { ExpenseStatus, PaymentCategory } from 'src/shared/enums/expense.enum'
 import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
-import { ExpenseCatagoryResponse } from '../responses/expense-catagory.response'
-import { ExpenseCatagorySchema } from './expense-catagory.schema'
+import { ExpenseCatagory, ExpenseCatagorySchemaExcludeIndex } from './expense-catagory.schema'
 
 export type ExpenseDocument = Expense & Document
 
@@ -29,8 +28,8 @@ export class Expense {
   @Prop({ enum: PaymentCategory, default: PaymentCategory.WITHDRAW })
   section: number
 
-  @Prop({ required: true, type: [ExpenseCatagorySchema] })
-  categorys: ExpenseCatagoryResponse[]
+  @Prop({ required: true, type: [ExpenseCatagorySchemaExcludeIndex] })
+  categorys: ExpenseCatagory[]
 
   @Prop({ required: true })
   date: string

@@ -8,6 +8,9 @@ import {
 
 export class SalaryInfoResponse {
   @Expose()
+  _id: string
+
+  @Expose()
   @IsEnum(PaymentStatus)
   paymentStatus: PaymentStatus
 

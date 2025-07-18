@@ -1,11 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document, Schema as MongooseSchema, Types } from 'mongoose'
-import { ProductDetailResponse } from 'src/products/responses/product.response'
 import { Product } from 'src/products/schemas/product.schema'
 import { BookingStatus } from 'src/shared/enums/booking-status.enum'
 import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
-import { GuaranteeSchema } from './guarantee.schema'
-import { GuaranteeResponse } from '../responses/guarantee.response'
+import { Guarantee, GuaranteeSchemaExcludeIndex } from './guarantee.schema'
+import { ProductDetailSchemaExcludeIndex, ProductDetail } from 'src/products/schemas/product-detail.schema'
 
 export type BookingDocument = Booking & Document
 
@@ -54,11 +53,11 @@ export class Booking {
   @Prop({ enum: BookingStatus, default: BookingStatus.PENDING })
   status: number
 
-  @Prop({ required: true, type: MongooseSchema.Types.Mixed })
-  price: ProductDetailResponse
+  @Prop({ required: true, type: ProductDetailSchemaExcludeIndex })
+  price: ProductDetail
 
-  @Prop({ required: true, type: [GuaranteeSchema] })
-  guarantees: GuaranteeResponse[]
+  @Prop({ required: true, type: [GuaranteeSchemaExcludeIndex] })
+  guarantees: Guarantee[]
 
   @Prop({ required: true })
   tel: string

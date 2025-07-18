@@ -17,5 +17,7 @@ export class ExpenseCatagory {
 }
 
 const ExpenseCatagorySchema = SchemaFactory.createForClass(ExpenseCatagory)
+const ExpenseCatagorySchemaExcludeIndex =
+  SchemaFactory.createForClass(ExpenseCatagory)
 
-export { ExpenseCatagorySchema }
+export { ExpenseCatagorySchema, ExpenseCatagorySchemaExcludeIndex }

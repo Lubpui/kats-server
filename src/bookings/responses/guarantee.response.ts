@@ -3,6 +3,9 @@ import { BookingStatus } from 'src/shared/enums/booking-status.enum'
 
 export class GuaranteeResponse {
   @Expose()
+  _id: string
+
+  @Expose()
   serviceNo: number // ครั้งที่
 
   @Expose()

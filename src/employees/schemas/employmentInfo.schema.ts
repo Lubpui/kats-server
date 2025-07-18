@@ -1,8 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document, Schema as MongooseSchema, Types } from 'mongoose'
 import { Role } from 'src/permissions/schemas/role.schema'
-import { SalaryInfoSchema } from './salaryInfo.schema'
-import { SalaryInfoResponse } from '../responses/salaryInfo.response'
+import { SalaryInfo, SalaryInfoSchema } from './salaryInfo.schema'
 
 export type EmploymentInfoDocument = EmploymentInfo & Document
 
@@ -22,9 +21,10 @@ export class EmploymentInfo {
     required: true,
     type: { SalaryInfoSchema },
   })
-  salaryInfo: SalaryInfoResponse
+  salaryInfo: SalaryInfo
 }
 
 const EmploymentInfoSchema = SchemaFactory.createForClass(EmploymentInfo)
+const EmploymentInfoSchemaExcludeIndex = SchemaFactory.createForClass(EmploymentInfo)
 
-export { EmploymentInfoSchema }
+export { EmploymentInfoSchema, EmploymentInfoSchemaExcludeIndex }

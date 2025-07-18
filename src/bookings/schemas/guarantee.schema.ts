@@ -38,5 +38,6 @@ export class Guarantee {
 }
 
 const GuaranteeSchema = SchemaFactory.createForClass(Guarantee)
+const GuaranteeSchemaExcludeIndex = SchemaFactory.createForClass(Guarantee)
 
-export { GuaranteeSchema }
+export { GuaranteeSchema, GuaranteeSchemaExcludeIndex }

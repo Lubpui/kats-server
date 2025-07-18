@@ -4,6 +4,9 @@ import { CategoryType } from 'src/shared/enums/expense.enum'
 
 export class ExpenseCatagoryResponse {
   @Expose()
+  _id: string
+  
+  @Expose()
   @IsEnum(CategoryType)
   type: CategoryType
 

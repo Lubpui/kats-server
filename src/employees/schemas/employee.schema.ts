@@ -1,9 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Document, Schema as MongooseSchema, Types } from 'mongoose'
-import { Role } from 'src/permissions/schemas/role.schema'
+import { Document } from 'mongoose'
 import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
-import { SalaryInfoResponse } from '../responses/salaryInfo.response'
-import { SalaryInfoSchema } from './salaryInfo.schema'
+import { EmploymentInfoSchemaExcludeIndex, EmploymentInfo } from './employmentInfo.schema'
 
 export type EmployeeDocument = Employee & Document
 
@@ -18,13 +16,6 @@ export class Employee {
   @Prop({ required: true })
   lastName: string
 
-  @Prop({
-    required: true,
-    type: MongooseSchema.Types.ObjectId,
-    ref: Role.name,
-  })
-  roleId: Types.ObjectId
-
   @Prop({ required: true })
   tel: string
 
@@ -34,8 +25,8 @@ export class Employee {
   @Prop()
   image: string
 
-  @Prop({ type: SalaryInfoSchema })
-  salary: SalaryInfoResponse
+  @Prop({ type: EmploymentInfoSchemaExcludeIndex })
+  employmentInfo: EmploymentInfo
 
   @Prop({ default: DeleteStatus.ISNOTDELETE, enum: DeleteStatus })
   delete: DeleteStatus
