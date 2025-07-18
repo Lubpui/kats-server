@@ -27,4 +27,11 @@ export class EmploymentInfo {
 const EmploymentInfoSchema = SchemaFactory.createForClass(EmploymentInfo)
 const EmploymentInfoSchemaExcludeIndex = SchemaFactory.createForClass(EmploymentInfo)
 
+EmploymentInfoSchema.virtual('role', {
+  ref: 'Role',
+  localField: 'roleId',
+  foreignField: '_id',
+  justOne: true,
+})
+
 export { EmploymentInfoSchema, EmploymentInfoSchemaExcludeIndex }

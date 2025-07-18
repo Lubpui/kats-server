@@ -20,5 +20,6 @@ export class ProductCatagory {
 }
 
 const ProductCatagorySchema = SchemaFactory.createForClass(ProductCatagory)
+const ProductCatagorySchemaExcludeIndex = SchemaFactory.createForClass(ProductCatagory)
 
-export { ProductCatagorySchema }
+export { ProductCatagorySchema, ProductCatagorySchemaExcludeIndex }

@@ -7,7 +7,7 @@ export type ExpenseCatagoryDocument = ExpenseCatagory & Document
 /**
  * ประเภทค่าใช้จ่าย
  */
-@Schema({ timestamps: true, toJSON: { virtuals: true } })
+@Schema({ timestamps: true })
 export class ExpenseCatagory {
   @Prop({ enum: CategoryType, default: CategoryType.FUEL })
   type: CategoryType

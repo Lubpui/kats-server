@@ -7,7 +7,7 @@ export type RoleDocument = Role & Document
 /**
  * กำหนดตำแหน่งพนักงงาน
  */
-@Schema({ timestamps: true, toJSON: { virtuals: true } })
+@Schema({ timestamps: true })
 export class Role {
   @Prop({ required: true, unique: true })
   name: string

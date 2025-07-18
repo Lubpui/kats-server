@@ -8,7 +8,7 @@ export type EmployeeDocument = Employee & Document
 /**
  * ผนักงาน
  */
-@Schema({ timestamps: true, toJSON: { virtuals: true } })
+@Schema({ timestamps: true })
 export class Employee {
   @Prop({ required: true })
   firstName: string
@@ -33,12 +33,5 @@ export class Employee {
 }
 
 const EmployeeSchema = SchemaFactory.createForClass(Employee)
-
-EmployeeSchema.virtual('role', {
-  ref: 'Role',
-  localField: 'roleId',
-  foreignField: '_id',
-  justOne: true,
-})
 
 export { EmployeeSchema }

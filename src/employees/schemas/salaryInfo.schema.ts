@@ -11,7 +11,7 @@ export type SalaryInfoDocument = SalaryInfo & Document
 /**
  * รายละเอียดการเงินของพนักงาน
  */
-@Schema({ timestamps: true, toJSON: { virtuals: true } })
+@Schema({ timestamps: true })
 export class SalaryInfo {
   @Prop({ enum: PaymentStatus, default: PaymentStatus.CASH })
   paymentStatus: number

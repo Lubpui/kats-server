@@ -7,7 +7,7 @@ export type GuaranteeDocument = Guarantee & Document
 /**
  * การรับประกันการเข้ารับบริการ
  */
-@Schema({ timestamps: true, toJSON: { virtuals: true } })
+@Schema({ timestamps: true })
 export class Guarantee {
   @Prop({ required: true })
   serviceNo: number // ครั้งที่
