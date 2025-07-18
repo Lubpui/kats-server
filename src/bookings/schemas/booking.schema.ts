@@ -3,8 +3,9 @@ import { Document, Schema as MongooseSchema, Types } from 'mongoose'
 import { ProductDetailResponse } from 'src/products/responses/product.response'
 import { Product } from 'src/products/schemas/product.schema'
 import { BookingStatus } from 'src/shared/enums/booking-status.enum'
-import { GuaranteeResponse } from '../responses/booking.response'
 import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
+import { GuaranteeSchema } from './guarantee.schema'
+import { GuaranteeResponse } from '../responses/guarantee.response'
 
 export type BookingDocument = Booking & Document
 
@@ -56,7 +57,7 @@ export class Booking {
   @Prop({ required: true, type: MongooseSchema.Types.Mixed })
   price: ProductDetailResponse
 
-  @Prop({ required: true, type: [MongooseSchema.Types.Mixed] })
+  @Prop({ required: true, type: [GuaranteeSchema] })
   guarantees: GuaranteeResponse[]
 
   @Prop({ required: true })

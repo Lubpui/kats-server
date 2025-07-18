@@ -1,8 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document, Schema as MongooseSchema, Types } from 'mongoose'
-import { SalaryDetailResponse } from '../responses/employee.response'
 import { Role } from 'src/permissions/schemas/role.schema'
 import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
+import { SalaryInfoResponse } from '../responses/salaryInfo.response'
+import { SalaryInfoSchema } from './salaryInfo.schema'
 
 export type EmployeeDocument = Employee & Document
 
@@ -33,8 +34,8 @@ export class Employee {
   @Prop()
   image: string
 
-  @Prop({ type: MongooseSchema.Types.Mixed })
-  salary: SalaryDetailResponse
+  @Prop({ type: SalaryInfoSchema })
+  salary: SalaryInfoResponse
 
   @Prop({ default: DeleteStatus.ISNOTDELETE, enum: DeleteStatus })
   delete: DeleteStatus
