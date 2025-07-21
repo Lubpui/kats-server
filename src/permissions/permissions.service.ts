@@ -59,8 +59,20 @@ export class PermissionsService {
       const filterdRoles = roles.filter(
         (role) => role.delete === (del as DeleteStatus),
       )
+      
+      const sortedRoles = filterdRoles.sort((a, b) => {
+        if (a.type === 'CEO') return -1
+        if (b.type === 'CEO') return 1
 
-      return filterdRoles
+        if (a.type === 'ADMIN') return -1
+        if (b.type === 'ADMIN') return 1
+
+        if (a.type === 'ACCOUNT') return -1
+        if (b.type === 'ACCOUNT') return 1
+        return 0
+      })
+
+      return sortedRoles
     } catch (error) {
       throw error
     }
@@ -68,11 +80,24 @@ export class PermissionsService {
 
   async getAllRolesForPermission(): Promise<RoleResponse[]> {
     try {
-      const Roles = await this.roleModel.find()
-      if (!Roles || Roles.length === 0) {
+      const roles = await this.roleModel.find()
+      if (!roles || roles.length === 0) {
         throw new NotFoundException('No roles found')
       }
-      return modelMapper(RoleListResponse, { data: Roles }).data
+
+      const sortedRoles = roles.sort((a, b) => {
+        if (a.type === 'CEO') return -1
+        if (b.type === 'CEO') return 1
+
+        if (a.type === 'ADMIN') return -1
+        if (b.type === 'ADMIN') return 1
+
+        if (a.type === 'ACCOUNT') return -1
+        if (b.type === 'ACCOUNT') return 1
+        return 0
+      })
+
+      return modelMapper(RoleListResponse, { data: sortedRoles }).data
     } catch (error) {
       throw error
     }

@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsOptional } from 'class-validator'
-import { ProductDetailResponse } from 'src/products/responses/product.response'
+import { ProductDetailResponse, ProductSnapshotResponse } from 'src/products/responses/product.response'
 import { BookingStatus } from 'src/shared/enums/booking-status.enum'
 import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
 import { GuaranteeResponse } from '../responses/guarantee.response'
@@ -38,8 +38,11 @@ export class BookingRequest {
   @IsNotEmpty()
   status: BookingStatus
 
-  @IsNotEmpty()
-  productId: string
+  @IsOptional()
+  product?: ProductSnapshotResponse
+
+  @IsOptional()
+  productId?: string
 
   @IsNotEmpty()
   price: ProductDetailResponse

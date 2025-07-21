@@ -222,6 +222,7 @@ export class BookingsService {
     const booking = await this.bookingModel.findByIdAndUpdate(bookingId, {
       $set: { ...updateBookingRequest },
     })
+
     return booking
   }
 
