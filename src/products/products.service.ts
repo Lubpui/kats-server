@@ -40,11 +40,12 @@ export class ProductsService {
     createProductResquest: ProductRequest,
   ): Promise<ProductResponse> {
     try {
-      const { catagoryId } = createProductResquest
+      const { catagoryId, typeProductId } = createProductResquest
 
       const newProduct = {
         ...createProductResquest,
         catagoryId: new Types.ObjectId(catagoryId),
+        typeProductId: new Types.ObjectId(typeProductId),
       }
 
       const createdProduct = await new this.productModel(newProduct).save()
@@ -52,6 +53,7 @@ export class ProductsService {
       const productsResponse = await this.productModel
         .findById(createdProduct._id)
         .populate('catagory')
+        .populate('typeProduct')
 
       return modelMapper(ProductResponse, productsResponse)
     } catch (error) {
@@ -109,6 +111,7 @@ export class ProductsService {
     const Product = await this.productModel
       .findById(productId)
       .populate('catagory')
+      .populate('typeProduct')
     return modelMapper(ProductResponse, Product)
   }
 

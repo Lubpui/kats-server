@@ -7,7 +7,6 @@ import { Product, ProductDocument } from 'src/products/schemas/product.schema'
 import {
   BookingListResponse,
   BookingResponse,
-  GuaranteeResponse,
 } from './responses/booking.response'
 import { modelMapper } from 'src/utils/mapper.util'
 import { BookingStatus } from 'src/shared/enums/booking-status.enum'
@@ -27,6 +26,11 @@ import {
 } from 'src/products/schemas/product-typeproduct.schema'
 import dayjs from 'dayjs'
 import { CUSTOM_CONNECTION_NAME } from 'src/utils/constanrs'
+import { GuaranteeResponse } from './responses/guarantee.response'
+import {
+  ProductResponse,
+  ProductSnapshotResponse,
+} from 'src/products/responses/product.response'
 
 @Injectable()
 export class BookingsService {
@@ -54,15 +58,29 @@ export class BookingsService {
     try {
       const code = await this.documentCountService.getBookingCode(session)
 
-      const findedProduct = await this.productModel.findById(
-        createBookingRequest.productId,
-      )
+      const findedProduct = await this.productModel
+        .findById(createBookingRequest.productId)
+        .populate('catagory')
+        .populate('typeProduct') 
 
       if (!findedProduct) throw new NotFoundException('ไม่พบสินค้า')
 
+      const product = modelMapper(ProductResponse, findedProduct)
+      const {
+        catagory: _catagory,
+        typeProduct: _typeProduct,
+        ...productSnapshot
+      }: ProductSnapshotResponse = {
+        ...product,
+        catagorySnapshot: product.catagory,
+        typeProductSnapshot: product.typeProduct,
+      }
+
+      console.log(productSnapshot)
+
       const newCreateBookingRequest = {
         ...createBookingRequest,
-        productId: findedProduct._id,
+        product: productSnapshot,
         codeId: code,
       }
 
@@ -156,50 +174,6 @@ export class BookingsService {
             ],
           },
         },
-        {
-          $lookup: {
-            from: this.productModel.collection.name,
-            localField: 'productId',
-            foreignField: '_id',
-            as: 'product',
-            pipeline: [
-              {
-                $lookup: {
-                  from: this.catagoryModel.collection.name,
-                  localField: 'catagoryId',
-                  foreignField: '_id',
-                  as: 'catagory',
-                },
-              },
-              {
-                $unwind: {
-                  path: '$catagory',
-                  preserveNullAndEmptyArrays: true,
-                },
-              },
-              {
-                $lookup: {
-                  from: this.typeProductModel.collection.name,
-                  localField: 'typeProductId',
-                  foreignField: '_id',
-                  as: 'typeProduct',
-                },
-              },
-              {
-                $unwind: {
-                  path: '$typeProduct',
-                  preserveNullAndEmptyArrays: true,
-                },
-              },
-            ],
-          },
-        },
-        {
-          $unwind: {
-            path: '$product',
-            preserveNullAndEmptyArrays: true,
-          },
-        },
         ...productNamePipline,
       ])
 
@@ -233,9 +207,7 @@ export class BookingsService {
 
   async getBookingById(bookingId: string): Promise<BookingResponse> {
     try {
-      const bookingRes = await this.bookingModel
-        .findById(bookingId)
-        .populate({ path: 'product', populate: 'catagory' })
+      const bookingRes = await this.bookingModel.findById(bookingId)
 
       return modelMapper(BookingResponse, bookingRes)
     } catch (error) {

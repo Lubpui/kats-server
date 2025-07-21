@@ -2,7 +2,7 @@ import { Expose, Type } from 'class-transformer'
 import { IsEnum } from 'class-validator'
 import {
   ProductDetailResponse,
-  ProductResponse,
+  ProductSnapshotResponse,
 } from 'src/products/responses/product.response'
 import { BookingStatus } from 'src/shared/enums/booking-status.enum'
 import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
@@ -47,8 +47,8 @@ export class BookingResponse {
   status: BookingStatus
 
   @Expose()
-  @Type(() => ProductResponse)
-  product: ProductResponse
+  @Type(() => ProductSnapshotResponse)
+  product: ProductSnapshotResponse
 
   @Expose()
   @Type(() => GuaranteeResponse)

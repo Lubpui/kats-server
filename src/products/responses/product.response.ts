@@ -55,3 +55,13 @@ export class ProductListResponse {
   @Type(() => ProductResponse)
   data: ProductResponse[]
 }
+
+export class ProductSnapshotResponse extends ProductResponse {
+  @Expose()
+  @Type(() => ProductCatagoryResponse)
+  catagorySnapshot: ProductCatagoryResponse
+
+  @Expose()
+  @Type(() => TypeProductResponse)
+  typeProductSnapshot: TypeProductResponse
+}

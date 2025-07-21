@@ -1,17 +1,23 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Document, Schema as MongooseSchema, Types } from 'mongoose'
-import { Product } from 'src/products/schemas/product.schema'
+import { Document } from 'mongoose'
+import {
+  Product,
+  ProductSchemaExcludeImdex,
+} from 'src/products/schemas/product.schema'
 import { BookingStatus } from 'src/shared/enums/booking-status.enum'
 import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
 import { Guarantee, GuaranteeSchemaExcludeIndex } from './guarantee.schema'
-import { ProductDetailSchemaExcludeIndex, ProductDetail } from 'src/products/schemas/product-detail.schema'
+import {
+  ProductDetailSchemaExcludeIndex,
+  ProductDetail,
+} from 'src/products/schemas/product-detail.schema'
 
 export type BookingDocument = Booking & Document
 
 /**
  * จองคิว
  */
-@Schema({ timestamps: true, toJSON: { virtuals: true } })
+@Schema({ timestamps: true })
 export class Booking {
   @Prop({ required: true })
   codeId: string
@@ -43,12 +49,8 @@ export class Booking {
   @Prop({ required: true })
   province: string //ทะเบียนจังหวัด
 
-  @Prop({
-    required: true,
-    type: MongooseSchema.Types.ObjectId,
-    ref: Product.name,
-  })
-  productId: Types.ObjectId
+  @Prop({ required: true, type: ProductSchemaExcludeImdex })
+  product: Product
 
   @Prop({ enum: BookingStatus, default: BookingStatus.PENDING })
   status: number
@@ -73,12 +75,5 @@ export class Booking {
 }
 
 const BookingSchema = SchemaFactory.createForClass(Booking)
-
-BookingSchema.virtual('product', {
-  ref: 'Product',
-  localField: 'productId',
-  foreignField: '_id',
-  justOne: true,
-})
 
 export { BookingSchema }

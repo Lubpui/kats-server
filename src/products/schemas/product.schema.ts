@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Document } from 'mongoose'
+import { Document, Schema as MongooseSchema, Types } from 'mongoose'
 import {
   ProductCatagory,
   ProductCatagorySchemaExcludeIndex,
@@ -19,16 +19,22 @@ export type ProductDocument = Product & Document
 /**
  * สินค้า
  */
-@Schema({ timestamps: true})
+@Schema({ timestamps: true, toJSON: { virtuals: true } })
 export class Product {
   @Prop({ required: true })
   name: string
 
   @Prop({
-    required: true,
     type: ProductCatagorySchemaExcludeIndex,
   })
-  catagory: ProductCatagory
+  catagorySnapshot: ProductCatagory
+
+  @Prop({
+    required: true,
+    type: MongooseSchema.Types.ObjectId,
+    ref: ProductCatagory.name,
+  })
+  catagoryId: Types.ObjectId
 
   @Prop({
     required: true,
@@ -37,15 +43,36 @@ export class Product {
   productDetails: ProductDetail[]
 
   @Prop({
-    required: true,
     type: TypeProductSchemaExcludeIndex,
   })
-  typeProduct: TypeProduct
+  typeProductSnapshot: TypeProduct
+
+  @Prop({
+    required: true,
+    type: MongooseSchema.Types.ObjectId,
+    ref: TypeProduct.name,
+  })
+  typeProductId: Types.ObjectId
 
   @Prop({ enum: DeleteStatus, default: DeleteStatus.ISNOTDELETE })
   delete: number
 }
 
 const ProductSchema = SchemaFactory.createForClass(Product)
+const ProductSchemaExcludeImdex = SchemaFactory.createForClass(Product)
 
-export { ProductSchema }
+ProductSchema.virtual('catagory', {
+  ref: 'ProductCatagory',
+  localField: 'catagoryId',
+  foreignField: '_id',
+  justOne: true,
+})
+
+ProductSchema.virtual('typeProduct', {
+  ref: 'TypeProduct',
+  localField: 'typeProductId',
+  foreignField: '_id',
+  justOne: true,
+})
+
+export { ProductSchema, ProductSchemaExcludeImdex }
