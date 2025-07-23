@@ -24,6 +24,7 @@ import {
   TypeProductDocument,
 } from './schemas/product-typeproduct.schema'
 import { CUSTOM_CONNECTION_NAME } from 'src/utils/constanrs'
+import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
 
 @Injectable()
 export class ProductsService {
@@ -89,22 +90,42 @@ export class ProductsService {
     }
   }
 
-  async getAllProducts(): Promise<ProductResponse[]> {
-    const products = await this.productModel
+  async getAllProducts(del: number): Promise<ProductResponse[]> {
+    const productRes = await this.productModel
       .find()
       .populate('catagory')
       .populate('typeProduct')
-    return modelMapper(ProductListResponse, { data: products }).data
+    const products = modelMapper(ProductListResponse, { data: productRes }).data
+
+    const filterdProducts = products.filter(
+      (product) => product.delete === (del as DeleteStatus),
+    )
+
+    return filterdProducts
   }
 
-  async getAllCatagories(): Promise<ProductCatagoryResponse[]> {
-    const catagories = await this.productCatagoryModel.find()
-    return modelMapper(ProductCatagoryListResponse, { data: catagories }).data
+  async getAllCatagories(del: number): Promise<ProductCatagoryResponse[]> {
+    const catagorieRes = await this.productCatagoryModel.find()
+    const catagories = modelMapper(ProductCatagoryListResponse, {
+      data: catagorieRes,
+    }).data
+
+    const filterdCatagories = catagories.filter(
+      (catagorie) => catagorie.delete === (del as DeleteStatus),
+    )
+    return filterdCatagories
   }
 
-  async getAllTypeProduct(): Promise<TypeProductResponse[]> {
-    const productTypes = await this.productTypeModel.find()
-    return modelMapper(ProductCatagoryListResponse, { data: productTypes }).data
+  async getAllTypeProduct(del: number): Promise<TypeProductResponse[]> {
+    const productTypeRes = await this.productTypeModel.find()
+    const productTypes = modelMapper(ProductCatagoryListResponse, {
+      data: productTypeRes,
+    }).data
+
+    const filterdTypeProducts = productTypes.filter(
+      (productType) => productType.delete === (del as DeleteStatus),
+    )
+    return filterdTypeProducts
   }
 
   async getProductById(productId: string): Promise<ProductResponse> {

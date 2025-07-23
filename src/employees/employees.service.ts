@@ -37,8 +37,16 @@ export class EmployeesService {
   }
 
   async getAllEmployees(): Promise<EmployeeResponse[]> {
-    const employees = await this.EmployeeModel.find().populate('role')
-    return modelMapper(EmployeeListResponse, { data: employees }).data
+    try {
+      const employees = await this.EmployeeModel.find().populate('role')
+      console.log(employees)
+
+      return modelMapper(EmployeeListResponse, { data: employees }).data
+    } catch (error) {
+      console.log('getAllEmployees error:', error)
+
+      throw error
+    }
   }
 
   async getAllEmployeePaginations(

@@ -14,13 +14,14 @@ import {
   DocumentCountDocument,
 } from 'src/document-count/schemas/document-count.schema'
 import { CUSTOM_CONNECTION_NAME } from 'src/utils/constanrs'
+import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
 
 @Injectable()
 export class ExpensesService {
   constructor(
-    @InjectModel(Expense.name ,CUSTOM_CONNECTION_NAME)
+    @InjectModel(Expense.name, CUSTOM_CONNECTION_NAME)
     private readonly expenseModel: Model<ExpenseDocument>,
-    @InjectModel(DocumentCount.name ,CUSTOM_CONNECTION_NAME)
+    @InjectModel(DocumentCount.name, CUSTOM_CONNECTION_NAME)
     private readonly documentCountModel: Model<DocumentCountDocument>,
     private readonly documentCountService: DocumentCountService,
   ) {}
@@ -59,9 +60,15 @@ export class ExpensesService {
     }
   }
 
-  async getAllExpenses(): Promise<ExpenseResponse[]> {
-    const Expenses = await this.expenseModel.find().populate('employee')
-    return modelMapper(ExpenseListResponse, { data: Expenses }).data
+  async getAllExpenses(del: number): Promise<ExpenseResponse[]> {
+    const ExpenseRes = await this.expenseModel.find().populate('employee')
+    const Expenses = modelMapper(ExpenseListResponse, { data: ExpenseRes }).data
+
+    const filterdExpenses = Expenses.filter(
+      (Expense) => Expense.delete === (del as DeleteStatus),
+    )
+
+    return filterdExpenses
   }
 
   async getExpenseById(expenseId: string): Promise<ExpenseResponse> {

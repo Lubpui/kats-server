@@ -31,6 +31,7 @@ import {
   ProductResponse,
   ProductSnapshotResponse,
 } from 'src/products/responses/product.response'
+import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
 
 @Injectable()
 export class BookingsService {
@@ -61,7 +62,7 @@ export class BookingsService {
       const findedProduct = await this.productModel
         .findById(createBookingRequest.productId)
         .populate('catagory')
-        .populate('typeProduct') 
+        .populate('typeProduct')
 
       if (!findedProduct) throw new NotFoundException('ไม่พบสินค้า')
 
@@ -99,7 +100,7 @@ export class BookingsService {
     }
   }
 
-  async getAllBookings(): Promise<BookingResponse[]> {
+  async getAllBookings(del: number): Promise<BookingResponse[]> {
     const bookingRes = await this.bookingModel.find().populate({
       path: 'product',
       populate: [
@@ -114,7 +115,11 @@ export class BookingsService {
 
     const bookings = modelMapper(BookingListResponse, { data: bookingRes }).data
 
-    bookings.sort((a, b) => {
+    const filterdBookings = bookings.filter(
+      (booking) => booking.delete === (del as DeleteStatus),
+    )
+
+    filterdBookings.sort((a, b) => {
       if (
         a.status === BookingStatus.COMPLETED &&
         b.status !== BookingStatus.COMPLETED
@@ -132,7 +137,7 @@ export class BookingsService {
       return 0
     })
 
-    return bookings
+    return filterdBookings
   }
 
   async getAllBookingPaginations(

@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common'
 import { ProductsService } from './products.service'
 import { ProductCatagoryResponse } from './responses/product-catagory.response'
@@ -44,18 +45,18 @@ export class ProductsController {
   }
 
   @Get()
-  getAllProducts(): Promise<ProductResponse[]> {
-    return this.productsService.getAllProducts()
+  getAllProducts(@Query('delete') del: string): Promise<ProductResponse[]> {
+    return this.productsService.getAllProducts(Number(del))
   }
 
   @Get('catagories')
-  getAllCatagories(): Promise<ProductCatagoryResponse[]> {
-    return this.productsService.getAllCatagories()
+  getAllCatagories(@Query('delete') del: string): Promise<ProductCatagoryResponse[]> {
+    return this.productsService.getAllCatagories(Number(del))
   }
 
   @Get('typeProduct')
-  getAllTypeProduct(): Promise<TypeProductResponse[]> {
-    return this.productsService.getAllTypeProduct()
+  getAllTypeProduct(@Query('delete') del: string): Promise<TypeProductResponse[]> {
+    return this.productsService.getAllTypeProduct(Number(del))
   }
 
   @Get(':productId')

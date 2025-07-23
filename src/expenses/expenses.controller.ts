@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common'
 import { ExpensesService } from './expenses.service'
 import { ExpenseResponse } from './responses/expense.response'
 import { ExpenseRequest } from './requests/expense.request'
@@ -15,8 +25,8 @@ export class ExpensesController {
   }
 
   @Get()
-  getAllExpenses(): Promise<ExpenseResponse[]> {
-    return this.expensesService.getAllExpenses()
+  getAllExpenses(@Query('delete') del: string): Promise<ExpenseResponse[]> {
+    return this.expensesService.getAllExpenses(Number(del))
   }
 
   @Get(':expenseId')

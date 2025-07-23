@@ -48,8 +48,8 @@ export class BookingsController {
   }
 
   @Get()
-  getAllBookings(): Promise<BookingResponse[]> {
-    return this.bookingsService.getAllBookings()
+  getAllBookings(@Query('delete') del: string): Promise<BookingResponse[]> {
+    return this.bookingsService.getAllBookings(Number(del))
   }
 
   @Get('pagination')
