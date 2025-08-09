@@ -12,7 +12,7 @@ export class ProductDetail {
   type: string
 
   @Prop({ required: true })
-  amount: string
+  amount: number
 }
 
 const ProductDetailSchema = SchemaFactory.createForClass(ProductDetail)
