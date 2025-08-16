@@ -1,14 +1,17 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document } from 'mongoose'
 import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
-import { EmploymentInfoSchemaExcludeIndex, EmploymentInfo } from './employmentInfo.schema'
+import {
+  EmploymentInfoSchemaExcludeIndex,
+  EmploymentInfo,
+} from './employmentInfo.schema'
 
 export type EmployeeDocument = Employee & Document
 
 /**
  * ผนักงาน
  */
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, toJSON: { virtuals: true } })
 export class Employee {
   @Prop({ required: true })
   firstName: string
@@ -33,5 +36,12 @@ export class Employee {
 }
 
 const EmployeeSchema = SchemaFactory.createForClass(Employee)
+
+EmployeeSchema.virtual('employmentInfo.role', {
+  ref: 'Role',
+  localField: 'employmentInfo.roleId',
+  foreignField: '_id',
+  justOne: true,
+})
 
 export { EmployeeSchema }

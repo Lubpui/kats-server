@@ -27,6 +27,8 @@ import {
   DocumentCountDocument,
   DocumentCountSchema,
 } from 'src/document-count/schemas/document-count.schema'
+import { EmployeeRequest } from 'src/employees/requests/employee.request'
+import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
 
 @Injectable()
 export class UsersService {
@@ -81,12 +83,15 @@ export class UsersService {
         true,
       )
 
-      const createEmployeeRequest = {
+      const createEmployeeRequest: EmployeeRequest = {
         firstName,
         lastName,
-        roleId: new Types.ObjectId(newUser.roleId),
-        tel: phoneNumber,
+        employmentInfo: {
+          roleId: newUser.roleId,
+        },
+        tel: phoneNumber ?? '',
         email: newUser.email,
+        delete: DeleteStatus.ISNOTDELETE,
       }
 
       await new employeeModelCustom(createEmployeeRequest).save()

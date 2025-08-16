@@ -9,7 +9,7 @@ export type ProductDetailDocument = ProductDetail & Document
 @Schema()
 export class ProductDetail {
   @Prop({ required: true })
-  type: string
+  type: number
 
   @Prop({ required: true })
   amount: number

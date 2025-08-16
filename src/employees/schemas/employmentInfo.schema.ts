@@ -18,8 +18,7 @@ export class EmploymentInfo {
   roleId: Types.ObjectId
 
   @Prop({
-    required: true,
-    type: { SalaryInfoSchema },
+    type: SalaryInfoSchema ,
   })
   salaryInfo: SalaryInfo
 }

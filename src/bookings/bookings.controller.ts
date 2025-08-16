@@ -15,16 +15,17 @@ import { BookingResponse } from './responses/booking.response'
 import { QueryPagination } from 'src/shared/types/queryPagination'
 import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard'
 
-@UseGuards(JwtAuthGuard)
 @Controller('bookings')
 export class BookingsController {
   constructor(private readonly bookingsService: BookingsService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   createBooking(@Body() createBookingRequest: BookingRequest) {
     return this.bookingsService.createBooking(createBookingRequest)
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('approve/:bookingId')
   approveBookingById(
     @Param('bookingId') bookingId: string,
@@ -36,6 +37,7 @@ export class BookingsController {
     )
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('cancel/:bookingId')
   cancelBookingById(
     @Param('bookingId') bookingId: string,
@@ -47,11 +49,20 @@ export class BookingsController {
     )
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   getAllBookings(@Query('delete') del: string): Promise<BookingResponse[]> {
     return this.bookingsService.getAllBookings(Number(del))
   }
 
+  @Get('preview')
+  getAllBookingsForPreview(
+    @Query('delete') del: string,
+  ): Promise<BookingResponse[]> {
+    return this.bookingsService.getAllBookings(Number(del))
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get('pagination')
   getAllBookingPaginations(
     @Query() query: QueryPagination,
@@ -59,6 +70,7 @@ export class BookingsController {
     return this.bookingsService.getAllBookingPaginations(query)
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':bookingId')
   getBookingById(
     @Param('bookingId') bookingId: string,
@@ -66,6 +78,7 @@ export class BookingsController {
     return this.bookingsService.getBookingById(bookingId)
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(':bookingId')
   updateeBookingById(
     @Param('bookingId') bookingId: string,
@@ -77,6 +90,7 @@ export class BookingsController {
     )
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put('updateGuarantee/:bookingId')
   updateGuaranteeByBookingId(
     @Param('bookingId') bookingId: string,
@@ -88,6 +102,7 @@ export class BookingsController {
     )
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('selectDelete/:bookingId')
   isDeleteBookingById(
     @Param('bookingId') bookingId: string,
@@ -99,6 +114,7 @@ export class BookingsController {
     )
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':bookingId')
   deleteBookingById(@Param('bookingId') bookingId: string) {
     return this.bookingsService.deleteBookingById(bookingId)

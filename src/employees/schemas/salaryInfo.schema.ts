@@ -23,7 +23,7 @@ export class SalaryInfo {
   bankName: number
 
   @Prop()
-  accountNumber: string
+  accountNumber: number
 
   @Prop()
   amount: number

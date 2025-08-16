@@ -38,8 +38,11 @@ export class EmployeesService {
 
   async getAllEmployees(): Promise<EmployeeResponse[]> {
     try {
-      const employees = await this.EmployeeModel.find().populate('role')
-      console.log(employees)
+      const employees = await this.EmployeeModel.find().populate({
+        path: 'employmentInfo.role',
+        model: this.roleModel,
+        options: { strictPopulate: false },
+      })
 
       return modelMapper(EmployeeListResponse, { data: employees }).data
     } catch (error) {
@@ -67,9 +70,9 @@ export class EmployeesService {
         {
           $lookup: {
             from: this.roleModel.collection.name,
-            localField: 'roleId',
+            localField: 'employmentInfo.roleId',
             foreignField: '_id',
-            as: 'role',
+            as: 'employmentInfo.role',
             pipeline: [
               {
                 $project: {
@@ -81,7 +84,7 @@ export class EmployeesService {
         },
         {
           $unwind: {
-            path: '$role',
+            path: '$employmentInfo.role',
             preserveNullAndEmptyArrays: true,
           },
         },

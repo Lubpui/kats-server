@@ -77,8 +77,6 @@ export class BookingsService {
         typeProductSnapshot: product.typeProduct,
       }
 
-      console.log(productSnapshot)
-
       const newCreateBookingRequest = {
         ...createBookingRequest,
         product: productSnapshot,

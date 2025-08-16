@@ -2,10 +2,15 @@ import { IsNotEmpty, IsOptional } from 'class-validator'
 import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
 import { SalaryInfoResponse } from '../responses/salaryInfo.response'
 
-export class EmployeeRequest {
+export class EmploymentInfoRequest {
   @IsNotEmpty()
   roleId: string
 
+  @IsOptional()
+  salaryInfo?: SalaryInfoResponse
+}
+
+export class EmployeeRequest {
   @IsNotEmpty()
   firstName: string
 
@@ -21,8 +26,8 @@ export class EmployeeRequest {
   @IsOptional()
   image?: string
 
-  @IsOptional()
-  salary?: SalaryInfoResponse
+  @IsNotEmpty()
+  employmentInfo: EmploymentInfoRequest
 
   @IsOptional()
   delete?: DeleteStatus

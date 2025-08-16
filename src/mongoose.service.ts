@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Inject,
   Injectable,
   Scope,
@@ -30,16 +31,17 @@ export class MongooseService implements MongooseOptionsFactory {
     const authPattern = new RegExp('^/auth(/.*)?$')
 
     const isAuthModule = authPattern.test(originalUrl)
+    const isPreviewModule = originalUrl.includes('/preview')
     const authorization = headers['authorization'] || ''
 
-    if (!authorization && !isAuthModule) {
+    if (!authorization && !isAuthModule && !isPreviewModule) {
       throw new UnauthorizedException()
     }
 
     let databaseName = MAIN_DATABASE_NAME
 
     //ถ้าเข้ามาใน path /auth ทั้งหมดจะไม่เข้าเงื่อนไขการสวิช database
-    if (!isAuthModule) {
+    if (!isAuthModule && !isPreviewModule) {
       const base64Credentials = authorization.split(' ')[1]
       try {
         const user = this.jwtService.verify(base64Credentials)
@@ -53,6 +55,17 @@ export class MongooseService implements MongooseOptionsFactory {
         }
         throw new UnauthorizedException('token is invalid')
       }
+    }
+
+    if (isPreviewModule) {
+      const urlParams = new URLSearchParams(originalUrl.split('?')[1])
+      const companyName = urlParams.get('companyName')
+
+      if (!companyName) {
+        throw new BadRequestException('invalid companyName')
+      }
+
+      databaseName = companyName || 'KATS_LadKrabang'
     }
 
     const uri = `${this.configService.get<string>('MONGO_URI')}/${databaseName}?authSource=admin`
