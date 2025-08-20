@@ -14,6 +14,8 @@ import { EmployeeRequest } from './requests/employee.request'
 import { EmployeeResponse } from './responses/employee.response'
 import { QueryPagination } from 'src/shared/types/queryPagination'
 import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard'
+import { UserInfo } from 'src/shared/decorators/user-info.decorator'
+import { UserResponse } from 'src/users/responses/user.response'
 
 @UseGuards(JwtAuthGuard)
 @Controller('employees')
@@ -21,8 +23,11 @@ export class EmployeesController {
   constructor(private readonly employeesService: EmployeesService) {}
 
   @Post()
-  createEmployee(@Body() createEmployeeRequest: EmployeeRequest) {
-    return this.employeesService.createEmployee(createEmployeeRequest)
+  createEmployee(
+    @UserInfo() userInfo: UserResponse,
+    @Body() createEmployeeRequest: EmployeeRequest,
+  ) {
+    return this.employeesService.createEmployee(userInfo, createEmployeeRequest)
   }
 
   @Get()
@@ -45,12 +50,14 @@ export class EmployeesController {
   }
 
   @Put(':employeeId')
-  updateeBookingById(
-    @Param('employeeId') bookingId: string,
+  updateEmployeeById(
+    @UserInfo() userInfo: UserResponse,
+    @Param('employeeId') employeeId: string,
     @Body() updateEmployeeRequest: EmployeeRequest,
   ) {
     return this.employeesService.updateEmployeeById(
-      bookingId,
+      userInfo,
+      employeeId,
       updateEmployeeRequest,
     )
   }

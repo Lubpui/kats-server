@@ -32,6 +32,10 @@ import {
   ProductSnapshotResponse,
 } from 'src/products/responses/product.response'
 import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
+import path from 'path'
+import { UserResponse } from 'src/users/responses/user.response'
+import * as fs from 'fs-extra'
+import { deleteFile } from 'src/utils/common.util'
 
 @Injectable()
 export class BookingsService {
@@ -52,15 +56,81 @@ export class BookingsService {
     private readonly documentCountService: DocumentCountService,
   ) {}
 
-  async createBooking(createBookingRequest: BookingRequest) {
+  async handleAdjustFile(payload: {
+    newFileName: string | undefined
+    oldFileName: string | undefined
+    dbname: string
+  }) {
+    const { newFileName, oldFileName, dbname } = payload
+    const dirname = path.join(process.env.UPLOAD_PATH ?? '', dbname, 'booking')
+
+    let imageRes: string | undefined = undefined
+
+    if (newFileName !== oldFileName) {
+      //ลบไฟล์เดิม
+      if (oldFileName && fs.existsSync(path.join(dirname, oldFileName))) {
+        await deleteFile(path.join(dirname, oldFileName))
+      }
+
+      //สร้างไฟล์
+      if (newFileName) {
+        const originPath = path.join(process.env.TMP_PATH ?? '', newFileName)
+        const destinationPath = path.join(dirname, newFileName)
+        if (!fs.existsSync(dirname)) {
+          fs.mkdirSync(dirname, { recursive: true })
+        }
+        await fs.copy(originPath, destinationPath, { overwrite: true })
+        imageRes = newFileName
+      }
+    }
+
+    return imageRes
+  }
+
+  async createBooking(
+    userInfo: UserResponse,
+    createBookingRequest: BookingRequest,
+  ) {
     const session = await this.documentCountModel.startSession()
     session.startTransaction()
 
     try {
       const code = await this.documentCountService.getBookingCode(session)
 
+      const { dbname } = userInfo
+      const { slip, productId, image } = createBookingRequest
+
+      //สร้างไฟล์
+      if (slip) {
+        const dirname = path.join(
+          process.env.UPLOAD_PATH ?? '',
+          dbname,
+          'booking',
+        )
+        const originPath = path.join(process.env.TMP_PATH ?? '', slip)
+        const destinationPath = path.join(dirname, slip)
+        if (!fs.existsSync(dirname)) {
+          fs.mkdirSync(dirname, { recursive: true })
+        }
+        await fs.copy(originPath, destinationPath, { overwrite: true })
+      }
+
+      if (image) {
+        const dirname = path.join(
+          process.env.UPLOAD_PATH ?? '',
+          dbname,
+          'booking',
+        )
+        const originPath = path.join(process.env.TMP_PATH ?? '', image)
+        const destinationPath = path.join(dirname, image)
+        if (!fs.existsSync(dirname)) {
+          fs.mkdirSync(dirname, { recursive: true })
+        }
+        await fs.copy(originPath, destinationPath, { overwrite: true })
+      }
+
       const findedProduct = await this.productModel
-        .findById(createBookingRequest.productId)
+        .findById(productId)
         .populate('catagory')
         .populate('typeProduct')
 
@@ -219,17 +289,48 @@ export class BookingsService {
   }
 
   async updateBookingById(
+    userInfo: UserResponse,
     bookingId: string,
     updateBookingRequest: BookingRequest,
   ) {
-    const booking = await this.bookingModel.findByIdAndUpdate(bookingId, {
-      $set: { ...updateBookingRequest },
+    const { dbname } = userInfo
+    const { slip: newSlip, image: newImage } = updateBookingRequest
+
+    const booking = await this.bookingModel.findById(bookingId, {
+      slip: 1,
+    })
+    if (!booking) throw new NotFoundException('ไม่พบ booking')
+
+    const { slip: oldSlip, image: oldImage } = booking
+
+    const slipPath = await this.handleAdjustFile({
+      newFileName: newSlip,
+      oldFileName: oldSlip,
+      dbname,
     })
 
-    return booking
+    updateBookingRequest.slip = slipPath
+
+    const imagePath = await this.handleAdjustFile({
+      newFileName: newImage,
+      oldFileName: oldImage,
+      dbname,
+    })
+
+    updateBookingRequest.image = imagePath
+
+    const updatedBooking = await this.bookingModel.findByIdAndUpdate(
+      bookingId,
+      {
+        $set: { ...updateBookingRequest },
+      },
+    )
+
+    return updatedBooking
   }
 
   async updateGuaranteeByBookingId(
+    userInfo: UserResponse,
     bookingId: string,
     updateBookingRequest: BookingRequest,
   ) {
@@ -242,7 +343,7 @@ export class BookingsService {
         ? BookingStatus.COMPLETED
         : BookingStatus.CHECKING
 
-      const updatedBooking = await this.updateBookingById(bookingId, {
+      const updatedBooking = await this.updateBookingById(userInfo, bookingId, {
         ...updateBookingRequest,
         status: bookingStatus,
       })
@@ -253,6 +354,7 @@ export class BookingsService {
   }
 
   async approveBookingById(
+    userInfo: UserResponse,
     bookingId: string,
     updateBookingRequest: BookingRequest,
   ) {
@@ -298,7 +400,7 @@ export class BookingsService {
       ? BookingStatus.COMPLETED
       : BookingStatus.CHECKING
 
-    const approve = await this.updateBookingById(bookingId, {
+    const approve = await this.updateBookingById(userInfo, bookingId, {
       ...updateBookingRequest,
       status: bookingStatus,
     })
@@ -307,10 +409,11 @@ export class BookingsService {
   }
 
   async cancelBookingById(
+    userInfo: UserResponse,
     bookingId: string,
     updateBookingRequest: BookingRequest,
   ) {
-    const approve = await this.updateBookingById(bookingId, {
+    const approve = await this.updateBookingById(userInfo, bookingId, {
       ...updateBookingRequest,
       status: BookingStatus.CANCELED,
     })
@@ -319,10 +422,12 @@ export class BookingsService {
   }
 
   async isDeleteBookingById(
+    userInfo: UserResponse,
     bookingId: string,
     updateStatusDeleteRequest: BookingRequest,
   ) {
     const updateStatus = await this.updateBookingById(
+      userInfo,
       bookingId,
       updateStatusDeleteRequest,
     )

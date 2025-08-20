@@ -14,6 +14,8 @@ import { BookingRequest } from './requests/booking.request'
 import { BookingResponse } from './responses/booking.response'
 import { QueryPagination } from 'src/shared/types/queryPagination'
 import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard'
+import { UserInfo } from 'src/shared/decorators/user-info.decorator'
+import { UserResponse } from 'src/users/responses/user.response'
 
 @Controller('bookings')
 export class BookingsController {
@@ -21,17 +23,22 @@ export class BookingsController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  createBooking(@Body() createBookingRequest: BookingRequest) {
-    return this.bookingsService.createBooking(createBookingRequest)
+  createBooking(
+    @Body() createBookingRequest: BookingRequest,
+    @UserInfo() userInfo: UserResponse,
+  ) {
+    return this.bookingsService.createBooking(userInfo, createBookingRequest)
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('approve/:bookingId')
   approveBookingById(
+    @UserInfo() userInfo: UserResponse,
     @Param('bookingId') bookingId: string,
     @Body() updateBookingRequest: BookingRequest,
   ) {
     return this.bookingsService.approveBookingById(
+      userInfo,
       bookingId,
       updateBookingRequest,
     )
@@ -40,10 +47,12 @@ export class BookingsController {
   @UseGuards(JwtAuthGuard)
   @Post('cancel/:bookingId')
   cancelBookingById(
+    @UserInfo() userInfo: UserResponse,
     @Param('bookingId') bookingId: string,
     @Body() updateBookingRequest: BookingRequest,
   ) {
     return this.bookingsService.cancelBookingById(
+      userInfo,
       bookingId,
       updateBookingRequest,
     )
@@ -81,10 +90,12 @@ export class BookingsController {
   @UseGuards(JwtAuthGuard)
   @Put(':bookingId')
   updateeBookingById(
+    @UserInfo() userInfo: UserResponse,
     @Param('bookingId') bookingId: string,
     @Body() updateBookingRequest: BookingRequest,
   ) {
     return this.bookingsService.updateBookingById(
+      userInfo,
       bookingId,
       updateBookingRequest,
     )
@@ -93,10 +104,12 @@ export class BookingsController {
   @UseGuards(JwtAuthGuard)
   @Put('updateGuarantee/:bookingId')
   updateGuaranteeByBookingId(
+    @UserInfo() userInfo: UserResponse,
     @Param('bookingId') bookingId: string,
     @Body() updateBookingRequest: BookingRequest,
   ) {
     return this.bookingsService.updateGuaranteeByBookingId(
+      userInfo,
       bookingId,
       updateBookingRequest,
     )
@@ -105,10 +118,12 @@ export class BookingsController {
   @UseGuards(JwtAuthGuard)
   @Post('selectDelete/:bookingId')
   isDeleteBookingById(
+    @UserInfo() userInfo: UserResponse,
     @Param('bookingId') bookingId: string,
     @Body() updateStatusDeleteRequest: BookingRequest,
   ) {
     return this.bookingsService.isDeleteBookingById(
+      userInfo,
       bookingId,
       updateStatusDeleteRequest,
     )

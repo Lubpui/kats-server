@@ -18,6 +18,7 @@ import {
 } from './utils/constanrs'
 import { JwtModule } from '@nestjs/jwt'
 import { MongooseService } from './mongoose.service'
+import { CoreModule } from './core/core.module';
 
 @Module({
   imports: [
@@ -65,6 +66,7 @@ import { MongooseService } from './mongoose.service'
       useClass: MongooseService,
       connectionName: CUSTOM_CONNECTION_NAME,
     }),
+    CoreModule,
   ],
   controllers: [AppController],
   providers: [AppService],
