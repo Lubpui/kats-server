@@ -9,7 +9,13 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }))
 
-  app.enableCors()
+  app.enableCors({
+    origin: 'https://yourdomain.com', // <-- frontend origin ที่อนุญาต
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type, Authorization, Accept, X-Requested-With',
+    credentials: true, // เปิดถ้าใช้ cookie / credential
+    maxAge: 86400, // preflight cache (optional)
+  })
   const configService = app.get(ConfigService)
 
   const uploadPath = configService.get<string>('UPLOAD_PATH')
