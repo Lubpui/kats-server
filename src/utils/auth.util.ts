@@ -1,6 +1,7 @@
 import { JwtService } from '@nestjs/jwt'
 import { UserResponse } from 'src/users/responses/user.response'
 import ms from 'ms'
+import { NotFoundException } from '@nestjs/common'
 
 export const createUserPayload = (
   user: UserResponse,
@@ -16,7 +17,7 @@ export const createUserPayload = (
     expiresIn: process.env.JWT_EXPIRES,
     algorithm: <any>process.env.JWT_ALGORITHM,
   })
-
+  throw new NotFoundException('Login failed5.0')
   const payloadRefreshToken = {
     userId: _id,
     company: dbname,
