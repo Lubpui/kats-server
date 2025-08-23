@@ -10,6 +10,9 @@ export const createUserPayload = (
 ) => {
   try {
     const { _id, dbname } = user
+
+      throw new NotFoundException('Login failed 5.0')
+
   
     // NOTE: create token
     const payload = { userId: _id, company: dbname, isZant }
@@ -44,7 +47,6 @@ export const createUserPayload = (
       }),
     }
   } catch (error) {
-    console.log(error)
     throw error
   }
 }
