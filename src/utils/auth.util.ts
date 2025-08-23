@@ -11,32 +11,16 @@ export const createUserPayload = (
   if (!jwtService || typeof jwtService.sign !== 'function')
     throw new Error('jwtService missing or invalid')
 
-  const { JWT_ISSUER, JWT_EXPIRES, JWT_ALGORITHM } = process.env
-
   try {
     const { _id, dbname } = user
 
     // NOTE: create token
     const payload = { userId: _id, company: dbname, isZant }
-
-    const accessOptions: any = {
-      issuer: JWT_ISSUER || undefined,
-      algorithm: JWT_ALGORITHM || undefined,
-      expiresIn: JWT_EXPIRES || undefined,
-    }
-
-    let accessToken: string
-    try {
-      accessToken = jwtService.sign(payload, accessOptions)
-    } catch (e) {
-      console.error(
-        'Failed to sign access token:',
-        e && e.message,
-        e && e.stack,
-        { accessOptions },
-      )
-      throw e
-    }
+    const accessToken = jwtService.sign(payload, {
+      issuer: process.env.JWT_ISSUER,
+      expiresIn: process.env.JWT_EXPIRES,
+      algorithm: <any>process.env.JWT_ALGORITHM,
+    })
 
     const payloadRefreshToken = {
       userId: _id,
