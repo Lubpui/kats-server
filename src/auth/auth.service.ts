@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { LogInRequest } from './requests/login.request'
 import { SharedService } from 'src/utils/shared.service'
@@ -18,7 +18,7 @@ export class AuthService {
 
   async login(loginRequest: LogInRequest): Promise<any> {
     try {
-      throw new Error('Login failed')
+      throw new NotFoundException('Login failed')
       const user = await this.sharedService.validateUser(loginRequest)
       const newPayload = createUserPayload(user, this.jwtService, false)
       return modelMapper(LogInResponse, newPayload)
@@ -28,7 +28,7 @@ export class AuthService {
     }
   }
 
-  async createNewAccount(createUserRequest: CreateUserRequest){
+  async createNewAccount(createUserRequest: CreateUserRequest) {
     const newUser = await this.userService.createNewAccount(createUserRequest)
     return newUser
   }
