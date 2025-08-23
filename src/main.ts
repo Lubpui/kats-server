@@ -10,7 +10,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }))
 
   app.enableCors({
-    origin: 'https://yourdomain.com', // <-- frontend origin ที่อนุญาต
+    origin: ['https://gunprotections.com', 'https://www.gunprotections.com'], // <-- frontend origin ที่อนุญาต
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type, Authorization, Accept, X-Requested-With',
     credentials: true, // เปิดถ้าใช้ cookie / credential
