@@ -27,16 +27,20 @@ export class SharedService {
   ) {}
 
   async validateUser(signInRequest: LogInRequest): Promise<UserResponse> {
-    const { email, password } = signInRequest
-    const user = await this.userModel.findOne({
-      $or: [{ email }, { userName: email }],
-    })
-    if (!user?._id) throw new NotFoundException('ไม่พบข้อมูลผู้ใช้งาน')
+    try {
+      const { email, password } = signInRequest
+      const user = await this.userModel.findOne({
+        $or: [{ email }, { userName: email }],
+      })
+      if (!user?._id) throw new NotFoundException('ไม่พบข้อมูลผู้ใช้งาน')
 
-    const isValid = await bcrypt.compare(password, user.password)
-    if (!isValid) throw new BadRequestException('Invalid email & password')
+      const isValid = await bcrypt.compare(password, user.password)
+      if (!isValid) throw new BadRequestException('Invalid email & password')
 
-    return await this.getUserByDynamicallyType(user._id as any)
+      return await this.getUserByDynamicallyType(user._id as any)
+    } catch (error) {
+      throw error
+    }
   }
 
   async getUserByDynamicallyType(
