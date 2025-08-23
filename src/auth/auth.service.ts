@@ -16,10 +16,10 @@ export class AuthService {
     private readonly userService: UsersService,
   ) {}
 
-  async login(loginRequest: LogInRequest): Promise<any> {
+  async login(loginRequest: LogInRequest){
     try {
-      throw new NotFoundException('Login failed')
       const user = await this.sharedService.validateUser(loginRequest)
+      throw new NotFoundException('Login failed2')
       const newPayload = createUserPayload(user, this.jwtService, false)
       return modelMapper(LogInResponse, newPayload)
     } catch (error) {
