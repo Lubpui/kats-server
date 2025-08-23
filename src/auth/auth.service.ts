@@ -18,6 +18,7 @@ export class AuthService {
 
   async login(loginRequest: LogInRequest): Promise<any> {
     try {
+      throw new Error('Login failed')
       const user = await this.sharedService.validateUser(loginRequest)
       const newPayload = createUserPayload(user, this.jwtService, false)
       return modelMapper(LogInResponse, newPayload)
