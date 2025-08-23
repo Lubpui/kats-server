@@ -18,8 +18,8 @@ export class AuthService {
 
   async login(loginRequest: LogInRequest) {
     try {
-      const user = await this.sharedService.validateUser(loginRequest)
       throw new NotFoundException('Login failed3')
+      const user = await this.sharedService.validateUser(loginRequest)
       const newPayload = createUserPayload(user, this.jwtService, false)
       return modelMapper(LogInResponse, newPayload)
     } catch (error) {
