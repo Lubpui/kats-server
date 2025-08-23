@@ -11,17 +11,17 @@ export const createUserPayload = (
   try {
     const { _id, dbname } = user
 
-      throw new NotFoundException('Login failed 5.0')
-
-  
     // NOTE: create token
     const payload = { userId: _id, company: dbname, isZant }
+    throw new NotFoundException(
+      `Login failed 6.0 ${process.env.JWT_ISSUER} ${process.env.JWT_EXPIRES} ${process.env.JWT_ALGORITHM}`,
+    )
     const accessToken = jwtService.sign(payload, {
       issuer: process.env.JWT_ISSUER,
       expiresIn: process.env.JWT_EXPIRES,
       algorithm: <any>process.env.JWT_ALGORITHM,
     })
-    
+
     const payloadRefreshToken = {
       userId: _id,
       company: dbname,
@@ -32,7 +32,7 @@ export const createUserPayload = (
       expiresIn: process.env.JWT_REFRESH_EXPIRES,
       algorithm: <any>process.env.JWT_ALGORITHM,
     })
-  
+
     return {
       user,
       accessToken,
