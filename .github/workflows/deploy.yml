@@ -18,7 +18,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18   # เลือกเวอร์ชันที่ใช้จริงใน Plesk ด้วย
+          node-version: 22   # เลือกเวอร์ชันที่ใช้จริงใน Plesk ด้วย
 
       # 3) Install dependencies (Yarn)
       - name: Install dependencies
