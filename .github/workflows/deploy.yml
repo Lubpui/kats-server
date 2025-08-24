@@ -3,11 +3,12 @@ name: Deploy NestJS to Plesk
 on:
   push:
     branches:
-      - master   # หรือ branch ที่ต้องการ deploy
+      - master # หรือ branch ที่ต้องการ deploy
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
+    environment: PLESK_DEPLOYMENT
 
     steps:
       # 1) Checkout code
@@ -18,9 +19,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 22   # เลือกเวอร์ชันที่ใช้จริงใน Plesk ด้วย
+          node-version: 22
 
-      # 3) Install dependencies (Yarn)
+      # 3) Install dependencies
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
@@ -28,8 +29,30 @@ jobs:
       - name: Build NestJS
         run: yarn build
 
-      # 5) Deploy dist + package.json + yarn.lock ไป Plesk
-      - name: Deploy to Plesk via FTP
+      # 5) เก็บ dist + package.json + yarn.lock เป็น artifact
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: nestjs-build
+          path: |
+            dist/
+            package.json
+            yarn.lock
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build # ให้รอ build เสร็จก่อน
+    environment: PLESK_DEPLOYMENT
+
+    steps:
+      # 1) โหลด artifact กลับมา
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: nestjs-build
+
+      # 2) Deploy dist ไป Plesk
+      - name: Deploy dist to Plesk via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}
@@ -38,7 +61,7 @@ jobs:
           local-dir: ./dist/
           server-dir: /api.gunprotections.com/dist/
 
-      # 6) อาจต้อง upload package.json + yarn.lock ด้วย (ถ้า Plesk จะ run yarn install ที่ server)
+      # 3) Upload package.json & yarn.lock
       - name: Upload package.json & yarn.lock
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
