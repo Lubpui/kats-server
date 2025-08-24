@@ -36,7 +36,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/
-          server-dir: /httpdocs/your-app/dist/
+          server-dir: /api.gunprotections.com/dist/
 
       # 6) อาจต้อง upload package.json + yarn.lock ด้วย (ถ้า Plesk จะ run yarn install ที่ server)
       - name: Upload package.json & yarn.lock
@@ -46,7 +46,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./
-          server-dir: /httpdocs/your-app/
+          server-dir: /api.gunprotections.com/
           exclude: |
             **/*
             !package.json
