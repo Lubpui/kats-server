@@ -31,7 +31,7 @@ jobs:
 
       # 5) เก็บ dist + package.json + yarn.lock เป็น artifact
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: nestjs-build
           path: |
@@ -47,7 +47,7 @@ jobs:
     steps:
       # 1) โหลด artifact กลับมา
       - name: Download build artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: nestjs-build
 
