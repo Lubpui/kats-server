@@ -1,56 +1,53 @@
-name: Deploy NestJS to Plesk (Node.js Extension)
+name: Deploy NestJS to Plesk
 
 on:
   push:
-    branches: [ master ]
-
-concurrency:
-  group: deploy-nestjs-plesk
-  cancel-in-progress: true
+    branches:
+      - master   # หรือ branch ที่ต้องการ deploy
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
+      # 1) Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
+      # 2) Setup Node.js
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: '22'
-          cache: 'npm'
+          node-version: 18   # เลือกเวอร์ชันที่ใช้จริงใน Plesk ด้วย
 
-      - name: Install dependencies (prod only)
-        run: npm ci --omit=dev
+      # 3) Install dependencies (Yarn)
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
 
+      # 4) Build NestJS
       - name: Build NestJS
-        run: npm run build
+        run: yarn build
 
-      # สร้างโฟลเดอร์ deploy ที่มีเฉพาะของจำเป็น
-      - name: Prepare deploy folder
-        run: |
-          rm -rf deploy
-          mkdir -p deploy
-          cp -r dist deploy/dist
-          cp package.json package-lock.json deploy/
-          cp -r node_modules deploy/node_modules
-
-      - name: Deploy to Plesk via FTP/FTPS
+      # 5) Deploy dist + package.json + yarn.lock ไป Plesk
+      - name: Deploy to Plesk via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          # ถ้าใช้ FTPS ให้เปิดบรรทัดนี้
-          protocol: ftps
-          local-dir: deploy
-          server-dir: httpdocs/nestjs-app
-          dangerous-clean-slate: true
+          local-dir: ./dist/
+          server-dir: /httpdocs/your-app/dist/
+
+      # 6) อาจต้อง upload package.json + yarn.lock ด้วย (ถ้า Plesk จะ run yarn install ที่ server)
+      - name: Upload package.json & yarn.lock
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./
+          server-dir: /httpdocs/your-app/
           exclude: |
-            **/.git*
-            **/.DS_Store
-          timeout: 600000
+            **/*
+            !package.json
+            !yarn.lock
