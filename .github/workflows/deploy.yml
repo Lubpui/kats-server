@@ -2,7 +2,7 @@ name: Deploy NestJS to Plesk (Node.js Extension)
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 
 concurrency:
   group: deploy-nestjs-plesk
