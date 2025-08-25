@@ -28,6 +28,17 @@ jobs:
       # 4) Build NestJS
       - name: Build NestJS
         run: yarn build
+        env:
+          MONGO_URI_DEMO: ${{ secrets.MONGO_URI_DEMO }}
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          JWT_ISSUER: ${{ secrets.JWT_ISSUER }}
+          JWT_EXPIRES: ${{ secrets.JWT_EXPIRES }}
+          JWT_REFRESH_EXPIRES: ${{ secrets.JWT_REFRESH_EXPIRES }}
+          JWT_ALGORITHM: ${{ secrets.JWT_ALGORITHM }}
+          UPLOAD_PATH: ${{ secrets.UPLOAD_PATH }}
+          TMP_PATH: ${{ secrets.TMP_PATH }}
+          JWT_SIGN_PRIVATE_KEY: ${{ secrets.JWT_SIGN_PRIVATE_KEY }}
+          JWT_SIGN_PUBLIC_KEY: ${{ secrets.JWT_SIGN_PUBLIC_KEY }}
 
       # 5) เก็บ dist + package.json + yarn.lock เป็น artifact
       - name: Upload build artifacts
