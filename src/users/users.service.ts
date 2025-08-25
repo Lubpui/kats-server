@@ -47,9 +47,18 @@ export class UsersService {
     const { email, phoneNumber, firstName, lastName, companyName } =
       createUserRequest
 
+    // Check if email already exists
     const isEmailExist = await this.userModel.exists({ email })
     if (isEmailExist)
       throw new HttpException({ message: 'This email is already in use.' }, 409)
+
+    // Check if companyName already exists
+    const isCompanyExist = await this.userModel.exists({ companyName })
+    if (isCompanyExist)
+      throw new HttpException(
+        { message: 'This company name is already in use.' },
+        409,
+      )
 
     const dbname = String(companyName)
     const connection = await createConnection(
@@ -130,9 +139,12 @@ export class UsersService {
     const findedUser = await this.userModel.findById(userInfo._id, {
       password: 0,
     })
-    const findedEmployee = await this.employeeModel.findOne({
-      email: userInfo.email,
-    })
+
+    const findedEmployee = await this.employeeModel
+      .findOne({
+        email: userInfo.email,
+      })
+      .populate('employmentInfo.role')
 
     return { userInfo: findedUser, employee: findedEmployee }
   }

@@ -47,9 +47,9 @@ const UserSchema = SchemaFactory.createForClass(User)
 
 UserSchema.index({ email: 1 }, { unique: true })
 
-UserSchema.virtual('roles', {
+UserSchema.virtual('role', {
   ref: 'Role',
-  localField: 'roleIds',
+  localField: 'roleId',
   foreignField: '_id',
 })
 

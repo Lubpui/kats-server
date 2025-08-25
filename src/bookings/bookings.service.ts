@@ -298,6 +298,7 @@ export class BookingsService {
 
     const booking = await this.bookingModel.findById(bookingId, {
       slip: 1,
+      image: 1,
     })
     if (!booking) throw new NotFoundException('ไม่พบ booking')
 
@@ -435,8 +436,24 @@ export class BookingsService {
     return updateStatus
   }
 
-  async deleteBookingById(bookingId: string) {
-    const booking = await this.bookingModel.findByIdAndDelete(bookingId)
+  async deleteBookingById(userInfo: UserResponse, bookingId: string) {
+    const booking = await this.bookingModel.findById(bookingId)
+    if (!booking) throw new NotFoundException('ไม่พบ booking')
+
+    const { slip, image } = booking
+    const { dbname } = userInfo
+    const dirname = path.join(process.env.UPLOAD_PATH ?? '', dbname, 'booking')
+
+    if (slip && fs.existsSync(path.join(dirname, slip))) {
+      await deleteFile(path.join(dirname, slip))
+    }
+
+    if (image && fs.existsSync(path.join(dirname, image))) {
+      await deleteFile(path.join(dirname, image))
+    }
+
+    await this.bookingModel.findByIdAndDelete(bookingId)
+
     return booking
   }
 }

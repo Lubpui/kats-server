@@ -9,7 +9,7 @@ export const generateOriginalFileName = (fileName: string): string => {
 
 export const deleteFile = async (path: string): Promise<void> => {
   try {
-    const isExists = fs.existsSync(path)
+    const isExists = await fs.pathExists(path)
     if (isExists) {
       await fs.unlink(path)
     }

@@ -8,15 +8,20 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule)
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }))
+  const configService = app.get(ConfigService)
 
   app.enableCors({
-    origin: ['https://gunprotections.com', 'https://www.gunprotections.com'], // <-- frontend origin ที่อนุญาต
+    origin: [
+      'https://gunprotections.com',
+      'https://www.gunprotections.com',
+      'http://localhost:3000',
+      'http://localhost:5173',
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type, Authorization, Accept, X-Requested-With',
-    credentials: true, // เปิดถ้าใช้ cookie / credential
-    maxAge: 86400, // preflight cache (optional)
+    credentials: true,
+    maxAge: 86400,
   })
-  const configService = app.get(ConfigService)
 
   const uploadPath = configService.get<string>('UPLOAD_PATH')
   if (uploadPath) {

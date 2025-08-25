@@ -131,7 +131,10 @@ export class BookingsController {
 
   @UseGuards(JwtAuthGuard)
   @Delete(':bookingId')
-  deleteBookingById(@Param('bookingId') bookingId: string) {
-    return this.bookingsService.deleteBookingById(bookingId)
+  deleteBookingById(
+    @UserInfo() userInfo: UserResponse,
+    @Param('bookingId') bookingId: string,
+  ) {
+    return this.bookingsService.deleteBookingById(userInfo, bookingId)
   }
 }
