@@ -16,8 +16,9 @@ export class AppService {
       JWT_ALGORITHM: process.env.JWT_ALGORITHM,
       UPLOAD_PATH: process.env.UPLOAD_PATH,
       TMP_PATH: process.env.TMP_PATH,
-      JWT_SIGN_PRIVATE_KEY: process.env.JWT_SIGN_PRIVATE_KEY,
-      JWT_SIGN_PUBLIC_KEY: process.env.JWT_SIGN_PUBLIC_KEY,
+      JWT_SIGN_PRIVATE_KEY_PATH: process.env.JWT_SIGN_PRIVATE_KEY_PATH,
+      JWT_SIGN_PUBLIC_KEY_PATH: process.env.JWT_SIGN_PUBLIC_KEY_PATH,
+      MODE: process.env.MODE,
     }
   }
 }
