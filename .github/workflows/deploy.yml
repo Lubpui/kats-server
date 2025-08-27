@@ -71,6 +71,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/
           server-dir: /api.gunprotections.com/dist/
+          dangerous-clean-slate: true
 
       # 3) Upload package.json & yarn.lock
       - name: Upload package.json & yarn.lock
