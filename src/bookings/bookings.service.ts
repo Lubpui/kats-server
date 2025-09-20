@@ -169,17 +169,20 @@ export class BookingsService {
   }
 
   async getAllBookings(del: number): Promise<BookingResponse[]> {
-    const bookingRes = await this.bookingModel.find().populate({
-      path: 'product',
-      populate: [
-        {
-          path: 'catagory',
-        },
-        {
-          path: 'typeProduct',
-        },
-      ],
-    })
+    const bookingRes = await this.bookingModel
+      .find()
+      .sort({ createdAt: -1 })
+      .populate({
+        path: 'product',
+        populate: [
+          {
+            path: 'catagory',
+          },
+          {
+            path: 'typeProduct',
+          },
+        ],
+      })
 
     const bookings = modelMapper(BookingListResponse, { data: bookingRes }).data
 
@@ -248,6 +251,7 @@ export class BookingsService {
           },
         },
         ...productNamePipline,
+        { $sort: { createdAt: -1 } },
       ])
 
       const bookings = modelMapper(BookingListResponse, {
@@ -455,5 +459,40 @@ export class BookingsService {
     await this.bookingModel.findByIdAndDelete(bookingId)
 
     return booking
+  }
+
+  async getLastBookingNumber() {
+    try {
+      const lastBooking = await this.bookingModel
+        .findOne()
+        .sort({ createdAt: -1 })
+
+      const receiptBookNoStr = lastBooking?.receiptBookNo || '000'
+      const numberStr = lastBooking?.number || '0000'
+
+      const receiptBookNoNum = parseInt(receiptBookNoStr, 10)
+      const numberNum = parseInt(numberStr, 10)
+
+      let newReceiptBookNoNum = receiptBookNoNum
+      const newNumberNum = numberNum + 1
+
+      if (numberNum % 50 === 0) {
+        newReceiptBookNoNum = receiptBookNoNum + 1
+      }
+
+      const newReceiptBookNo = newReceiptBookNoNum
+        .toString()
+        .padStart(receiptBookNoStr.length, '0')
+      const newNumber = newNumberNum.toString().padStart(numberStr.length, '0')
+
+      const lastBookingNumber = {
+        receiptBookNo: newReceiptBookNo,
+        number: newNumber,
+      }
+
+      return lastBookingNumber
+    } catch (error) {
+      throw error
+    }
   }
 }

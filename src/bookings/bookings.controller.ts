@@ -64,6 +64,12 @@ export class BookingsController {
     return this.bookingsService.getAllBookings(Number(del))
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('last-booking-number')
+  getLastBookingNumber() {
+    return this.bookingsService.getLastBookingNumber()
+  }
+
   @Get('preview')
   getAllBookingsForPreview(
     @Query('delete') del: string,
