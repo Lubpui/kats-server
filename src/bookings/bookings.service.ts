@@ -205,7 +205,7 @@ export class BookingsService {
         return -1
       }
 
-      return 0
+      return Number(b.number) - Number(a.number)
     })
 
     return filterdBookings
@@ -273,7 +273,7 @@ export class BookingsService {
           return -1
         }
 
-        return 0
+        return Number(b.number) - Number(a.number)
       })
 
       return bookings
