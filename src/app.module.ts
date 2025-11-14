@@ -11,6 +11,7 @@ import { PermissionsModule } from './permissions/permissions.module'
 import { BookingsModule } from './bookings/bookings.module'
 import { UsersModule } from './users/users.module'
 import { AuthModule } from './auth/auth.module'
+import { DashboardModule } from './dashboard/dashboard.module'
 import {
   CUSTOM_CONNECTION_NAME,
   MAIN_CONNECTION_NAME,
@@ -28,6 +29,7 @@ import fs from 'fs'
     EmployeesModule,
     BookingsModule,
     ExpensesModule,
+    DashboardModule,
     DocumentCountModule,
     PermissionsModule,
     AuthModule,

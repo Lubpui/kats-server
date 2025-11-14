@@ -18,7 +18,6 @@ export class AuthService {
 
   async login(loginRequest: LogInRequest) {
     try {
-      console.log('object')
       const user = await this.sharedService.validateUser(loginRequest)
       const newPayload = createUserPayload(user, this.jwtService, false)
       return modelMapper(LogInResponse, newPayload)

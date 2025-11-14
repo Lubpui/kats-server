@@ -6,10 +6,14 @@ export const attendanceMockUp = [
             {
                 employeeId: 1,
                 workDates: ['2024-06-03', '2024-06-04', '2024-06-05'],
+                leaveDates: ['2024-06-10', '2024-06-11'],
+                absentDates: ['2024-06-15']
             },
             {
                 employeeId: 2,
                 workDates: ['2024-06-03', '2024-06-04', '2024-06-05'],
+                leaveDates: ['2024-06-12'],
+                absentDates: ['2024-06-16']
             }
         ]
     }
