@@ -68,6 +68,84 @@ export class DashboardService {
   }
 
   /**
+   * ดึงข้อมูล booking ทั้งแบบ COMPLETED และ PENDING แล้วคืนข้อมูลแยกตามสถานะ
+   * รวมทั้งผลรวมแบบ combined
+   */
+  async getBookingsByStatuses(
+    startDate?: string,
+    endDate?: string,
+  ): Promise<{
+    completed: {
+      totalRevenue: number
+      bookingCount: number
+    }
+    pending: {
+      totalRevenue: number
+      bookingCount: number
+    }
+    combined: {
+      totalRevenue: number
+      bookingCount: number
+    }
+  }> {
+    const start = startDate
+      ? dayjs(startDate).startOf('date').toDate()
+      : dayjs().startOf('year').toDate()
+    const end = endDate
+      ? dayjs(endDate).endOf('date').toDate()
+      : dayjs().endOf('year').toDate()
+
+    // ดึง bookings ทั้งสองสถานะในครั้งเดียว
+    const bookings = await this.bookingModel
+      .find({
+        status: { $in: [BookingStatus.COMPLETED, BookingStatus.PENDING] },
+        delete: 0,
+        $expr: {
+          $and: [
+            { $gte: [{ $toDate: '$bookDate' }, start] },
+            { $lte: [{ $toDate: '$bookDate' }, end] },
+          ],
+        },
+      })
+      .exec()
+
+    const accum = {
+      [BookingStatus.COMPLETED]: { totalRevenue: 0, bookingCount: 0 },
+      [BookingStatus.PENDING]: { totalRevenue: 0, bookingCount: 0 },
+    } as Record<number, { totalRevenue: number; bookingCount: number }>
+
+    bookings.forEach((b) => {
+      const s = b.status
+      const amount = b.price?.amount || 0
+      if (accum[s]) {
+        accum[s].totalRevenue += amount
+        accum[s].bookingCount += 1
+      }
+    })
+
+    const completed = accum[BookingStatus.COMPLETED]
+    const pending = accum[BookingStatus.PENDING]
+
+    const combinedTotalRevenue = completed.totalRevenue + pending.totalRevenue
+    const combinedCount = completed.bookingCount + pending.bookingCount
+
+    return {
+      completed: {
+        totalRevenue: completed.totalRevenue,
+        bookingCount: completed.bookingCount,
+      },
+      pending: {
+        totalRevenue: pending.totalRevenue,
+        bookingCount: pending.bookingCount,
+      },
+      combined: {
+        totalRevenue: combinedTotalRevenue,
+        bookingCount: combinedCount,
+      },
+    }
+  }
+
+  /**
    * ดึงข้อมูล expense แล้วแยกหมวดหมู่ตาม CategoryType
    * คืนค่า object พร้อม total
    */
@@ -85,9 +163,6 @@ export class DashboardService {
     const end = endDate
       ? dayjs(endDate).endOf('date').toDate()
       : dayjs().endOf('year').toDate()
-
-    console.log(start)
-    console.log(end)
 
     const expenses = await this.expenseModel
       .find({
@@ -115,8 +190,6 @@ export class DashboardService {
         categoryTotals[key] = 0
       }
     })
-
-    console.log(expenses)
 
     // วนลูปข้อมูล expenses แล้วรวมตามหมวดหมู่
     expenses.forEach((expense) => {
@@ -151,19 +224,36 @@ export class DashboardService {
    * ดึงข้อมูลสรุป dashboard ทั้งหมด
    */
   async getDashboardSummary(startDate?: string, endDate?: string) {
-    const bookingsRevenue = await this.getSuccessfulBookingsRevenue(
+    const bookingsByStatus = await this.getBookingsByStatuses(
       startDate,
       endDate,
     )
+
     const expensesByCategory = await this.getExpensesByCategory(
       startDate,
       endDate,
     )
 
+    const bookingsByStatusForYear = await this.getBookingsByStatuses()
+
+    const expensesByCategoryForYear = await this.getExpensesByCategory()
+
     return {
-      bookingsRevenue,
-      expensesByCategory,
-      netProfit: bookingsRevenue.totalRevenue - expensesByCategory.total,
+      year: {
+        bookingsRevenue: bookingsByStatusForYear.completed,
+        bookingsRevenuePending: bookingsByStatusForYear.pending,
+        expensesByCategory: expensesByCategoryForYear,
+        netProfit:
+          bookingsByStatusForYear.completed.totalRevenue -
+          expensesByCategoryForYear.total,
+      },
+      month: {
+        bookingsRevenue: bookingsByStatus.completed,
+        bookingsRevenuePending: bookingsByStatus.pending,
+        expensesByCategory,
+        netProfit:
+          bookingsByStatus.completed.totalRevenue - expensesByCategory.total,
+      },
     }
   }
 }

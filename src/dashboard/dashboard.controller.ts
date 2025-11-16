@@ -26,6 +26,14 @@ export class DashboardController {
     )
   }
 
+  @Get('bookings-by-status')
+  getBookingsByStatuses(
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+  ) {
+    return this.dashboardService.getBookingsByStatuses(startDate, endDate)
+  }
+
   @Get('expenses-by-category')
   getExpensesByCategory(
     @Query('startDate') startDate?: string,
