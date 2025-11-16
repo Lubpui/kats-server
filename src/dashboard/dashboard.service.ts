@@ -235,6 +235,7 @@ export class DashboardService {
     )
 
     const bookingsByStatusForYear = await this.getBookingsByStatuses()
+    // asdasd
 
     const expensesByCategoryForYear = await this.getExpensesByCategory()
 
