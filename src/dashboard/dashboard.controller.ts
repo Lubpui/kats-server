@@ -11,8 +11,9 @@ export class DashboardController {
   getDashboardSummary(
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
+    @Query('period') period?: string,
   ) {
-    return this.dashboardService.getDashboardSummary(startDate, endDate)
+    return this.dashboardService.getDashboardSummary(startDate, endDate, period)
   }
 
   @Get('bookings-revenue')

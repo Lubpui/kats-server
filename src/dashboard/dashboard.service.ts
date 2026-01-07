@@ -221,9 +221,122 @@ export class DashboardService {
   }
 
   /**
+   * ดึงข้อมูลรายได้และค่าใช้จ่ายรายเดือนสำหรับปีที่กำหนด
+   */
+  async getMonthlyChartData(year?: number) {
+    const targetYear = year || dayjs().year()
+    const startOfYear = dayjs().year(targetYear).startOf('year').toDate()
+    const endOfYear = dayjs().year(targetYear).endOf('year').toDate()
+
+    // ดึงข้อมูล bookings และ expenses ของทั้งปี
+    const bookings = await this.bookingModel
+      .find({
+        status: BookingStatus.COMPLETED,
+        delete: 0,
+        $expr: {
+          $and: [
+            { $gte: [{ $toDate: '$bookDate' }, startOfYear] },
+            { $lte: [{ $toDate: '$bookDate' }, endOfYear] },
+          ],
+        },
+      })
+      .exec()
+
+    const expenses = await this.expenseModel
+      .find({
+        status: ExpenseStatus.APPROVE,
+        delete: 0,
+        $expr: {
+          $and: [
+            { $gte: [{ $toDate: '$datePrice' }, startOfYear] },
+            { $lte: [{ $toDate: '$datePrice' }, endOfYear] },
+          ],
+        },
+      })
+      .exec()
+
+    // ชื่อเดือนภาษาไทย
+    const monthNames = [
+      'ม.ค.',
+      'ก.พ.',
+      'มี.ค.',
+      'เม.ย.',
+      'พ.ค.',
+      'มิ.ย.',
+      'ก.ค.',
+      'ส.ค.',
+      'ก.ย.',
+      'ต.ค.',
+      'พ.ย.',
+      'ธ.ค.',
+    ]
+
+    // หากเป็นปีปัจจุบัน เดือนปัจจุบันขึ้นไปให้ส่ง revenue, expenses, netProfit
+    // เดือนข้างหน้าให้ส่งแค่ month
+    const currentYear = dayjs().year()
+    const currentMonth = dayjs().month() + 1
+    const isCurrentYear = targetYear === currentYear
+
+    // สร้างข้อมูลรายเดือน
+    const monthlyData = monthNames.map((month, monthIndex) => {
+      const monthNumber = monthIndex + 1
+
+      // ฟิลเตอร์ bookings ของเดือนนี้
+      const monthBookings = bookings.filter((booking) => {
+        const bookingMonth = dayjs(booking.bookDate).month() + 1
+        return bookingMonth === monthNumber
+      })
+
+      // ฟิลเตอร์ expenses ของเดือนนี้
+      const monthExpenses = expenses.filter((expense) => {
+        const expenseMonth = dayjs(expense.datePrice).month() + 1
+        return expenseMonth === monthNumber
+      })
+
+      // คำนวณรายรับ (revenue)
+      const revenue = monthBookings.reduce(
+        (sum, booking) => sum + (booking.price?.amount || 0),
+        0,
+      )
+
+      // คำนวณรายจ่าย (expenses)
+      const expenseAmount = monthExpenses.reduce((sum, expense) => {
+        if (expense.categorys && Array.isArray(expense.categorys)) {
+          return (
+            sum +
+            expense.categorys.reduce((catSum, cat) => catSum + cat.amount, 0)
+          )
+        }
+        return sum
+      }, 0)
+
+      // คำนวณกำไรสุทธิ
+      const netProfit = revenue - expenseAmount
+
+      // ถ้าเป็นปีปัจจุบันและเดือนนี้มากกว่าเดือนปัจจุบัน ให้คืน object ที่มีแค่ month
+      if (isCurrentYear && monthNumber > currentMonth) {
+        return { month }
+      }
+
+      return {
+        month,
+        revenue,
+        expenses: expenseAmount,
+        netProfit,
+      }
+    })
+
+    return monthlyData
+  }
+
+  /**
    * ดึงข้อมูลสรุป dashboard ทั้งหมด
    */
-  async getDashboardSummary(startDate?: string, endDate?: string) {
+  async getDashboardSummary(
+    startDate?: string,
+    endDate?: string,
+    period?: string,
+  ) {
     const bookingsByStatus = await this.getBookingsByStatuses(
       startDate,
       endDate,
@@ -234,12 +347,17 @@ export class DashboardService {
       endDate,
     )
 
-    const bookingsByStatusForYear = await this.getBookingsByStatuses()
-    // asdasd
+    const bookingsByStatusForYear = await this.getBookingsByStatuses(
+      startDate,
+      endDate,
+    )
 
-    const expensesByCategoryForYear = await this.getExpensesByCategory()
+    const expensesByCategoryForYear = await this.getExpensesByCategory(
+      startDate,
+      endDate,
+    )
 
-    return {
+    const result = {
       year: {
         bookingsRevenue: bookingsByStatusForYear.completed,
         bookingsRevenuePending: bookingsByStatusForYear.pending,
@@ -256,5 +374,13 @@ export class DashboardService {
           bookingsByStatus.completed.totalRevenue - expensesByCategory.total,
       },
     }
+
+    // ถ้า period เป็น year ให้เพิ่มข้อมูลรายเดือนไปด้วย
+    if (period === 'year') {
+      const year = endDate ? dayjs(endDate).year() : dayjs().year()
+      result.year['monthlyChartData'] = await this.getMonthlyChartData(year)
+    }
+
+    return result
   }
 }
