@@ -19,4 +19,5 @@ export enum CategoryType {
   MEDICAL = 6, // รักษา
   OTHER = 7, // อื่นๆ
   SALARY_ADVANCE = 8, // เบิกเงินเดือน
+  PAYROLL = 9, // เงินเดือนพนักงาน
 }
