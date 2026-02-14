@@ -62,6 +62,19 @@ export class EmployeesController {
     )
   }
 
+  @Post('selectDelete/:employeeId')
+  isDeleteEmployeeById(
+    @UserInfo() userInfo: UserResponse,
+    @Param('employeeId') employeeId: string,
+    @Body() updateStatusDeleteRequest: EmployeeRequest,
+  ) {
+    return this.employeesService.isDeleteEmployeeById(
+      userInfo,
+      employeeId,
+      updateStatusDeleteRequest,
+    )
+  }
+
   @Delete(':employeeId')
   deleteEmployeeById(@Param('employeeId') employeeId: string) {
     return this.employeesService.deleteEmployeeById(employeeId)

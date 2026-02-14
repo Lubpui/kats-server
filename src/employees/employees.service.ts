@@ -174,6 +174,20 @@ export class EmployeesService {
     return employeeRes
   }
 
+  async isDeleteEmployeeById(
+    userInfo: UserResponse,
+    employeeId: string,
+    updateStatusDeleteRequest: EmployeeRequest,
+  ) {
+    const updateStatus = await this.updateEmployeeById(
+      userInfo,
+      employeeId,
+      updateStatusDeleteRequest,
+    )
+
+    return updateStatus
+  }
+
   async deleteEmployeeById(employeeId: string) {
     const employee = await this.EmployeeModel.findByIdAndDelete(employeeId)
     return employee
