@@ -31,8 +31,8 @@ export class EmployeesController {
   }
 
   @Get()
-  getAllEmployees(): Promise<EmployeeResponse[]> {
-    return this.employeesService.getAllEmployees()
+  getAllEmployees(@Query('delete') del: string): Promise<EmployeeResponse[]> {
+    return this.employeesService.getAllEmployees(Number(del))
   }
 
   @Get('pagination')

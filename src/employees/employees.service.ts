@@ -58,7 +58,7 @@ export class EmployeesService {
     }
   }
 
-  async getAllEmployees(): Promise<EmployeeResponse[]> {
+  async getAllEmployees(del: number): Promise<EmployeeResponse[]> {
     try {
       const employees = await this.EmployeeModel.find().populate({
         path: 'employmentInfo.role',
@@ -66,7 +66,15 @@ export class EmployeesService {
         options: { strictPopulate: false },
       })
 
-      return modelMapper(EmployeeListResponse, { data: employees }).data
+      const Employee = modelMapper(EmployeeListResponse, {
+        data: employees,
+      }).data
+
+      const filterdEmployees = Employee.filter(
+        (Employee) => Employee.delete === (del as DeleteStatus),
+      )
+
+      return filterdEmployees
     } catch (error) {
       console.log('getAllEmployees error:', error)
 
