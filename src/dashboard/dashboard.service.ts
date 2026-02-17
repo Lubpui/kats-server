@@ -348,13 +348,13 @@ export class DashboardService {
     )
 
     const bookingsByStatusForYear = await this.getBookingsByStatuses(
-      startDate,
-      endDate,
+      dayjs(startDate).startOf('year').toISOString(),
+      dayjs(startDate).endOf('year').toISOString(),
     )
 
     const expensesByCategoryForYear = await this.getExpensesByCategory(
-      startDate,
-      endDate,
+      dayjs(startDate).startOf('year').toISOString(),
+      dayjs(startDate).endOf('year').toISOString(),
     )
 
     const result = {
