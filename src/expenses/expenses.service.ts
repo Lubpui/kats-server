@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Expense, ExpenseDocument } from './schemas/expense.schema'
 import { Model, Types } from 'mongoose'
@@ -15,6 +15,10 @@ import {
 } from 'src/document-count/schemas/document-count.schema'
 import { CUSTOM_CONNECTION_NAME } from 'src/utils/constanrs'
 import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
+import { UserResponse } from 'src/users/responses/user.response'
+import { deleteFile } from 'src/utils/common.util'
+import path from 'path'
+import * as fs from 'fs-extra'
 
 @Injectable()
 export class ExpensesService {
@@ -25,6 +29,37 @@ export class ExpensesService {
     private readonly documentCountModel: Model<DocumentCountDocument>,
     private readonly documentCountService: DocumentCountService,
   ) {}
+
+  async handleAdjustFile(payload: {
+    newFileName: string | undefined
+    oldFileName: string | undefined
+    dbname: string
+  }) {
+    const { newFileName, oldFileName, dbname } = payload
+    const dirname = path.join(process.env.UPLOAD_PATH ?? '', dbname, 'expenses')
+
+    let imageRes: string | undefined = undefined
+
+    if (newFileName !== oldFileName) {
+      //ลบไฟล์เดิม
+      if (oldFileName && fs.existsSync(path.join(dirname, oldFileName))) {
+        await deleteFile(path.join(dirname, oldFileName))
+      }
+
+      //สร้างไฟล์
+      if (newFileName) {
+        const originPath = path.join(process.env.TMP_PATH ?? '', newFileName)
+        const destinationPath = path.join(dirname, newFileName)
+        if (!fs.existsSync(dirname)) {
+          fs.mkdirSync(dirname, { recursive: true })
+        }
+        await fs.copy(originPath, destinationPath, { overwrite: true })
+        imageRes = newFileName
+      }
+    }
+
+    return imageRes
+  }
 
   async createExpense(
     createExpenseRequest: ExpenseRequest,
@@ -79,9 +114,29 @@ export class ExpensesService {
   }
 
   async updateExpenseById(
+    userInfo: UserResponse,
     expenseId: string,
     updateExpenseRequest: ExpenseRequest,
   ) {
+    const { dbname } = userInfo
+    const { slip: newSlip } = updateExpenseRequest
+
+    const booking = await this.expenseModel.findById(expenseId, {
+      slip: 1,
+      image: 1,
+    })
+    if (!booking) throw new NotFoundException('ไม่พบ expense')
+
+    const { slip: oldSlip } = booking
+
+    const slipPath = await this.handleAdjustFile({
+      newFileName: newSlip,
+      oldFileName: oldSlip,
+      dbname,
+    })
+
+    updateExpenseRequest.slip = slipPath
+
     const Expenses = await this.expenseModel.findByIdAndUpdate(expenseId, {
       $set: { ...updateExpenseRequest },
     })
@@ -89,10 +144,12 @@ export class ExpensesService {
   }
 
   async approveExpenseById(
+    userInfo: UserResponse,
     expenseId: string,
     approveExpenseRequest: ExpenseRequest,
   ) {
     const approve = await this.updateExpenseById(
+      userInfo,
       expenseId,
       approveExpenseRequest,
     )
@@ -101,10 +158,12 @@ export class ExpensesService {
   }
 
   async cencelExpenseById(
+    userInfo: UserResponse,
     expenseId: string,
     approveExpenseRequest: ExpenseRequest,
   ) {
     const approve = await this.updateExpenseById(
+      userInfo,
       expenseId,
       approveExpenseRequest,
     )
@@ -113,10 +172,12 @@ export class ExpensesService {
   }
 
   async isDeleteExpenseById(
+    userInfo: UserResponse,
     expenseId: string,
     updateStatusDeleteRequest: ExpenseRequest,
   ) {
     const updateStatus = await this.updateExpenseById(
+      userInfo,
       expenseId,
       updateStatusDeleteRequest,
     )

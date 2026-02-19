@@ -13,6 +13,8 @@ import { ExpensesService } from './expenses.service'
 import { ExpenseResponse } from './responses/expense.response'
 import { ExpenseRequest } from './requests/expense.request'
 import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard'
+import { UserInfo } from 'src/shared/decorators/user-info.decorator'
+import { UserResponse } from 'src/users/responses/user.response'
 
 @UseGuards(JwtAuthGuard)
 @Controller('expenses')
@@ -38,10 +40,12 @@ export class ExpensesController {
 
   @Put(':expenseId')
   updateExpenseById(
+    @UserInfo() userInfo: UserResponse,
     @Param('expenseId') expenseId: string,
     @Body() updateBookingRequest: ExpenseRequest,
   ) {
     return this.expensesService.updateExpenseById(
+      userInfo,
       expenseId,
       updateBookingRequest,
     )
@@ -49,10 +53,12 @@ export class ExpensesController {
 
   @Post('approve/:expenseId')
   approveExpenseById(
+    @UserInfo() userInfo: UserResponse,
     @Param('expenseId') expenseId: string,
     @Body() approveExpenseRequest: ExpenseRequest,
   ) {
     return this.expensesService.approveExpenseById(
+      userInfo,
       expenseId,
       approveExpenseRequest,
     )
@@ -60,10 +66,12 @@ export class ExpensesController {
 
   @Post('cencel/:expenseId')
   cencelExpenseById(
+    @UserInfo() userInfo: UserResponse,
     @Param('expenseId') expenseId: string,
     @Body() approveExpenseRequest: ExpenseRequest,
   ) {
     return this.expensesService.cencelExpenseById(
+      userInfo,
       expenseId,
       approveExpenseRequest,
     )
@@ -71,10 +79,12 @@ export class ExpensesController {
 
   @Post('selectDelete/:expenseId')
   isDeleteExpenseById(
+    @UserInfo() userInfo: UserResponse,
     @Param('expenseId') expenseId: string,
     @Body() updateStatusDeleteRequest: ExpenseRequest,
   ) {
     return this.expensesService.isDeleteExpenseById(
+      userInfo,
       expenseId,
       updateStatusDeleteRequest,
     )
