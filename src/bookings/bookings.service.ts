@@ -343,6 +343,7 @@ export class BookingsService {
       bookingStatus === BookingStatus.PENDING
     ) {
       bookingStatus = BookingStatus.PAID
+      // asfsdf
     } else if (slipPath === '' && bookingStatus === BookingStatus.PAID) {
       bookingStatus = BookingStatus.PENDING
     }
