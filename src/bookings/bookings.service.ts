@@ -64,7 +64,7 @@ export class BookingsService {
     const { newFileName, oldFileName, dbname } = payload
     const dirname = path.join(process.env.UPLOAD_PATH ?? '', dbname, 'booking')
 
-    let imageRes: string | undefined = undefined
+    let imageRes: string | undefined = ''
 
     if (newFileName !== oldFileName) {
       //ลบไฟล์เดิม
@@ -147,8 +147,18 @@ export class BookingsService {
         typeProductSnapshot: product.typeProduct,
       }
 
+      let bookingStatus = createBookingRequest.status
+      if (
+        createBookingRequest.slip &&
+        createBookingRequest.slip !== '' &&
+        bookingStatus === BookingStatus.PENDING
+      ) {
+        bookingStatus = BookingStatus.PAID
+      }
+
       const newCreateBookingRequest = {
         ...createBookingRequest,
+        status: bookingStatus,
         product: productSnapshot,
         codeId: code,
       }
@@ -314,6 +324,8 @@ export class BookingsService {
       dbname,
     })
 
+    console.log('slipPath', slipPath)
+
     updateBookingRequest.slip = slipPath
 
     const imagePath = await this.handleAdjustFile({
@@ -323,6 +335,19 @@ export class BookingsService {
     })
 
     updateBookingRequest.image = imagePath
+
+    let bookingStatus = updateBookingRequest.status
+    if (
+      slipPath &&
+      slipPath !== '' &&
+      bookingStatus === BookingStatus.PENDING
+    ) {
+      bookingStatus = BookingStatus.PAID
+    } else if (slipPath === '' && bookingStatus === BookingStatus.PAID) {
+      bookingStatus = BookingStatus.PENDING
+    }
+
+    updateBookingRequest.status = bookingStatus
 
     const updatedBooking = await this.bookingModel.findByIdAndUpdate(
       bookingId,
