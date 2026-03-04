@@ -68,7 +68,7 @@ export class DashboardService {
   }
 
   /**
-   * ดึงข้อมูล booking ทั้งแบบ COMPLETED และ PENDING แล้วคืนข้อมูลแยกตามสถานะ
+   * ดึงข้อมูล booking ทั้งแบบ COMPLETED, PENDING, และ PAID แล้วคืนข้อมูลแยกตามสถานะ
    * รวมทั้งผลรวมแบบ combined
    */
   async getBookingsByStatuses(
@@ -80,6 +80,10 @@ export class DashboardService {
       bookingCount: number
     }
     pending: {
+      totalRevenue: number
+      bookingCount: number
+    }
+    paid: {
       totalRevenue: number
       bookingCount: number
     }
@@ -95,10 +99,16 @@ export class DashboardService {
       ? dayjs(endDate).endOf('date').toDate()
       : dayjs().endOf('year').toDate()
 
-    // ดึง bookings ทั้งสองสถานะในครั้งเดียว
+    // ดึง bookings ทั้งสามสถานะในครั้งเดียว
     const bookings = await this.bookingModel
       .find({
-        status: { $in: [BookingStatus.COMPLETED, BookingStatus.PENDING] },
+        status: {
+          $in: [
+            BookingStatus.COMPLETED,
+            BookingStatus.PENDING,
+            BookingStatus.PAID,
+          ],
+        },
         delete: 0,
         $expr: {
           $and: [
@@ -112,6 +122,7 @@ export class DashboardService {
     const accum = {
       [BookingStatus.COMPLETED]: { totalRevenue: 0, bookingCount: 0 },
       [BookingStatus.PENDING]: { totalRevenue: 0, bookingCount: 0 },
+      [BookingStatus.PAID]: { totalRevenue: 0, bookingCount: 0 },
     } as Record<number, { totalRevenue: number; bookingCount: number }>
 
     bookings.forEach((b) => {
@@ -124,10 +135,19 @@ export class DashboardService {
     })
 
     const completed = accum[BookingStatus.COMPLETED]
-    const pending = accum[BookingStatus.PENDING]
+    const pending = accum[BookingStatus.PENDING] || {
+      totalRevenue: 0,
+      bookingCount: 0,
+    }
+    const paid = accum[BookingStatus.PAID] || {
+      totalRevenue: 0,
+      bookingCount: 0,
+    }
 
-    const combinedTotalRevenue = completed.totalRevenue + pending.totalRevenue
-    const combinedCount = completed.bookingCount + pending.bookingCount
+    const combinedTotalRevenue =
+      completed.totalRevenue + pending.totalRevenue + paid.totalRevenue
+    const combinedCount =
+      completed.bookingCount + pending.bookingCount + paid.bookingCount
 
     return {
       completed: {
@@ -137,6 +157,10 @@ export class DashboardService {
       pending: {
         totalRevenue: pending.totalRevenue,
         bookingCount: pending.bookingCount,
+      },
+      paid: {
+        totalRevenue: paid.totalRevenue,
+        bookingCount: paid.bookingCount,
       },
       combined: {
         totalRevenue: combinedTotalRevenue,
@@ -360,7 +384,14 @@ export class DashboardService {
     const result = {
       year: {
         bookingsRevenue: bookingsByStatusForYear.completed,
-        bookingsRevenuePending: bookingsByStatusForYear.pending,
+        bookingsRevenuePending: {
+          totalRevenue:
+            bookingsByStatusForYear.pending.totalRevenue +
+            bookingsByStatusForYear.paid.totalRevenue,
+          bookingCount:
+            bookingsByStatusForYear.pending.bookingCount +
+            bookingsByStatusForYear.paid.bookingCount,
+        },
         expensesByCategory: expensesByCategoryForYear,
         netProfit:
           bookingsByStatusForYear.completed.totalRevenue -
@@ -368,7 +399,14 @@ export class DashboardService {
       },
       month: {
         bookingsRevenue: bookingsByStatus.completed,
-        bookingsRevenuePending: bookingsByStatus.pending,
+        bookingsRevenuePending: {
+          totalRevenue:
+            bookingsByStatus.pending.totalRevenue +
+            bookingsByStatus.paid.totalRevenue,
+          bookingCount:
+            bookingsByStatus.pending.bookingCount +
+            bookingsByStatus.paid.bookingCount,
+        },
         expensesByCategory,
         netProfit:
           bookingsByStatus.completed.totalRevenue - expensesByCategory.total,

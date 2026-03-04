@@ -64,7 +64,7 @@ export class BookingsService {
     const { newFileName, oldFileName, dbname } = payload
     const dirname = path.join(process.env.UPLOAD_PATH ?? '', dbname, 'booking')
 
-    let imageRes: string | undefined = ''
+    let imageRes: string | undefined = newFileName
 
     if (newFileName !== oldFileName) {
       //ลบไฟล์เดิม
@@ -324,6 +324,8 @@ export class BookingsService {
       dbname,
     })
 
+    console.log('oldSlip', oldSlip)
+    console.log('newSlip', newSlip)
     console.log('slipPath', slipPath)
 
     updateBookingRequest.slip = slipPath
