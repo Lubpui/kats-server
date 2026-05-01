@@ -257,6 +257,7 @@ export class BookingsService {
               { name: { $regex: term, $options: 'i' } },
               { number: { $regex: term, $options: 'i' } },
               { tel: { $regex: term, $options: 'i' } },
+              { licensePlate: { $regex: term, $options: 'i' } },
             ],
           },
         },
