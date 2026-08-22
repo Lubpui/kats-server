@@ -59,7 +59,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/
-          server-dir: /api.gunprotections.com/dist/
+          server-dir: /api.rustprotections.com/dist/
           dangerous-clean-slate: true
 
       # 3) Upload package.json & yarn.lock
@@ -70,7 +70,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./
-          server-dir: /api.gunprotections.com/
+          server-dir: /api.rustprotections.com/
           exclude: |
             **/*
             !package.json
