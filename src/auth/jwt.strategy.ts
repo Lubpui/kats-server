@@ -10,7 +10,7 @@ import { Model } from 'mongoose'
 import { JwtPayload } from './interfaces/jwt-payload.interface'
 import { MAIN_CONNECTION_NAME } from 'src/utils/constanrs'
 import { ConfigService } from '@nestjs/config'
-import fs from 'fs'
+import { loadJwtPublicKey } from 'src/utils/jwt-keys.util'
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -19,36 +19,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private readonly userModel: Model<UserDocument>,
     private readonly configService: ConfigService,
   ) {
-    const pubPath = configService.get<string>('JWT_SIGN_PUBLIC_KEY_PATH')
-    let publicKey = ''
-
-    if (pubPath) {
-      try {
-        publicKey = fs.readFileSync(pubPath, 'utf8')
-      } catch (err) {
-        console.error(
-          'JwtStrategy: failed to read public key file at',
-          pubPath,
-          err,
-        )
-        // fallback to env if file read fails
-        publicKey = String(
-          configService.get('JWT_SIGN_PUBLIC_KEY') || '',
-        ).replace(/\\n/g, '\n')
-      }
-    } else {
-      publicKey = String(
-        configService.get('JWT_SIGN_PUBLIC_KEY') || '',
-      ).replace(/\\n/g, '\n')
-    }
-
-    if (!publicKey) {
-      // ชัดเจนกว่าให้ throw ตอน boot ถ้าไม่มี public key
-      throw new Error(
-        'JWT public key not found. Set JWT_SIGN_PUBLIC_KEY_PATH or JWT_SIGN_PUBLIC_KEY.',
-      )
-    }
-
+    // ไม่มี key ก็ให้ throw ตั้งแต่ boot ชัดเจนกว่าไปพังตอน verify token
+    const publicKey = loadJwtPublicKey(configService)
     const algorithm = configService.get<string>('JWT_ALGORITHM') || 'RS256'
 
     super({

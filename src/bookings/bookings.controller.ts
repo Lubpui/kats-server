@@ -11,7 +11,10 @@ import {
 } from '@nestjs/common'
 import { BookingsService } from './bookings.service'
 import { BookingRequest } from './requests/booking.request'
-import { BookingResponse } from './responses/booking.response'
+import {
+  BookingPreviewResponse,
+  BookingResponse,
+} from './responses/booking.response'
 import { QueryPagination } from 'src/shared/types/queryPagination'
 import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard'
 import { UserInfo } from 'src/shared/decorators/user-info.decorator'
@@ -70,11 +73,12 @@ export class BookingsController {
     return this.bookingsService.getLastBookingNumber()
   }
 
+  // เปิดสาธารณะ (ไม่มี guard) — ใช้ response ที่ตัดข้อมูลส่วนตัวของลูกค้าออกแล้ว
   @Get('preview')
   getAllBookingsForPreview(
     @Query('delete') del: string,
-  ): Promise<BookingResponse[]> {
-    return this.bookingsService.getAllBookings(Number(del))
+  ): Promise<BookingPreviewResponse[]> {
+    return this.bookingsService.getAllBookingsForPreview(Number(del))
   }
 
   @UseGuards(JwtAuthGuard)

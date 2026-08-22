@@ -2,7 +2,10 @@ import {
   Injectable,
   BadRequestException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common'
+import { RefreshTokenRequest } from './requests/refresh-token.request'
+import { JwtPayload } from './interfaces/jwt-payload.interface'
 import { JwtService } from '@nestjs/jwt'
 import { LogInRequest } from './requests/login.request'
 import { SharedService } from 'src/utils/shared.service'
@@ -30,14 +33,34 @@ export class AuthService {
   ) {}
 
   async login(loginRequest: LogInRequest) {
+    const user = await this.sharedService.validateUser(loginRequest)
+    const newPayload = createUserPayload(user, this.jwtService, false)
+    return modelMapper(LogInResponse, newPayload)
+  }
+
+  async refreshToken(refreshTokenRequest: RefreshTokenRequest) {
+    const { refreshToken } = refreshTokenRequest
+
+    let payload: JwtPayload
     try {
-      const user = await this.sharedService.validateUser(loginRequest)
-      const newPayload = createUserPayload(user, this.jwtService, false)
-      return modelMapper(LogInResponse, newPayload)
+      payload = this.jwtService.verify<JwtPayload>(refreshToken)
     } catch (error) {
-      console.log(error)
-      throw error
+      if (error?.name === 'TokenExpiredError') {
+        throw new UnauthorizedException('refresh token หมดอายุ')
+      }
+      throw new UnauthorizedException('refresh token ไม่ถูกต้อง')
     }
+
+    // กันไม่ให้เอา access token มาต่ออายุตัวเอง — ต้องเป็น refresh token เท่านั้น
+    if (!payload.isRefreshToken) {
+      throw new UnauthorizedException('refresh token ไม่ถูกต้อง')
+    }
+
+    const user = await this.sharedService.getUserByDynamicallyType(
+      payload.userId,
+    )
+    const newPayload = createUserPayload(user, this.jwtService, false)
+    return modelMapper(LogInResponse, newPayload)
   }
 
   async createNewAccount(createUserRequest: CreateUserRequest) {
@@ -61,34 +84,30 @@ export class AuthService {
       throw new BadRequestException('รหัสผ่านใหม่ต้องแตกต่างจากรหัสผ่านเดิม')
     }
 
-    try {
-      // Find user by ID
-      const user = await this.userModel.findById(userId)
-      if (!user) {
-        throw new NotFoundException('ไม่พบข้อมูลผู้ใช้งาน')
-      }
-
-      // Verify old password
-      const isPasswordValid = await bcrypt.compare(oldPassword, user.password)
-      if (!isPasswordValid) {
-        throw new BadRequestException('รหัสผ่านเดิมไม่ถูกต้อง')
-      }
-
-      // Hash new password
-      const hashedPassword = await bcrypt.hash(newPassword, 10)
-
-      // Update password
-      await this.userModel.updateOne(
-        { _id: userId },
-        { password: hashedPassword },
-      )
-
-      return modelMapper(ChangePasswordResponse, {
-        message: 'เปลี่ยนรหัสผ่านสำเร็จ',
-        success: true,
-      })
-    } catch (error) {
-      throw error
+    // Find user by ID
+    const user = await this.userModel.findById(userId)
+    if (!user) {
+      throw new NotFoundException('ไม่พบข้อมูลผู้ใช้งาน')
     }
+
+    // Verify old password
+    const isPasswordValid = await bcrypt.compare(oldPassword, user.password)
+    if (!isPasswordValid) {
+      throw new BadRequestException('รหัสผ่านเดิมไม่ถูกต้อง')
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10)
+
+    // Update password
+    await this.userModel.updateOne(
+      { _id: userId },
+      { password: hashedPassword },
+    )
+
+    return modelMapper(ChangePasswordResponse, {
+      message: 'เปลี่ยนรหัสผ่านสำเร็จ',
+      success: true,
+    })
   }
 }

@@ -20,7 +20,8 @@ import {
 import { JwtModule } from '@nestjs/jwt'
 import { MongooseService } from './mongoose.service'
 import { CoreModule } from './core/core.module'
-import fs from 'fs'
+import { loadJwtKeys } from './utils/jwt-keys.util'
+import { ThrottlerModule } from '@nestjs/throttler'
 
 @Module({
   imports: [
@@ -37,6 +38,14 @@ import fs from 'fs'
       envFilePath: '.env',
       isGlobal: true,
     }),
+    // ตัว ThrottlerModule เป็น global อยู่แล้ว แต่ยังไม่ได้ผูก guard ไว้ทั้งระบบ
+    // ตอนนี้ใช้เฉพาะ /auth/login ที่เป็นเป้า brute force
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 5,
+      },
+    ]),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -49,64 +58,14 @@ import fs from 'fs'
       imports: [
         JwtModule.registerAsync({
           imports: [ConfigModule],
-          useFactory: async (configService: ConfigService) => {
-            const privPath = configService.get<string>(
-              'JWT_SIGN_PRIVATE_KEY_PATH',
-            )
-            const pubPath = configService.get<string>(
-              'JWT_SIGN_PUBLIC_KEY_PATH',
-            )
-
-            let privateKey = ''
-            let publicKey = ''
-
-            if (privPath) {
-              try {
-                privateKey = fs.readFileSync(privPath, 'utf8')
-              } catch (err) {
-                console.error(
-                  'Failed to read private key file at',
-                  privPath,
-                  err,
-                )
-                throw err
-              }
-            } else {
-              const rawPriv = String(
-                configService.get('JWT_SIGN_PRIVATE_KEY') || '',
-              )
-              privateKey = rawPriv.replace(/\\n/g, '\n')
-            }
-
-            if (pubPath) {
-              try {
-                publicKey = fs.readFileSync(pubPath, 'utf8')
-              } catch (err) {
-                console.error('Failed to read public key file at', pubPath, err)
-                throw err
-              }
-            } else {
-              const rawPub = String(
-                configService.get('JWT_SIGN_PUBLIC_KEY') || '',
-              )
-              publicKey = rawPub.replace(/\\n/g, '\n')
-            }
-
-            console.error('JwtModule init keys length:', {
-              privateKeyLen: privateKey.length,
-              publicKeyLen: publicKey.length,
-            })
-
-            return {
-              privateKey,
-              publicKey,
-              signOptions: {
-                issuer: configService.get('JWT_ISSUER'),
-                expiresIn: configService.get('JWT_EXPIRES'),
-                algorithm: configService.get('JWT_ALGORITHM'),
-              },
-            }
-          },
+          useFactory: async (configService: ConfigService) => ({
+            ...loadJwtKeys(configService),
+            signOptions: {
+              issuer: configService.get('JWT_ISSUER'),
+              expiresIn: configService.get('JWT_EXPIRES'),
+              algorithm: configService.get('JWT_ALGORITHM'),
+            },
+          }),
           inject: [ConfigService],
         }),
       ],

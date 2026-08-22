@@ -1,7 +1,7 @@
 import {
-  BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common'
 import { UserResponse } from 'src/users/responses/user.response'
 import * as bcrypt from 'bcrypt'
@@ -18,6 +18,10 @@ import {
 import { LogInRequest } from 'src/auth/requests/login.request'
 import { MAIN_CONNECTION_NAME } from './constanrs'
 
+// bcrypt hash ของค่าที่ไม่มีใครใช้จริง มีไว้ให้ compare กินเวลาเท่ากันตอนไม่เจอ user
+const DUMMY_PASSWORD_HASH =
+  '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy'
+
 @Injectable()
 export class SharedService {
   constructor(
@@ -27,20 +31,24 @@ export class SharedService {
   ) {}
 
   async validateUser(signInRequest: LogInRequest): Promise<UserResponse> {
-    try {
-      const { email, password } = signInRequest
-      const user = await this.userModel.findOne({
-        $or: [{ email }, { userName: email }],
-      })
-      if (!user?._id) throw new NotFoundException('ไม่พบข้อมูลผู้ใช้งาน')
+    const { email, password } = signInRequest
+    const user = await this.userModel.findOne({
+      $or: [{ email }, { userName: email }],
+    })
 
-      const isValid = await bcrypt.compare(password, user.password)
-      if (!isValid) throw new BadRequestException('Invalid email & password')
+    // เทียบกับ hash หลอกเมื่อไม่เจอ user เพื่อให้เวลาตอบสนองใกล้เคียงกัน
+    // ไม่งั้นจับเวลาเอาก็รู้ได้ว่าบัญชีไหนมีอยู่จริง
+    const isValid = await bcrypt.compare(
+      password,
+      user?.password ?? DUMMY_PASSWORD_HASH,
+    )
 
-      return await this.getUserByDynamicallyType(user._id as any)
-    } catch (error) {
-      throw error
+    // ตอบข้อความเดียวกันทั้งกรณีไม่เจอ user และรหัสผิด กัน user enumeration
+    if (!user?._id || !isValid) {
+      throw new UnauthorizedException('อีเมลหรือรหัสผ่านไม่ถูกต้อง')
     }
+
+    return await this.getUserByDynamicallyType(user._id as any)
   }
 
   async getUserByDynamicallyType(

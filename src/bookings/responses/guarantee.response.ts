@@ -1,6 +1,17 @@
 import { Expose } from 'class-transformer'
 import { BookingStatus } from 'src/shared/enums/booking-status.enum'
 
+/**
+ * ข้อมูลการเข้ารับบริการเท่าที่หน้าจองสาธารณะต้องใช้ — บอกแค่ว่าคิวไหนถูกจองไปแล้ว
+ */
+export class GuaranteePreviewResponse {
+  @Expose()
+  serviceDate: string
+
+  @Expose()
+  serviceTime: string
+}
+
 export class GuaranteeResponse {
   @Expose()
   serviceNo: number // ครั้งที่

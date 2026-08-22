@@ -6,6 +6,8 @@ import { BookingRequest } from './requests/booking.request'
 import { Product, ProductDocument } from 'src/products/schemas/product.schema'
 import {
   BookingListResponse,
+  BookingPreviewListResponse,
+  BookingPreviewResponse,
   BookingResponse,
 } from './responses/booking.response'
 import { modelMapper } from 'src/utils/mapper.util'
@@ -35,7 +37,7 @@ import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
 import path from 'path'
 import { UserResponse } from 'src/users/responses/user.response'
 import * as fs from 'fs-extra'
-import { deleteFile } from 'src/utils/common.util'
+import { deleteFile, moveTempFileTo, resolveWithin } from 'src/utils/common.util'
 
 @Injectable()
 export class BookingsService {
@@ -68,19 +70,13 @@ export class BookingsService {
 
     if (newFileName !== oldFileName) {
       //ลบไฟล์เดิม
-      if (oldFileName && fs.existsSync(path.join(dirname, oldFileName))) {
-        await deleteFile(path.join(dirname, oldFileName))
+      if (oldFileName && fs.existsSync(resolveWithin(dirname, oldFileName))) {
+        await deleteFile(resolveWithin(dirname, oldFileName))
       }
 
       //สร้างไฟล์
       if (newFileName) {
-        const originPath = path.join(process.env.TMP_PATH ?? '', newFileName)
-        const destinationPath = path.join(dirname, newFileName)
-        if (!fs.existsSync(dirname)) {
-          fs.mkdirSync(dirname, { recursive: true })
-        }
-        await fs.copy(originPath, destinationPath, { overwrite: true })
-        imageRes = newFileName
+        imageRes = await moveTempFileTo(dirname, newFileName)
       }
     }
 
@@ -101,32 +97,18 @@ export class BookingsService {
       const { slip, productId, image } = createBookingRequest
 
       //สร้างไฟล์
+      const dirname = path.join(
+        process.env.UPLOAD_PATH ?? '',
+        dbname,
+        'booking',
+      )
+
       if (slip) {
-        const dirname = path.join(
-          process.env.UPLOAD_PATH ?? '',
-          dbname,
-          'booking',
-        )
-        const originPath = path.join(process.env.TMP_PATH ?? '', slip)
-        const destinationPath = path.join(dirname, slip)
-        if (!fs.existsSync(dirname)) {
-          fs.mkdirSync(dirname, { recursive: true })
-        }
-        await fs.copy(originPath, destinationPath, { overwrite: true })
+        await moveTempFileTo(dirname, slip)
       }
 
       if (image) {
-        const dirname = path.join(
-          process.env.UPLOAD_PATH ?? '',
-          dbname,
-          'booking',
-        )
-        const originPath = path.join(process.env.TMP_PATH ?? '', image)
-        const destinationPath = path.join(dirname, image)
-        if (!fs.existsSync(dirname)) {
-          fs.mkdirSync(dirname, { recursive: true })
-        }
-        await fs.copy(originPath, destinationPath, { overwrite: true })
+        await moveTempFileTo(dirname, image)
       }
 
       const findedProduct = await this.productModel
@@ -170,12 +152,24 @@ export class BookingsService {
       await session.commitTransaction()
       return createdBooking
     } catch (error) {
-      console.log(error)
       await session.abortTransaction() // rollbackASDF
       throw error
     } finally {
       session.endSession()
     }
+  }
+
+  /**
+   * ใช้กับหน้าจองสาธารณะที่ไม่ต้องมี token — คืนเฉพาะ field ที่ปฏิทินหน้าเว็บใช้
+   */
+  async getAllBookingsForPreview(
+    del: number,
+  ): Promise<BookingPreviewResponse[]> {
+    const bookingRes = await this.bookingModel
+      .find({ delete: del as DeleteStatus })
+      .sort({ bookDate: 1 })
+
+    return modelMapper(BookingPreviewListResponse, { data: bookingRes }).data
   }
 
   async getAllBookings(del: number): Promise<BookingResponse[]> {
@@ -224,83 +218,75 @@ export class BookingsService {
   async getAllBookingPaginations(
     query: QueryPagination,
   ): Promise<BookingResponse[]> {
-    try {
-      const { term, receiptBookNo, productName } = query
+    const { term, receiptBookNo, productName } = query
 
-      const receiptBookNoPipline =
-        receiptBookNo !== 'all'
-          ? [
-              {
-                $match: {
-                  receiptBookNo: receiptBookNo,
-                },
+    const receiptBookNoPipline =
+      receiptBookNo !== 'all'
+        ? [
+            {
+              $match: {
+                receiptBookNo: receiptBookNo,
               },
-            ]
-          : []
+            },
+          ]
+        : []
 
-      const productNamePipline =
-        productName && productName !== 'all'
-          ? [
-              {
-                $match: {
-                  'product.name': productName,
-                },
+    const productNamePipline =
+      productName && productName !== 'all'
+        ? [
+            {
+              $match: {
+                'product.name': productName,
               },
-            ]
-          : []
+            },
+          ]
+        : []
 
-      const bookingRes = await this.bookingModel.aggregate([
-        ...receiptBookNoPipline,
-        {
-          $match: {
-            $or: [
-              { name: { $regex: term, $options: 'i' } },
-              { number: { $regex: term, $options: 'i' } },
-              { tel: { $regex: term, $options: 'i' } },
-              { licensePlate: { $regex: term, $options: 'i' } },
-            ],
-          },
+    const bookingRes = await this.bookingModel.aggregate([
+      ...receiptBookNoPipline,
+      {
+        $match: {
+          $or: [
+            { name: { $regex: term, $options: 'i' } },
+            { number: { $regex: term, $options: 'i' } },
+            { tel: { $regex: term, $options: 'i' } },
+            { licensePlate: { $regex: term, $options: 'i' } },
+          ],
         },
-        ...productNamePipline,
-        { $sort: { createdAt: -1 } },
-      ])
+      },
+      ...productNamePipline,
+      { $sort: { createdAt: -1 } },
+    ])
 
-      const bookings = modelMapper(BookingListResponse, {
-        data: bookingRes,
-      }).data
+    const bookings = modelMapper(BookingListResponse, {
+      data: bookingRes,
+    }).data
 
-      bookings.sort((a, b) => {
-        if (
-          a.status === BookingStatus.COMPLETED &&
-          b.status !== BookingStatus.COMPLETED
-        ) {
-          return 1
-        }
+    bookings.sort((a, b) => {
+      if (
+        a.status === BookingStatus.COMPLETED &&
+        b.status !== BookingStatus.COMPLETED
+      ) {
+        return 1
+      }
 
-        if (
-          a.status !== BookingStatus.COMPLETED &&
-          b.status === BookingStatus.COMPLETED
-        ) {
-          return -1
-        }
+      if (
+        a.status !== BookingStatus.COMPLETED &&
+        b.status === BookingStatus.COMPLETED
+      ) {
+        return -1
+      }
 
-        return Number(b.number) - Number(a.number)
-      })
+      return Number(b.number) - Number(a.number)
+    })
 
-      return bookings
-    } catch (error) {
-      throw error
-    }
+    return bookings
   }
 
   async getBookingById(bookingId: string): Promise<BookingResponse> {
-    try {
-      const bookingRes = await this.bookingModel.findById(bookingId)
+    const bookingRes = await this.bookingModel.findById(bookingId)
 
-      return modelMapper(BookingResponse, bookingRes)
-    } catch (error) {
-      throw error
-    }
+    return modelMapper(BookingResponse, bookingRes)
   }
 
   async updateBookingById(
@@ -324,10 +310,6 @@ export class BookingsService {
       oldFileName: oldSlip,
       dbname,
     })
-
-    console.log('oldSlip', oldSlip)
-    console.log('newSlip', newSlip)
-    console.log('slipPath', slipPath)
 
     updateBookingRequest.slip = slipPath
 
@@ -368,23 +350,19 @@ export class BookingsService {
     bookingId: string,
     updateBookingRequest: BookingRequest,
   ) {
-    try {
-      const isAllGuaranteesConpleted = updateBookingRequest.guarantees?.every(
-        (item) => item.status === BookingStatus.COMPLETED,
-      )
+    const isAllGuaranteesConpleted = updateBookingRequest.guarantees?.every(
+      (item) => item.status === BookingStatus.COMPLETED,
+    )
 
-      const bookingStatus = isAllGuaranteesConpleted
-        ? BookingStatus.COMPLETED
-        : BookingStatus.CHECKING
+    const bookingStatus = isAllGuaranteesConpleted
+      ? BookingStatus.COMPLETED
+      : BookingStatus.CHECKING
 
-      const updatedBooking = await this.updateBookingById(userInfo, bookingId, {
-        ...updateBookingRequest,
-        status: bookingStatus,
-      })
-      return updatedBooking
-    } catch (error) {
-      throw error
-    }
+    const updatedBooking = await this.updateBookingById(userInfo, bookingId, {
+      ...updateBookingRequest,
+      status: bookingStatus,
+    })
+    return updatedBooking
   }
 
   async approveBookingById(
@@ -477,12 +455,12 @@ export class BookingsService {
     const { dbname } = userInfo
     const dirname = path.join(process.env.UPLOAD_PATH ?? '', dbname, 'booking')
 
-    if (slip && fs.existsSync(path.join(dirname, slip))) {
-      await deleteFile(path.join(dirname, slip))
+    if (slip && fs.existsSync(resolveWithin(dirname, slip))) {
+      await deleteFile(resolveWithin(dirname, slip))
     }
 
-    if (image && fs.existsSync(path.join(dirname, image))) {
-      await deleteFile(path.join(dirname, image))
+    if (image && fs.existsSync(resolveWithin(dirname, image))) {
+      await deleteFile(resolveWithin(dirname, image))
     }
 
     await this.bookingModel.findByIdAndDelete(bookingId)
@@ -491,37 +469,33 @@ export class BookingsService {
   }
 
   async getLastBookingNumber() {
-    try {
-      const lastBooking = await this.bookingModel
-        .findOne()
-        .sort({ createdAt: -1 })
+    const lastBooking = await this.bookingModel
+      .findOne()
+      .sort({ createdAt: -1 })
 
-      const receiptBookNoStr = lastBooking?.receiptBookNo || '000'
-      const numberStr = lastBooking?.number || '0000'
+    const receiptBookNoStr = lastBooking?.receiptBookNo || '000'
+    const numberStr = lastBooking?.number || '0000'
 
-      const receiptBookNoNum = parseInt(receiptBookNoStr, 10)
-      const numberNum = parseInt(numberStr, 10)
+    const receiptBookNoNum = parseInt(receiptBookNoStr, 10)
+    const numberNum = parseInt(numberStr, 10)
 
-      let newReceiptBookNoNum = receiptBookNoNum
-      const newNumberNum = numberNum + 1
+    let newReceiptBookNoNum = receiptBookNoNum
+    const newNumberNum = numberNum + 1
 
-      if (numberNum % 50 === 0) {
-        newReceiptBookNoNum = receiptBookNoNum + 1
-      }
-
-      const newReceiptBookNo = newReceiptBookNoNum
-        .toString()
-        .padStart(receiptBookNoStr.length, '0')
-      const newNumber = newNumberNum.toString().padStart(numberStr.length, '0')
-
-      const lastBookingNumber = {
-        receiptBookNo: newReceiptBookNo,
-        number: newNumber,
-      }
-
-      return lastBookingNumber
-    } catch (error) {
-      throw error
+    if (numberNum % 50 === 0) {
+      newReceiptBookNoNum = receiptBookNoNum + 1
     }
+
+    const newReceiptBookNo = newReceiptBookNoNum
+      .toString()
+      .padStart(receiptBookNoStr.length, '0')
+    const newNumber = newNumberNum.toString().padStart(numberStr.length, '0')
+
+    const lastBookingNumber = {
+      receiptBookNo: newReceiptBookNo,
+      number: newNumber,
+    }
+
+    return lastBookingNumber
   }
 }

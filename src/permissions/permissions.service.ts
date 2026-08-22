@@ -27,80 +27,64 @@ export class PermissionsService {
   async createInitialRole(
     _roleModel?: Model<RoleDocument>,
   ): Promise<RoleResponse> {
-    try {
-      const roleModel = _roleModel || this.roleModel
-      await roleModel.insertMany(mockUpRoleList)
+    const roleModel = _roleModel || this.roleModel
+    await roleModel.insertMany(mockUpRoleList)
 
-      const ownerRole = await roleModel.findOne({ type: 'CEO' })
-      return modelMapper(RoleResponse, ownerRole)
-    } catch (error) {
-      throw error
-    }
+    const ownerRole = await roleModel.findOne({ type: 'CEO' })
+    return modelMapper(RoleResponse, ownerRole)
   }
 
   async createRole(createRoleRequest: RoleRequest): Promise<RoleResponse> {
-    try {
-      const createRole = {
-        ...createRoleRequest,
-        permissions: mockUpPermissions,
-      }
-      const role = await new this.roleModel(createRole).save()
-      return modelMapper(RoleResponse, role)
-    } catch (error) {
-      throw error
+    const createRole = {
+      ...createRoleRequest,
+      permissions: mockUpPermissions,
     }
+    const role = await new this.roleModel(createRole).save()
+    return modelMapper(RoleResponse, role)
   }
 
   async getAllRoles(del: number): Promise<RoleLiteResponse[]> {
-    try {
-      const roleRes = await this.roleModel.find({}, { permissions: 0 })
-      const roles = modelMapper(RoleLiteListResponse, { data: roleRes }).data
+    const roleRes = await this.roleModel.find({}, { permissions: 0 })
+    const roles = modelMapper(RoleLiteListResponse, { data: roleRes }).data
 
-      const filterdRoles = roles.filter(
-        (role) => role.delete === (del as DeleteStatus),
-      )
-      
-      const sortedRoles = filterdRoles.sort((a, b) => {
-        if (a.type === 'CEO') return -1
-        if (b.type === 'CEO') return 1
+    const filterdRoles = roles.filter(
+      (role) => role.delete === (del as DeleteStatus),
+    )
+    
+    const sortedRoles = filterdRoles.sort((a, b) => {
+      if (a.type === 'CEO') return -1
+      if (b.type === 'CEO') return 1
 
-        if (a.type === 'ADMIN') return -1
-        if (b.type === 'ADMIN') return 1
+      if (a.type === 'ADMIN') return -1
+      if (b.type === 'ADMIN') return 1
 
-        if (a.type === 'ACCOUNT') return -1
-        if (b.type === 'ACCOUNT') return 1
-        return 0
-      })
+      if (a.type === 'ACCOUNT') return -1
+      if (b.type === 'ACCOUNT') return 1
+      return 0
+    })
 
-      return sortedRoles
-    } catch (error) {
-      throw error
-    }
+    return sortedRoles
   }
 
   async getAllRolesForPermission(): Promise<RoleResponse[]> {
-    try {
-      const roles = await this.roleModel.find()
-      if (!roles || roles.length === 0) {
-        throw new NotFoundException('No roles found')
-      }
-
-      const sortedRoles = roles.sort((a, b) => {
-        if (a.type === 'CEO') return -1
-        if (b.type === 'CEO') return 1
-
-        if (a.type === 'ADMIN') return -1
-        if (b.type === 'ADMIN') return 1
-
-        if (a.type === 'ACCOUNT') return -1
-        if (b.type === 'ACCOUNT') return 1
-        return 0
-      })
-
-      return modelMapper(RoleListResponse, { data: sortedRoles }).data
-    } catch (error) {
-      throw error
+    const roles = await this.roleModel.find()
+    if (!roles || roles.length === 0) {
+      throw new NotFoundException('No roles found')
     }
+
+    const sortedRoles = roles.sort((a, b) => {
+      if (a.type === 'CEO') return -1
+      if (b.type === 'CEO') return 1
+
+      if (a.type === 'ADMIN') return -1
+      if (b.type === 'ADMIN') return 1
+
+      if (a.type === 'ACCOUNT') return -1
+      if (b.type === 'ACCOUNT') return 1
+      return 0
+    })
+
+    return modelMapper(RoleListResponse, { data: sortedRoles }).data
   }
 
   async getRoleById(roleId: string): Promise<RoleResponse> {

@@ -6,7 +6,10 @@ import {
 } from 'src/products/responses/product.response'
 import { BookingStatus } from 'src/shared/enums/booking-status.enum'
 import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
-import { GuaranteeResponse } from './guarantee.response'
+import {
+  GuaranteePreviewResponse,
+  GuaranteeResponse,
+} from './guarantee.response'
 
 export class BookingResponse {
   @Expose()
@@ -78,4 +81,36 @@ export class BookingListResponse {
   @Expose()
   @Type(() => BookingResponse)
   data: BookingResponse[]
+}
+
+/**
+ * ข้อมูลสำหรับหน้าจองสาธารณะ (/bookings/preview) ที่เรียกได้โดยไม่ต้องมี token
+ * เปิดเฉพาะที่ปฏิทินหน้าเว็บใช้จริง — ไม่มีชื่อ เบอร์ ทะเบียน ราคา หรือสลิปของลูกค้า
+ */
+export class BookingPreviewResponse {
+  @Expose()
+  bookDate: string
+
+  @Expose()
+  bookTime: string
+
+  @Expose()
+  carType: string
+
+  @Expose()
+  carModel: string
+
+  @Expose()
+  @IsEnum(BookingStatus)
+  status: BookingStatus
+
+  @Expose()
+  @Type(() => GuaranteePreviewResponse)
+  guarantees: GuaranteePreviewResponse[]
+}
+
+export class BookingPreviewListResponse {
+  @Expose()
+  @Type(() => BookingPreviewResponse)
+  data: BookingPreviewResponse[]
 }

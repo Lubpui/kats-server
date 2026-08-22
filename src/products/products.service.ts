@@ -40,54 +40,42 @@ export class ProductsService {
   async createProduct(
     createProductResquest: ProductRequest,
   ): Promise<ProductResponse> {
-    try {
-      const { catagoryId, typeProductId } = createProductResquest
+    const { catagoryId, typeProductId } = createProductResquest
 
-      const newProduct = {
-        ...createProductResquest,
-        catagoryId: new Types.ObjectId(catagoryId),
-        typeProductId: new Types.ObjectId(typeProductId),
-      }
-
-      const createdProduct = await new this.productModel(newProduct).save()
-
-      const productsResponse = await this.productModel
-        .findById(createdProduct._id)
-        .populate('catagory')
-        .populate('typeProduct')
-
-      return modelMapper(ProductResponse, productsResponse)
-    } catch (error) {
-      throw error
+    const newProduct = {
+      ...createProductResquest,
+      catagoryId: new Types.ObjectId(catagoryId),
+      typeProductId: new Types.ObjectId(typeProductId),
     }
+
+    const createdProduct = await new this.productModel(newProduct).save()
+
+    const productsResponse = await this.productModel
+      .findById(createdProduct._id)
+      .populate('catagory')
+      .populate('typeProduct')
+
+    return modelMapper(ProductResponse, productsResponse)
   }
 
   async createCatagory(
     createCatagoryResquest: ProductCatagoryRequest,
   ): Promise<ProductCatagoryResponse> {
-    try {
-      const createdCatagory = await new this.productCatagoryModel(
-        createCatagoryResquest,
-      ).save()
+    const createdCatagory = await new this.productCatagoryModel(
+      createCatagoryResquest,
+    ).save()
 
-      return modelMapper(ProductCatagoryResponse, createdCatagory)
-    } catch (error) {
-      throw error
-    }
+    return modelMapper(ProductCatagoryResponse, createdCatagory)
   }
 
   async createTypeProduct(
     createTypeProductResquest: TypeProductRequest,
   ): Promise<TypeProductResponse> {
-    try {
-      const createdTypeProduct = await new this.productTypeModel(
-        createTypeProductResquest,
-      ).save()
+    const createdTypeProduct = await new this.productTypeModel(
+      createTypeProductResquest,
+    ).save()
 
-      return modelMapper(TypeProductResponse, createdTypeProduct)
-    } catch (error) {
-      throw error
-    }
+    return modelMapper(TypeProductResponse, createdTypeProduct)
   }
 
   async getAllProducts(del: number): Promise<ProductResponse[]> {

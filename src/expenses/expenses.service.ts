@@ -16,7 +16,7 @@ import {
 import { CUSTOM_CONNECTION_NAME } from 'src/utils/constanrs'
 import { DeleteStatus } from 'src/shared/enums/delete-status.enum'
 import { UserResponse } from 'src/users/responses/user.response'
-import { deleteFile } from 'src/utils/common.util'
+import { deleteFile, moveTempFileTo, resolveWithin } from 'src/utils/common.util'
 import path from 'path'
 import * as fs from 'fs-extra'
 
@@ -42,19 +42,13 @@ export class ExpensesService {
 
     if (newFileName !== oldFileName) {
       //ลบไฟล์เดิม
-      if (oldFileName && fs.existsSync(path.join(dirname, oldFileName))) {
-        await deleteFile(path.join(dirname, oldFileName))
+      if (oldFileName && fs.existsSync(resolveWithin(dirname, oldFileName))) {
+        await deleteFile(resolveWithin(dirname, oldFileName))
       }
 
       //สร้างไฟล์
       if (newFileName) {
-        const originPath = path.join(process.env.TMP_PATH ?? '', newFileName)
-        const destinationPath = path.join(dirname, newFileName)
-        if (!fs.existsSync(dirname)) {
-          fs.mkdirSync(dirname, { recursive: true })
-        }
-        await fs.copy(originPath, destinationPath, { overwrite: true })
-        imageRes = newFileName
+        imageRes = await moveTempFileTo(dirname, newFileName)
       }
     }
 
@@ -87,7 +81,6 @@ export class ExpensesService {
       await session.commitTransaction()
       return modelMapper(ExpenseResponse, expensesResponse)
     } catch (error) {
-      console.log(error)
       await session.abortTransaction() // rollbackASDF
       throw error
     } finally {

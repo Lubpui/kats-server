@@ -65,51 +65,46 @@ export class UsersService {
       `${this.configService.get<string>('MONGO_URI')}/${dbname}?authSource=admin`,
     ).asPromise()
 
-    try {
-      const roleModel = connection.model<RoleDocument>(
-        Role.name,
-        RoleSchema as any,
-      )
+    const roleModel = connection.model<RoleDocument>(
+      Role.name,
+      RoleSchema as any,
+    )
 
-      const employeeModelCustom = connection.model<EmployeeDocument>(
-        Employee.name,
-        EmployeeSchema as any,
-      )
+    const employeeModelCustom = connection.model<EmployeeDocument>(
+      Employee.name,
+      EmployeeSchema as any,
+    )
 
-      const documentCountModel = connection.model<DocumentCountDocument>(
-        DocumentCount.name,
-        DocumentCountSchema as any,
-      )
+    const documentCountModel = connection.model<DocumentCountDocument>(
+      DocumentCount.name,
+      DocumentCountSchema as any,
+    )
 
-      await documentCountModel.insertOne({ expenseCount: 0, bookingCount: 0 })
+    await documentCountModel.insertOne({ expenseCount: 0, bookingCount: 0 })
 
-      const CEORole = await this.permissionService.createInitialRole(roleModel)
+    const CEORole = await this.permissionService.createInitialRole(roleModel)
 
-      const newUser = await this.createUser(
-        dbname,
-        new Types.ObjectId(CEORole._id),
-        createUserRequest,
-        true,
-      )
+    const newUser = await this.createUser(
+      dbname,
+      new Types.ObjectId(CEORole._id),
+      createUserRequest,
+      true,
+    )
 
-      const createEmployeeRequest: EmployeeRequest = {
-        firstName,
-        lastName,
-        employmentInfo: {
-          roleId: newUser.roleId,
-        },
-        tel: phoneNumber ?? '',
-        email: newUser.email,
-        delete: DeleteStatus.ISNOTDELETE,
-      }
-
-      await new employeeModelCustom(createEmployeeRequest).save()
-
-      return newUser
-    } catch (error) {
-      console.log(error)
-      throw error
+    const createEmployeeRequest: EmployeeRequest = {
+      firstName,
+      lastName,
+      employmentInfo: {
+        roleId: newUser.roleId,
+      },
+      tel: phoneNumber ?? '',
+      email: newUser.email,
+      delete: DeleteStatus.ISNOTDELETE,
     }
+
+    await new employeeModelCustom(createEmployeeRequest).save()
+
+    return newUser
   }
 
   async createUser(

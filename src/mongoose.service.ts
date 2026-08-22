@@ -15,6 +15,9 @@ import { ConfigService } from '@nestjs/config'
 
 export const cachingConnections: { [key: string]: Connection } = {}
 
+// path เดียวที่เปิดให้เข้าถึงได้โดยไม่ต้องมี token (หน้าจองสาธารณะ)
+const PREVIEW_PATH = '/bookings/preview'
+
 @Injectable({ scope: Scope.REQUEST })
 export class MongooseService implements MongooseOptionsFactory {
   constructor(
@@ -28,10 +31,11 @@ export class MongooseService implements MongooseOptionsFactory {
     const { headers, originalUrl } = this.request
     // TODO: rewite this this.request.user.dbname
 
-    const authPattern = new RegExp('^/auth(/.*)?$')
+    // ตัด query string ทิ้งก่อน ไม่งั้น path ที่มีคำว่า /preview อยู่ใน query จะหลุด auth ไปด้วย
+    const [pathName] = originalUrl.split('?')
 
-    const isAuthModule = authPattern.test(originalUrl)
-    const isPreviewModule = originalUrl.includes('/preview')
+    const isAuthModule = /^\/auth(\/.*)?$/.test(pathName)
+    const isPreviewModule = pathName === PREVIEW_PATH
     const authorization = headers['authorization'] || ''
 
     if (!authorization && !isAuthModule && !isPreviewModule) {
