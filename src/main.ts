@@ -5,8 +5,8 @@ import { NestExpressApplication } from '@nestjs/platform-express'
 import { ConfigService } from '@nestjs/config'
 
 const DEFAULT_CORS_ORIGINS = [
-  'https://gunprotections.com',
-  'https://www.gunprotections.com',
+  'https://rustprotections.com',
+  'https://www.rustprotections.com',
   'http://localhost:3000',
   'http://localhost:5173',
 ]
